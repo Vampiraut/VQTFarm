@@ -1,12 +1,5 @@
 using Microsoft.Scripting.Hosting;
 using IronPython.Hosting;
-using System.Data;
-using Microsoft.Data.Sqlite;
-using System.Data.SQLite;
-using System.Windows.Forms;
-using static IronPython.Runtime.Profiler;
-using System.Reflection;
-using System.Text.Json;
 
 namespace VQTFarm
 {
