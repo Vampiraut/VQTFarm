@@ -37,14 +37,18 @@
             teamTokenTextBox = new TextBox();
             teamOwnerIPTextBox = new TextBox();
             roundTimeTextBox = new TextBox();
-            adminServerIPTextBox = new TextBox();
+            scoreBoardURLTextBox = new TextBox();
             deployButton = new Button();
             noFlagFormatLabel = new Label();
             noTeamTokenLabel = new Label();
             noTeamOwnerIPLabel = new Label();
             noRoundTimeLabel = new Label();
-            noAdminServerIPLabel = new Label();
+            noScoreboardURLLabel = new Label();
             ifClearLastWorkCheckBox = new CheckBox();
+            flagSubmitterURLTextBox = new TextBox();
+            noFlagsubmitterURLLabel = new Label();
+            flagLifeTimeTextBox = new TextBox();
+            noFlagLifeTimeLabel = new Label();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -54,7 +58,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { settingsToolStripMenuItem, helpToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(363, 25);
+            menuStrip1.Size = new Size(408, 25);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -79,7 +83,7 @@
             PresetSettingsLabel.AutoSize = true;
             PresetSettingsLabel.Font = new Font("Calibri", 20F, FontStyle.Bold, GraphicsUnit.Point);
             PresetSettingsLabel.ForeColor = Color.Indigo;
-            PresetSettingsLabel.Location = new Point(12, 40);
+            PresetSettingsLabel.Location = new Point(27, 40);
             PresetSettingsLabel.Name = "PresetSettingsLabel";
             PresetSettingsLabel.Size = new Size(336, 33);
             PresetSettingsLabel.TabIndex = 1;
@@ -91,7 +95,7 @@
             flagFormatTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
             flagFormatTextBox.Location = new Point(12, 76);
             flagFormatTextBox.Name = "flagFormatTextBox";
-            flagFormatTextBox.Size = new Size(339, 30);
+            flagFormatTextBox.Size = new Size(384, 30);
             flagFormatTextBox.TabIndex = 2;
             flagFormatTextBox.TextChanged += flagFormatTextBox_TextChanged;
             // 
@@ -100,7 +104,7 @@
             teamTokenTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
             teamTokenTextBox.Location = new Point(12, 127);
             teamTokenTextBox.Name = "teamTokenTextBox";
-            teamTokenTextBox.Size = new Size(339, 30);
+            teamTokenTextBox.Size = new Size(384, 30);
             teamTokenTextBox.TabIndex = 3;
             teamTokenTextBox.TextChanged += teamTokenTextBox_TextChanged;
             // 
@@ -109,7 +113,7 @@
             teamOwnerIPTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
             teamOwnerIPTextBox.Location = new Point(12, 178);
             teamOwnerIPTextBox.Name = "teamOwnerIPTextBox";
-            teamOwnerIPTextBox.Size = new Size(339, 30);
+            teamOwnerIPTextBox.Size = new Size(384, 30);
             teamOwnerIPTextBox.TabIndex = 4;
             teamOwnerIPTextBox.TextChanged += teamOwnerIPTextBox_TextChanged;
             // 
@@ -118,27 +122,27 @@
             roundTimeTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
             roundTimeTextBox.Location = new Point(12, 229);
             roundTimeTextBox.Name = "roundTimeTextBox";
-            roundTimeTextBox.Size = new Size(339, 30);
+            roundTimeTextBox.Size = new Size(173, 30);
             roundTimeTextBox.TabIndex = 5;
             roundTimeTextBox.TextChanged += roundTimeTextBox_TextChanged;
             // 
-            // adminServerIPTextBox
+            // scoreBoardURLTextBox
             // 
-            adminServerIPTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            adminServerIPTextBox.Location = new Point(12, 280);
-            adminServerIPTextBox.Name = "adminServerIPTextBox";
-            adminServerIPTextBox.Size = new Size(339, 30);
-            adminServerIPTextBox.TabIndex = 6;
-            adminServerIPTextBox.TextChanged += adminServerIPTextBox_TextChanged;
+            scoreBoardURLTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            scoreBoardURLTextBox.Location = new Point(12, 280);
+            scoreBoardURLTextBox.Name = "scoreBoardURLTextBox";
+            scoreBoardURLTextBox.Size = new Size(384, 30);
+            scoreBoardURLTextBox.TabIndex = 6;
+            scoreBoardURLTextBox.TextChanged += scoreBoardURLTextBox_TextChanged;
             // 
             // deployButton
             // 
             deployButton.BackColor = Color.Black;
             deployButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             deployButton.ForeColor = Color.Red;
-            deployButton.Location = new Point(12, 357);
+            deployButton.Location = new Point(12, 408);
             deployButton.Name = "deployButton";
-            deployButton.Size = new Size(339, 54);
+            deployButton.Size = new Size(384, 59);
             deployButton.TabIndex = 7;
             deployButton.Text = "Deploy FARM";
             deployButton.UseVisualStyleBackColor = false;
@@ -188,22 +192,22 @@
             noRoundTimeLabel.Text = "Enter round time";
             noRoundTimeLabel.Click += noRoundTimeLabel_Click;
             // 
-            // noAdminServerIPLabel
+            // noScoreboardURLLabel
             // 
-            noAdminServerIPLabel.AutoSize = true;
-            noAdminServerIPLabel.ForeColor = Color.DarkRed;
-            noAdminServerIPLabel.Location = new Point(12, 313);
-            noAdminServerIPLabel.Name = "noAdminServerIPLabel";
-            noAdminServerIPLabel.Size = new Size(135, 15);
-            noAdminServerIPLabel.TabIndex = 12;
-            noAdminServerIPLabel.Text = "Enter flag submitter URL";
-            noAdminServerIPLabel.Click += noAdminServerIPLabel_Click;
+            noScoreboardURLLabel.AutoSize = true;
+            noScoreboardURLLabel.ForeColor = Color.DarkRed;
+            noScoreboardURLLabel.Location = new Point(12, 313);
+            noScoreboardURLLabel.Name = "noScoreboardURLLabel";
+            noScoreboardURLLabel.Size = new Size(121, 15);
+            noScoreboardURLLabel.TabIndex = 12;
+            noScoreboardURLLabel.Text = "Enter Scoreboard URL";
+            noScoreboardURLLabel.Click += noScoreboardURLLabel_Click;
             // 
             // ifClearLastWorkCheckBox
             // 
             ifClearLastWorkCheckBox.AutoSize = true;
             ifClearLastWorkCheckBox.Font = new Font("Arial", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            ifClearLastWorkCheckBox.Location = new Point(12, 331);
+            ifClearLastWorkCheckBox.Location = new Point(18, 382);
             ifClearLastWorkCheckBox.Name = "ifClearLastWorkCheckBox";
             ifClearLastWorkCheckBox.Size = new Size(156, 20);
             ifClearLastWorkCheckBox.TabIndex = 13;
@@ -211,20 +215,64 @@
             ifClearLastWorkCheckBox.UseVisualStyleBackColor = true;
             ifClearLastWorkCheckBox.CheckedChanged += ifClearLastWorkCheckBox_CheckedChanged;
             // 
+            // flagSubmitterURLTextBox
+            // 
+            flagSubmitterURLTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            flagSubmitterURLTextBox.Location = new Point(12, 331);
+            flagSubmitterURLTextBox.Name = "flagSubmitterURLTextBox";
+            flagSubmitterURLTextBox.Size = new Size(384, 30);
+            flagSubmitterURLTextBox.TabIndex = 14;
+            flagSubmitterURLTextBox.TextChanged += flagSubmitterURLTextBox_TextChanged;
+            // 
+            // noFlagsubmitterURLLabel
+            // 
+            noFlagsubmitterURLLabel.AutoSize = true;
+            noFlagsubmitterURLLabel.ForeColor = Color.DarkRed;
+            noFlagsubmitterURLLabel.Location = new Point(12, 364);
+            noFlagsubmitterURLLabel.Name = "noFlagsubmitterURLLabel";
+            noFlagsubmitterURLLabel.Size = new Size(134, 15);
+            noFlagsubmitterURLLabel.TabIndex = 15;
+            noFlagsubmitterURLLabel.Text = "Enter Flagsubmitter URL";
+            noFlagsubmitterURLLabel.Click += noFlagsubmitterURLLabel_Click;
+            // 
+            // flagLifeTimeTextBox
+            // 
+            flagLifeTimeTextBox.Font = new Font("Calibri", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            flagLifeTimeTextBox.Location = new Point(191, 229);
+            flagLifeTimeTextBox.Name = "flagLifeTimeTextBox";
+            flagLifeTimeTextBox.Size = new Size(205, 30);
+            flagLifeTimeTextBox.TabIndex = 16;
+            flagLifeTimeTextBox.TextChanged += flagLifeTimeTextBox_TextChanged;
+            // 
+            // noFlagLifeTimeLabel
+            // 
+            noFlagLifeTimeLabel.AutoSize = true;
+            noFlagLifeTimeLabel.ForeColor = Color.DarkRed;
+            noFlagLifeTimeLabel.Location = new Point(191, 262);
+            noFlagLifeTimeLabel.Name = "noFlagLifeTimeLabel";
+            noFlagLifeTimeLabel.Size = new Size(100, 15);
+            noFlagLifeTimeLabel.TabIndex = 17;
+            noFlagLifeTimeLabel.Text = "Enter flag lifetime";
+            noFlagLifeTimeLabel.Click += noFlagLifeTimeLabel_Click;
+            // 
             // PresetStartForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DeepSkyBlue;
-            ClientSize = new Size(363, 423);
+            ClientSize = new Size(408, 479);
+            Controls.Add(noFlagLifeTimeLabel);
+            Controls.Add(flagLifeTimeTextBox);
+            Controls.Add(noFlagsubmitterURLLabel);
+            Controls.Add(flagSubmitterURLTextBox);
             Controls.Add(ifClearLastWorkCheckBox);
-            Controls.Add(noAdminServerIPLabel);
+            Controls.Add(noScoreboardURLLabel);
             Controls.Add(noRoundTimeLabel);
             Controls.Add(noTeamOwnerIPLabel);
             Controls.Add(noTeamTokenLabel);
             Controls.Add(noFlagFormatLabel);
             Controls.Add(deployButton);
-            Controls.Add(adminServerIPTextBox);
+            Controls.Add(scoreBoardURLTextBox);
             Controls.Add(roundTimeTextBox);
             Controls.Add(teamOwnerIPTextBox);
             Controls.Add(teamTokenTextBox);
@@ -254,13 +302,17 @@
         private TextBox teamTokenTextBox;
         private TextBox teamOwnerIPTextBox;
         private TextBox roundTimeTextBox;
-        private TextBox adminServerIPTextBox;
+        private TextBox scoreBoardURLTextBox;
         private Button deployButton;
         private Label noFlagFormatLabel;
         private Label noTeamTokenLabel;
         private Label noTeamOwnerIPLabel;
         private Label noRoundTimeLabel;
-        private Label noAdminServerIPLabel;
+        private Label noScoreboardURLLabel;
         private CheckBox ifClearLastWorkCheckBox;
+        private TextBox flagSubmitterURLTextBox;
+        private Label noFlagsubmitterURLLabel;
+        private TextBox flagLifeTimeTextBox;
+        private Label noFlagLifeTimeLabel;
     }
 }

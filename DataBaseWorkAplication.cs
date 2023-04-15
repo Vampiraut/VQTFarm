@@ -306,5 +306,13 @@ namespace VQTFarm
                 }
             }
         }
+        public int DropTableInDB(object customClass)
+        {
+            string tableName = customClass.GetType().Name.ToString() + "s";
+
+            string commandText = "DROP TABLE IF EXISTS" + tableName;
+            this.command.CommandText = commandText;
+            return this.command.ExecuteNonQuery();
+        }
     }
 }

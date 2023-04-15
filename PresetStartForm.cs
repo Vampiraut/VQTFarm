@@ -22,7 +22,9 @@ namespace VQTFarm
             noTeamTokenLabel.Visible = false;
             noTeamOwnerIPLabel.Visible = false;
             noRoundTimeLabel.Visible = false;
-            noAdminServerIPLabel.Visible = false;
+            noFlagLifeTimeLabel.Visible = false;
+            noScoreboardURLLabel.Visible = false;
+            noFlagsubmitterURLLabel.Visible = false;
 
             #region EventHandlers
             deployButton.MouseEnter += new EventHandler(deployButton_Enter);
@@ -41,8 +43,15 @@ namespace VQTFarm
             roundTimeTextBox.Enter += new EventHandler(roundTimeTextBox_Enter);
             roundTimeTextBox.Leave += new EventHandler(roundTimeTextBox_Leave);
 
-            adminServerIPTextBox.Enter += new EventHandler(adminServerIPTextBox_Enter);
-            adminServerIPTextBox.Leave += new EventHandler(adminServerIPTextBox_Leave);
+            flagLifeTimeTextBox.Enter += new EventHandler(flagLifeTimeTextBox_Enter);
+            flagLifeTimeTextBox.Leave += new EventHandler(flagLifeTimeTextBox_Leave);
+
+            scoreBoardURLTextBox.Enter += new EventHandler(scoreBoardURLTextBox_Enter);
+            scoreBoardURLTextBox.Leave += new EventHandler(scoreBoardURLTextBox_Leave);
+
+            flagSubmitterURLTextBox.Enter += new EventHandler(flagSubmitterURLTextBox_Enter);
+            flagSubmitterURLTextBox.Leave += new EventHandler(flagSubmitterURLTextBox_Leave);
+
             #endregion
 
             StartGhostTextSet();
@@ -73,8 +82,14 @@ namespace VQTFarm
             roundTimeTextBox.Text = ">Round Time (in sec)";
             roundTimeTextBox.ForeColor = Color.Gray;
 
-            adminServerIPTextBox.Text = ">Flag Submitter URL";
-            adminServerIPTextBox.ForeColor = Color.Gray;
+            flagLifeTimeTextBox.Text = ">Flag Lifetime(in rounds)";
+            flagLifeTimeTextBox.ForeColor = Color.Gray;
+
+            scoreBoardURLTextBox.Text = ">Scoreboard URL";
+            scoreBoardURLTextBox.ForeColor = Color.Gray;
+
+            flagSubmitterURLTextBox.Text = ">Flag Submitter URL";
+            flagSubmitterURLTextBox.ForeColor = Color.Gray;
         }
         private void deployButton_Click(object sender, EventArgs e)
         {
@@ -82,7 +97,9 @@ namespace VQTFarm
             noTeamTokenLabel.Visible = false;
             noTeamOwnerIPLabel.Visible = false;
             noRoundTimeLabel.Visible = false;
-            noAdminServerIPLabel.Visible = false;
+            noFlagLifeTimeLabel.Visible = false;
+            noScoreboardURLLabel.Visible = false;
+            noFlagsubmitterURLLabel.Visible = false;
 
             if (string.IsNullOrWhiteSpace(flagFormatTextBox.Text) || flagFormatTextBox.Text == ">Regex flag format")
             {
@@ -116,13 +133,39 @@ namespace VQTFarm
                 noRoundTimeLabel.Visible = true;
                 return;
             }
-            if (string.IsNullOrWhiteSpace(adminServerIPTextBox.Text) || adminServerIPTextBox.Text == ">Flag Submitter URL")
+            if (string.IsNullOrWhiteSpace(flagLifeTimeTextBox.Text) || flagLifeTimeTextBox.Text == ">Flag Lifetime(in rounds)")
             {
-                noAdminServerIPLabel.Visible = true;
+                noFlagLifeTimeLabel.Visible = true;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(scoreBoardURLTextBox.Text) || scoreBoardURLTextBox.Text == ">Flag Submitter URL")
+            {
+                noScoreboardURLLabel.Visible = true;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(flagSubmitterURLTextBox.Text) || flagSubmitterURLTextBox.Text == ">Flag Submitter URL")
+            {
+                noFlagsubmitterURLLabel.Visible = true;
                 return;
             }
 
-            FarmSettings fs = new FarmSettings(new Regex(flagFormatTextBox.Text), teamTokenTextBox.Text, teamOwnerIPTextBox.Text, Convert.ToInt32(roundTimeTextBox.Text) * 1000, adminServerIPTextBox.Text);
+            if(ifClearLastWorkCheckBox.Checked)
+            {
+                if (MessageBox.Show("Attention!\nYou are trying to delete past data from the database.\n\nDo you really want to delete this data?", "ATTENTION", MessageBoxButtons.YesNo) == DialogResult.Yes) 
+                {
+                    DBWorkForm.DropTableInDB(new CTFTeam());
+                    DBWorkForm.DropTableInDB(new FlagHistory());
+
+                    DBWorkForm.CreateTableByClass(new CTFTeam());
+                    DBWorkForm.CreateTableByClass(new FlagHistory());
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            FarmSettings fs = new FarmSettings(new Regex(flagFormatTextBox.Text), teamTokenTextBox.Text, teamOwnerIPTextBox.Text, Convert.ToInt32(roundTimeTextBox.Text) * 1000, Convert.ToInt32(flagLifeTimeTextBox.Text), scoreBoardURLTextBox.Text, flagSubmitterURLTextBox.Text);
             MainForm mainForm = new MainForm(fs, DBWorkForm);
             this.Hide();
             mainForm.FormClosed += new FormClosedEventHandler(mainForm_FormClosed);
@@ -166,6 +209,21 @@ namespace VQTFarm
                 }
             }
         }
+        private void flagLifeTimeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (flagLifeTimeTextBox.Text != ">Flag Lifetime(in rounds)")
+            {
+                Regex regex = new Regex(@"[\d]");
+                foreach (var simb in flagLifeTimeTextBox.Text)
+                {
+                    if (!regex.IsMatch(Convert.ToString(simb)))
+                    {
+                        flagLifeTimeTextBox.Text = flagLifeTimeTextBox.Text.Replace(Convert.ToString(simb), string.Empty);
+                        CursorMove_TextBoxs(flagLifeTimeTextBox, flagLifeTimeTextBox.Text.Length);
+                    }
+                }
+            }
+        }
         private void roundTimeTextBox_TextChanged(object sender, EventArgs e)
         {
             if (roundTimeTextBox.Text != ">Round Time (in sec)")
@@ -181,27 +239,48 @@ namespace VQTFarm
                 }
             }
         }
-        private void adminServerIPTextBox_TextChanged(object sender, EventArgs e)
+        private void scoreBoardURLTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void flagSubmitterURLTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
         #endregion
 
         #region TextBoxs EventHandlers
-        private void adminServerIPTextBox_Leave(object? sender, EventArgs e)
+        private void flagSubmitterURLTextBox_Leave(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(adminServerIPTextBox.Text))
+            if (string.IsNullOrWhiteSpace(flagSubmitterURLTextBox.Text))
             {
-                adminServerIPTextBox.Text = ">Flag Submitter URL";
-                adminServerIPTextBox.ForeColor = Color.Gray;
+                flagSubmitterURLTextBox.Text = ">Flag Submitter URL";
+                flagSubmitterURLTextBox.ForeColor = Color.Gray;
             }
         }
-        private void adminServerIPTextBox_Enter(object? sender, EventArgs e)
+        private void flagSubmitterURLTextBox_Enter(object? sender, EventArgs e)
         {
-            if (adminServerIPTextBox.Text == ">Flag Submitter URL")
+            if (flagSubmitterURLTextBox.Text == ">Flag Submitter URL")
             {
-                adminServerIPTextBox.Clear();
-                adminServerIPTextBox.ForeColor = Color.Black;
+                flagSubmitterURLTextBox.Clear();
+                flagSubmitterURLTextBox.ForeColor = Color.Black;
+            }
+        }
+
+        private void scoreBoardURLTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(scoreBoardURLTextBox.Text))
+            {
+                scoreBoardURLTextBox.Text = ">Scoreboard URL";
+                scoreBoardURLTextBox.ForeColor = Color.Gray;
+            }
+        }
+        private void scoreBoardURLTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (scoreBoardURLTextBox.Text == ">Scoreboard URL")
+            {
+                scoreBoardURLTextBox.Clear();
+                scoreBoardURLTextBox.ForeColor = Color.Black;
             }
         }
 
@@ -220,6 +299,23 @@ namespace VQTFarm
             {
                 roundTimeTextBox.Clear();
                 roundTimeTextBox.ForeColor = Color.Black;
+            }
+        }
+
+        private void flagLifeTimeTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(flagLifeTimeTextBox.Text))
+            {
+                flagLifeTimeTextBox.Text = ">Flag Lifetime(in rounds)";
+                flagLifeTimeTextBox.ForeColor = Color.Gray;
+            }
+        }
+        private void flagLifeTimeTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (flagLifeTimeTextBox.Text == ">Flag Lifetime(in rounds)")
+            {
+                flagLifeTimeTextBox.Clear();
+                flagLifeTimeTextBox.ForeColor = Color.Black;
             }
         }
 
@@ -300,8 +396,15 @@ namespace VQTFarm
         {
 
         }
+        private void noFlagLifeTimeLabel_Click(object sender, EventArgs e)
+        {
 
-        private void noAdminServerIPLabel_Click(object sender, EventArgs e)
+        }
+        private void noScoreboardURLLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void noFlagsubmitterURLLabel_Click(object sender, EventArgs e)
         {
 
         }

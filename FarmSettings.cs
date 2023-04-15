@@ -6,18 +6,22 @@ namespace VQTFarm
     public class FarmSettings
     {
         public FarmSettings() { }
-        public FarmSettings(Regex flagFormat, string teamToken, string teamOwnerIP, int roundTime, string adminServerIP)
+        public FarmSettings(Regex flagFormat, string teamToken, string teamOwnerIP, int roundTime, int flagLifeTime, string scoreboardURL, string flaSubmitterURL)
         {
             this.flagFormat = flagFormat;
             this.teamToken = teamToken;
             this.teamOwnerIP = teamOwnerIP;
             this.roundTime = roundTime;
-            this.adminServerIP = adminServerIP;
+            this.flagLifeTime = flagLifeTime;
+            this.scoreboardURL = scoreboardURL;
+            this.flaSubmitterURL = flaSubmitterURL;
         }
         public Regex flagFormat { get; set; }
         public string teamToken { get; set; }
         public string teamOwnerIP { get; set; }
         public int roundTime { get; set; }
-        public string adminServerIP { get; set; }
+        public int flagLifeTime { get; set; }
+        public string scoreboardURL { get; set; }
+        public string flaSubmitterURL { get; set; }
     }
 }
