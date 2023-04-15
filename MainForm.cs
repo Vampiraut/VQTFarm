@@ -1,8 +1,12 @@
+#define POST
+#define DEBAG
 using Microsoft.Scripting.Hosting;
 using IronPython.Hosting;
 using System.Text.RegularExpressions;
 using System.Net.Http.Json;
-using static IronPython.Modules.PythonRegex;
+using System.Text.Json;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace VQTFarm
 {
@@ -82,7 +86,6 @@ namespace VQTFarm
 
                 this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
 
-                //readAllTeams(); // добавляет/обновляет данные в бдшке
                 List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
                 if (ctfTeams != null)
                 {
@@ -95,7 +98,6 @@ namespace VQTFarm
                         }
                     }
                 }
-                //DBWorkForm.connection.Close();
 
                 TeamsUpdateTHR = new Thread(teamUpdate);
                 TeamsUpdateTHR.Start();
@@ -201,6 +203,7 @@ namespace VQTFarm
         }
         #endregion
 
+#if PUT
         private string PutRequest(string flag)
         {
             HttpClient httpClient = new HttpClient();
@@ -222,20 +225,23 @@ namespace VQTFarm
                 httpClient.Dispose();
             }
         }
+#endif
+#if POST
         private string PostRequest(string flag)
         {
             HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             try
             {
-                Dictionary<string, string> dict = new Dictionary<string, string>()
-                {
-                    { "flag", $"{flag}" },
-                    { "token", $"{fs.teamToken}" }
-                };
-                var content = JsonContent.Create(dict);
-                content.Headers.Add("accept", "application/json");
-                content.Headers.Add("'Content-Type", "application/json");
-                return httpClient.PostAsync(fs.flaSubmitterURL, content).Result.Content.ReadAsStringAsync().Result.ToString();
+                using StringContent jsonContent = new(
+                    JsonSerializer.Serialize(new
+                    {
+                        flag = flag,
+                        token = fs.teamToken
+                    }),
+                    Encoding.UTF8,
+                    "application/json");
+                return httpClient.PostAsync(fs.flaSubmitterURL, jsonContent).Result.Content.ReadAsStringAsync().Result.ToString();
             }
             catch (Exception exp)
             {
@@ -248,6 +254,7 @@ namespace VQTFarm
                 httpClient.Dispose();
             }
         }
+#endif
         private string GetRequest()
         {
             HttpClient httpClient = new HttpClient();
@@ -267,43 +274,31 @@ namespace VQTFarm
             }
         }
 
-        private void readAllTeams()
+        private void updateAllTeams(DataBaseWorkAplication DBWorkFormTeam)
         {
-            List<CTFTeam> cTFTeams = new List<CTFTeam>();
+            try
+            {
+                List<CTFTeam> ctfTeams = new List<CTFTeam>();
+                string html = GetRequest();
 
-            string html = GetRequest();
+                MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+                MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+                MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
 
-            MatchCollection m1 = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-            MatchCollection m2 = Regex.Matches(html, @"<h4>(.+?)</h4>", RegexOptions.Singleline);
-
-            //Console.WriteLine("{0,-70} {1,5}", "Название", "Просмотров");
-
-            //foreach (Match m in m1)
-            //{
-            //    string SSH = m.Groups[1].Value;
-            //    ShortStoryHeads.Add(SSH);
-            //}
-
-            //foreach (Match m in m2)
-            //{
-            //    string SIV = m.Groups[1].Value;
-            //    StaticInfoViews.Add(SIV);
-            //}
-
-            //for (int i = 0; i < ShortStoryHeads.Count; i++)
-            //{
-            //    try
-            //    {
-            //        Console.WriteLine("{0,-70} {1,5}", StaticInfoViews[i], ShortStoryHeads[i]);
-            //    }
-            //    catch (ArgumentOutOfRangeException exc)
-            //    {
-            //        Console.WriteLine("\nerr: " + exc.Message);
-            //    }
-            //}
-
-
-            //Console.ReadKey(true);
+                for (int i = 0; i < teamNames.Count; i++)
+                {
+                    ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
+                }
+                foreach (var team in ctfTeams)
+                {
+                    DBWorkFormTeam.UpdateClassInDB_byParams(team, new List<string>() { $"teamName={team.teamName}" });
+                }
+            }
+            catch (Exception exs)
+            {
+                MessageBox.Show("Warning!\nSome problem while try to parse html code", "WARNING");
+                systemSafeCheck += 1;
+            }
         } //дописать
         private void runScript(object? obj)
         {
@@ -319,10 +314,15 @@ namespace VQTFarm
                 dynamic script = scope.GetVariable("script");
                 dynamic result = script(thrInfo.ip);
                 thrInfo.flag = result.ToString();
+#if DEBAG
+                flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
+#endif
+#if !DEBAG
                 if (fs.flagFormat.Matches(thrInfo.flag).Count > 0)
                 {
                     flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
                 }
+#endif
             }
             catch (Exception exp)
             {
@@ -360,8 +360,12 @@ namespace VQTFarm
                     {
                         if (thrInfo.Value.AddMilliseconds(fs.roundTime * fs.flagLifeTime) >= DateTime.Now)
                         {
+#if POST
                             string answer = PostRequest(thrInfo.Key.flag);
-
+#endif
+#if PUT
+                            string answer = PutRequest(thrInfo.Key.flag);
+#endif
                             DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
                             dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
                             dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory(Path.GetFileName(thrInfo.Key.scriptPath), thrInfo.Key.team_name, thrInfo.Key.flag, DateTime.Now.ToString(), "123", "123"));
@@ -439,6 +443,7 @@ namespace VQTFarm
                 DBWorkFormTeam.StartConnection("Data Source=FarmInfo.db");
                 while (isTeamsUpdateTHRMustRun)
                 {
+                    updateAllTeams(DBWorkFormTeam);
                     List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
                     if (ctfteams != null)
                     {
@@ -522,7 +527,7 @@ namespace VQTFarm
 
                         for (int i = AllFlags.Count - 1; i >= 0; i--)
                         {
-                            if (j >= 11)//////////////////////////////////////////////////////////////////
+                            if (j >= 10)//////////////////////////////////////////////////////////////////
                             {
                                 break;
                             }
@@ -613,7 +618,7 @@ namespace VQTFarm
                 systemSafeCheck += 1;
             }
         }
-        #endregion
+#endregion
 
         #region Menu Strip
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -683,10 +688,18 @@ namespace VQTFarm
             {
                 if (!string.IsNullOrWhiteSpace(manualSubmitTextBox.Text))
                 {
+#if PUT
                     string answer = PutRequest(manualSubmitTextBox.Text);
+#endif
+#if POST
+                    string answer = PostRequest(manualSubmitTextBox.Text);
+#endif
+#if DEBUG
+                    MessageBox.Show(answer, "Answer");
+#endif
                     DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
                     dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
-                    dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory("Manual Test", "Manual Test", manualSubmitTextBox.Text, DateTime.Now.ToString(), "123", "123"));/////////////////////
+                    dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory("Manual Test", "Manual Test", manualSubmitTextBox.Text, DateTime.Now.ToString(), "123", answer));/////////////////////
                 }
             }
             catch (Exception exp)
@@ -700,7 +713,7 @@ namespace VQTFarm
         {
 
         }
-        #endregion
+#endregion
 
         #region Exploit Test Panel
         private void exploitTestPanel_Paint(object sender, PaintEventArgs e)

@@ -310,7 +310,7 @@ namespace VQTFarm
         {
             string tableName = customClass.GetType().Name.ToString() + "s";
 
-            string commandText = "DROP TABLE IF EXISTS" + tableName;
+            string commandText = "DROP TABLE IF EXISTS " + tableName;
             this.command.CommandText = commandText;
             return this.command.ExecuteNonQuery();
         }
