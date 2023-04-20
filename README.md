@@ -18,6 +18,6 @@ Example:
 import ...
 def script(ip):
   #your code is written here
-return flag
+  return flag
 ```
 # The sequel will be coming soon
