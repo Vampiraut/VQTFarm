@@ -14,10 +14,10 @@ nuget pakages:
 # Writing your exploits
 The exploit is written in the Python programming language. file_name.py it must contain one function with the name "script" and taking one argument "ip" (the address of the string type, which command will be attacked) and returning one variable of the string type (flag). After writing the exploit, this file should be added to the Sploits folder.
 Example:
-'''Python
+<br>
 #import ...
 def script(ip):
   \#your code is written here
 return flag
-'''
+<br>
 # The sequel will be coming soon
