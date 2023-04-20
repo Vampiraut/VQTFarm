@@ -144,10 +144,6 @@ namespace VQTFarm
                 flagLifeTimeTextBox.Text = Convert.ToString(fs.flagLifeTime);
                 scoreBoardURLTextBox.Text = fs.scoreBoardURL;
                 flagSubmitterURLTextBox.Text = fs.flagSubmitterURL;
-
-                Thread.Sleep(5020);
-                pythonGetScriptChooseComboBox.SelectedItem = Path.GetFileName(fs.pythonGetScriptPath);
-                pythonFlagSendScriptChooseComboBox.SelectedItem = Path.GetFileName(fs.pythonFlagSendScriptPath);
             }
         }
 
@@ -329,9 +325,6 @@ namespace VQTFarm
 
             //if all the checks have passed -> deploy farm with saving settings
             isDirectoryCheckForScriptsTHRMustRun = false;
-
-            MessageBox.Show(Directory.GetCurrentDirectory() + "\\Python_Get_Scripts\\" + pythonGetScriptChooseComboBox.SelectedItem);
-            MessageBox.Show(Directory.GetCurrentDirectory() + "\\Python_FlagSend_Scripts\\" + pythonFlagSendScriptChooseComboBox.SelectedItem);
 
             this.fs = new FarmSettings(flagFormatTextBox.Text, teamTokenTextBox.Text, teamOwnerIPTextBox.Text, Convert.ToInt32(roundTimeTextBox.Text) * 1000, Convert.ToInt32(flagLifeTimeTextBox.Text), scoreBoardURLTextBox.Text, flagSubmitterURLTextBox.Text, Directory.GetCurrentDirectory() + "\\Python_Get_Scripts\\" + pythonGetScriptChooseComboBox.SelectedItem, Directory.GetCurrentDirectory() + "\\Python_FlagSend_Scripts\\" + pythonFlagSendScriptChooseComboBox.SelectedItem);
             MainForm mainForm = new MainForm(fs, DBWorkForm);
