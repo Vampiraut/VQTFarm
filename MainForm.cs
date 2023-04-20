@@ -1,6 +1,5 @@
 using Microsoft.Scripting.Hosting;
 using IronPython.Hosting;
-using System.Text.RegularExpressions;
 
 namespace VQTFarm
 {
@@ -33,9 +32,6 @@ namespace VQTFarm
 
         private List<string> sploitsList;   //Cписок сплоитов(полный путь)
 
-        private int systemSafeCheck;    //Защита системы (при привышении лимита (указан ниже) закрывает программу
-        private const int ErrorsCountToCloseForm = 15;
-
         private const int GLOBALTimePauseForThreadings = 20000;
 
         private Queue<KeyValuePair<ThreadInfoClass, DateTime>> flagsQueue;  //Очередь на отправку флагов, содержит информацию о полученном флаге и фремя получения этого флага
@@ -54,8 +50,6 @@ namespace VQTFarm
             teamsList = new List<KeyValuePair<string, string>>();
             sploitsList = new List<string>();
 
-            systemSafeCheck = 0;
-
             flagsQueue = new Queue<KeyValuePair<ThreadInfoClass, DateTime>>();
 
             InitializeComponent();
@@ -64,10 +58,10 @@ namespace VQTFarm
         {
             try
             {
-                #region DEBAG PreSet
+                #region DEBAG PreSet//////////////////////////////////////////////////////////////////////////////
                 flagShowFilterPanel.Visible = false;
                 AutoTeamsParsFromScoreBoardCheckBox.Enabled = false;
-                #endregion
+                #endregion////////////////////////////////////////////////////////////////////////////////////////
 
                 isTestGoodLabel.Visible = false;
 
@@ -85,7 +79,7 @@ namespace VQTFarm
 
                 if (AutoTeamsParsFromScoreBoardCheckBox.Checked)
                 {
-                    updateAllTeams(DBWorkForm, false);///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    PythonGetRequest(false);
                 }
 
                 List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
@@ -128,6 +122,7 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Error!\nSome problem while loadin farm\n{exp}", "ERROR");
+                StopThreadings();
                 this.Close();
             }
         }
@@ -174,7 +169,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem with set settings for Flag Status DataGridView\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         private void setTeamsPlaceDataGridView()
@@ -206,13 +200,12 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem with set settings for Teams Place DataGridView\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         #endregion
 
         #region Threadusable functions
-        private string PythonFlagSendRequest(string[] flags)
+        private void PythonFlagSendRequest(string[] flags, string teamName, string exploitName)
         {
             ScriptEngine engine = Python.CreateEngine();
             ScriptScope scope = engine.CreateScope();
@@ -220,12 +213,9 @@ namespace VQTFarm
             engine.ExecuteFile(fs.pythonFlagSendScriptPath, scope);
 
             dynamic script = scope.GetVariable("script");
-            dynamic result = script(fs.flagSubmitterURL, flags, fs.teamToken);
-
-            return result;
+            dynamic result = script(fs.flagSubmitterURL, flags, fs.teamToken, teamName, exploitName);
         }
-
-        private string PythonGetRequest()
+        private void PythonGetRequest(bool isUpdate)
         {
             ScriptEngine engine = Python.CreateEngine();
             ScriptScope scope = engine.CreateScope();
@@ -233,59 +223,67 @@ namespace VQTFarm
             engine.ExecuteFile(fs.pythonGetScriptPath, scope);
 
             dynamic script = scope.GetVariable("script");
-            dynamic result = script(fs.scoreBoardURL);
-
-            return result;
+            dynamic result = script(fs.scoreBoardURL, isUpdate);
         }
+        //private string PythonGetRequest()
+        //{
+        //    ScriptEngine engine = Python.CreateEngine();
+        //    ScriptScope scope = engine.CreateScope();
 
+        //    engine.ExecuteFile(fs.pythonGetScriptPath, scope);
 
-        private void updateAllTeams(DataBaseWorkAplication DBWorkFormTeam, bool isUpdate)
-        {
-            try
-            {
-                if (isUpdate)
-                {
-                    List<CTFTeam> ctfTeams = new List<CTFTeam>();
-                    string html = PythonGetRequest();
+        //    dynamic script = scope.GetVariable("script");
+        //    dynamic result = script(fs.scoreBoardURL);
 
-                    MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-                    MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-                    MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+        //    return result;
+        //}
+        //private void updateAllTeams(DataBaseWorkAplication DBWorkFormTeam, bool isUpdate)
+        //{
+        //    try
+        //    {
+        //        if (isUpdate)
+        //        {
+        //            List<CTFTeam> ctfTeams = new List<CTFTeam>();
+        //            string html = PythonGetRequest();
 
-                    for (int i = 0; i < teamNames.Count; i++)
-                    {
-                        ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
-                    }
-                    foreach (var team in ctfTeams)
-                    {
-                        DBWorkFormTeam.UpdateClassInDB_byParams(team, new List<string>() { $"teamName={team.teamName}" });
-                    }
-                }
-                else
-                {
-                    List<CTFTeam> ctfTeams = new List<CTFTeam>();
-                    string html = PythonGetRequest();
+        //            MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+        //            MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+        //            MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
 
-                    MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-                    MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-                    MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+        //            for (int i = 0; i < teamNames.Count; i++)
+        //            {
+        //                ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
+        //            }
+        //            foreach (var team in ctfTeams)
+        //            {
+        //                DBWorkFormTeam.UpdateClassInDB_byParams(team, new List<string>() { $"teamName={team.teamName}" });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            List<CTFTeam> ctfTeams = new List<CTFTeam>();
+        //            string html = PythonGetRequest();
 
-                    for (int i = 0; i < teamNames.Count; i++)
-                    {
-                        ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
-                    }
-                    foreach (var team in ctfTeams)
-                    {
-                        DBWorkFormTeam.AddClassToDB(team);
-                    }
-                }
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show($"Warning!\nSome problem while try to parse html code\n{exp}", "WARNING");
-                systemSafeCheck += 1;
-            }
-        } //дописать
+        //            MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+        //            MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+        //            MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+
+        //            for (int i = 0; i < teamNames.Count; i++)
+        //            {
+        //                ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
+        //            }
+        //            foreach (var team in ctfTeams)
+        //            {
+        //                DBWorkFormTeam.AddClassToDB(team);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception exp)
+        //    {
+        //        MessageBox.Show($"Warning!\nSome problem while try to parse html code\n{exp}", "WARNING");
+        //        systemSafeCheck += 1;
+        //    }
+        //} //дописать
         private void runScript(object? obj)
         {
             try
@@ -300,14 +298,13 @@ namespace VQTFarm
                 dynamic script = scope.GetVariable("script");
                 dynamic result = script(thrInfo.ip); //возвращает массив с флагами для отправки
 
-                thrInfo.flags = result; ///////////////////////////////////////////////////////////////////////УТОЧНИТЬ НА ФАКТ ПОЛУЧЕНИЯ И ОПРАВКИ
+                thrInfo.flags = result;
 
                 flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem with script running\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         #endregion
@@ -318,7 +315,7 @@ namespace VQTFarm
             try
             {
                 isFailSafeTHRMustRun = false;
-                Thread.Sleep(GLOBALTimePauseForThreadings + 1000);
+                Thread.Sleep(21000);
                 isTeamsUpdateTHRMustRun = false;
                 isFlagsUpdateTHRMustRun = false;
                 isSploitDirectoryCheckTHRMustRun = false;
@@ -336,7 +333,7 @@ namespace VQTFarm
             {
                 while (isFailSafeTHRMustRun)
                 {
-                    Thread.Sleep(GLOBALTimePauseForThreadings);
+                    Thread.Sleep(20000);
                     if (TeamsUpdateTHR.ThreadState != ThreadState.Running && TeamsUpdateTHR.ThreadState != ThreadState.WaitSleepJoin)
                     {
                         isTeamsUpdateTHRMustRun = true;
@@ -367,18 +364,11 @@ namespace VQTFarm
                         FlagsSendTHR = new Thread(flagsSend);
                         FlagsSendTHR.Start();
                     }
-
-                    if (systemSafeCheck >= ErrorsCountToCloseForm)
-                    {
-                        MessageBox.Show("Error!\nToo many errors have been received!\nThe Farm try to restart automatically.\nIf the errors continues, please restart manually.", "ERROR");
-                        this.Close();
-                    }
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Error!\nSome problem in restart multiprocessing.\nPlease, restart farm for correct work!\n{exp}", "ERROR");
-                systemSafeCheck += 1;
             }
         }
         private void flagsSend()
@@ -392,25 +382,19 @@ namespace VQTFarm
                     {
                         if (thrInfo.Value.AddMilliseconds(fs.roundTime * fs.flagLifeTime) >= DateTime.Now)
                         {
-
-                            string answer = PythonFlagSendRequest(thrInfo.Key.flags);
-
-                            DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
-                            dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
-                            dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory(Path.GetFileName(thrInfo.Key.scriptPath), thrInfo.Key.team_name, "flag", DateTime.Now.ToString(), "status", "cheskSystemRespons"));
+                            PythonFlagSendRequest(thrInfo.Key.flags, thrInfo.Key.team_name, Path.GetFileName(thrInfo.Key.scriptPath));
                         }
                         else
                         {
                             continue;
                         }
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(200);
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while flag sending\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         private void teamUpdate()
@@ -423,7 +407,7 @@ namespace VQTFarm
                 {
                     if (AutoTeamsParsFromScoreBoardCheckBox.Checked)
                     {
-                        updateAllTeams(DBWorkFormTeam, true); ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        PythonGetRequest(true);
                     }
                     List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
                     if (ctfteams != null)
@@ -463,7 +447,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while updating teams info\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         private void autoSploitRun()
@@ -486,7 +469,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while auto run sploits\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         private void flagsUpdate()
@@ -549,7 +531,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while updating flag history\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         private void sploitDirectoryCheck()
@@ -596,7 +577,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while reading sploits from directory{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         #endregion
@@ -669,18 +649,12 @@ namespace VQTFarm
             {
                 if (!string.IsNullOrWhiteSpace(manualSubmitTextBox.Text))
                 {
-
-                    string answer = PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text });
-
-                    DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
-                    dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
-                    dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory("Manual Test", "Manual Test", manualSubmitTextBox.Text, DateTime.Now.ToString(), "status", answer));/////////////////////
+                    PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text }, "Manual Test", "Manual Test");
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while manual flag sending\n{exp}");
-                systemSafeCheck += 1;
             }
         }
 
