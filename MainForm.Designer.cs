@@ -35,6 +35,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             menuStrip1 = new MenuStrip();
             settingsToolStripMenuItem = new ToolStripMenuItem();
+            addTeamManualToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             flagStatusGridView = new DataGridView();
             exploitTestPanel = new Panel();
@@ -57,6 +58,7 @@
             teamsListPanel = new Panel();
             teamsListLabel = new Label();
             flagStatusPanel = new Panel();
+            AutoTeamsParsFromScoreBoardCheckBox = new CheckBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flagStatusGridView).BeginInit();
             exploitTestPanel.SuspendLayout();
@@ -79,10 +81,18 @@
             // 
             // settingsToolStripMenuItem
             // 
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addTeamManualToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
+            // 
+            // addTeamManualToolStripMenuItem
+            // 
+            addTeamManualToolStripMenuItem.Name = "addTeamManualToolStripMenuItem";
+            addTeamManualToolStripMenuItem.Size = new Size(169, 22);
+            addTeamManualToolStripMenuItem.Text = "Add team manual";
+            addTeamManualToolStripMenuItem.Click += addTeamManualToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -205,7 +215,7 @@
             flagStatusLabel.AutoSize = true;
             flagStatusLabel.BorderStyle = BorderStyle.Fixed3D;
             flagStatusLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            flagStatusLabel.Location = new Point(1049, 0);
+            flagStatusLabel.Location = new Point(1053, 0);
             flagStatusLabel.Name = "flagStatusLabel";
             flagStatusLabel.Size = new Size(176, 32);
             flagStatusLabel.TabIndex = 3;
@@ -260,7 +270,7 @@
             flagTotalAceptedLabel.AutoSize = true;
             flagTotalAceptedLabel.BorderStyle = BorderStyle.Fixed3D;
             flagTotalAceptedLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            flagTotalAceptedLabel.Location = new Point(3, 0);
+            flagTotalAceptedLabel.Location = new Point(-1, 0);
             flagTotalAceptedLabel.Name = "flagTotalAceptedLabel";
             flagTotalAceptedLabel.Size = new Size(333, 32);
             flagTotalAceptedLabel.TabIndex = 5;
@@ -350,11 +360,12 @@
             // teamsListPanel
             // 
             teamsListPanel.BorderStyle = BorderStyle.FixedSingle;
+            teamsListPanel.Controls.Add(AutoTeamsParsFromScoreBoardCheckBox);
             teamsListPanel.Controls.Add(teamsListLabel);
             teamsListPanel.Controls.Add(teamsPlaceDataGridView);
             teamsListPanel.Location = new Point(714, 27);
             teamsListPanel.Name = "teamsListPanel";
-            teamsListPanel.Size = new Size(528, 319);
+            teamsListPanel.Size = new Size(528, 374);
             teamsListPanel.TabIndex = 9;
             teamsListPanel.Paint += teamsListPanel_Paint;
             // 
@@ -381,6 +392,17 @@
             flagStatusPanel.Size = new Size(1230, 269);
             flagStatusPanel.TabIndex = 9;
             flagStatusPanel.Paint += flagStatusPanel_Paint;
+            // 
+            // AutoTeamsParsFromScoreBoardCheckBox
+            // 
+            AutoTeamsParsFromScoreBoardCheckBox.AutoSize = true;
+            AutoTeamsParsFromScoreBoardCheckBox.Location = new Point(3, 319);
+            AutoTeamsParsFromScoreBoardCheckBox.Name = "AutoTeamsParsFromScoreBoardCheckBox";
+            AutoTeamsParsFromScoreBoardCheckBox.Size = new Size(203, 19);
+            AutoTeamsParsFromScoreBoardCheckBox.TabIndex = 10;
+            AutoTeamsParsFromScoreBoardCheckBox.Text = "Auto teams pars from scoreboard";
+            AutoTeamsParsFromScoreBoardCheckBox.UseVisualStyleBackColor = true;
+            AutoTeamsParsFromScoreBoardCheckBox.CheckedChanged += AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged;
             // 
             // MainForm
             // 
@@ -445,5 +467,7 @@
         private Label teamsListLabel;
         private Panel flagStatusPanel;
         private Label isTestGoodLabel;
+        private ToolStripMenuItem addTeamManualToolStripMenuItem;
+        private CheckBox AutoTeamsParsFromScoreBoardCheckBox;
     }
 }

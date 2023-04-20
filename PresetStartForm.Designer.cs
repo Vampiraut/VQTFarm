@@ -49,6 +49,10 @@
             noFlagsubmitterURLLabel = new Label();
             flagLifeTimeTextBox = new TextBox();
             noFlagLifeTimeLabel = new Label();
+            pythonGetScriptChooseComboBox = new ComboBox();
+            pythonFlagSendScriptChooseComboBox = new ComboBox();
+            noPythonGetScriptLabel = new Label();
+            noPythonFlagSendScriptLabel = new Label();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -140,9 +144,9 @@
             deployButton.BackColor = Color.Black;
             deployButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             deployButton.ForeColor = Color.Red;
-            deployButton.Location = new Point(12, 408);
+            deployButton.Location = new Point(12, 452);
             deployButton.Name = "deployButton";
-            deployButton.Size = new Size(384, 59);
+            deployButton.Size = new Size(384, 64);
             deployButton.TabIndex = 7;
             deployButton.Text = "Deploy FARM";
             deployButton.UseVisualStyleBackColor = false;
@@ -207,7 +211,7 @@
             // 
             ifClearLastWorkCheckBox.AutoSize = true;
             ifClearLastWorkCheckBox.Font = new Font("Arial", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            ifClearLastWorkCheckBox.Location = new Point(18, 382);
+            ifClearLastWorkCheckBox.Location = new Point(12, 426);
             ifClearLastWorkCheckBox.Name = "ifClearLastWorkCheckBox";
             ifClearLastWorkCheckBox.Size = new Size(156, 20);
             ifClearLastWorkCheckBox.TabIndex = 13;
@@ -255,12 +259,56 @@
             noFlagLifeTimeLabel.Text = "Enter flag lifetime";
             noFlagLifeTimeLabel.Click += noFlagLifeTimeLabel_Click;
             // 
+            // pythonGetScriptChooseComboBox
+            // 
+            pythonGetScriptChooseComboBox.FormattingEnabled = true;
+            pythonGetScriptChooseComboBox.Location = new Point(12, 382);
+            pythonGetScriptChooseComboBox.Name = "pythonGetScriptChooseComboBox";
+            pythonGetScriptChooseComboBox.Size = new Size(186, 23);
+            pythonGetScriptChooseComboBox.TabIndex = 18;
+            pythonGetScriptChooseComboBox.SelectedIndexChanged += pythonGetScriptChooseComboBox_SelectedIndexChanged;
+            // 
+            // pythonFlagSendScriptChooseComboBox
+            // 
+            pythonFlagSendScriptChooseComboBox.FormattingEnabled = true;
+            pythonFlagSendScriptChooseComboBox.Location = new Point(204, 382);
+            pythonFlagSendScriptChooseComboBox.Name = "pythonFlagSendScriptChooseComboBox";
+            pythonFlagSendScriptChooseComboBox.Size = new Size(192, 23);
+            pythonFlagSendScriptChooseComboBox.TabIndex = 19;
+            pythonFlagSendScriptChooseComboBox.SelectedIndexChanged += pythonFlagSendScriptChooseComboBox_SelectedIndexChanged;
+            // 
+            // noPythonGetScriptLabel
+            // 
+            noPythonGetScriptLabel.AutoSize = true;
+            noPythonGetScriptLabel.ForeColor = Color.DarkRed;
+            noPythonGetScriptLabel.Location = new Point(12, 408);
+            noPythonGetScriptLabel.Name = "noPythonGetScriptLabel";
+            noPythonGetScriptLabel.Size = new Size(142, 15);
+            noPythonGetScriptLabel.TabIndex = 20;
+            noPythonGetScriptLabel.Text = "Choose Get Python Script";
+            noPythonGetScriptLabel.Click += noPythonGetScriptLabel_Click;
+            // 
+            // noPythonFlagSendScriptLabel
+            // 
+            noPythonFlagSendScriptLabel.AutoSize = true;
+            noPythonFlagSendScriptLabel.ForeColor = Color.DarkRed;
+            noPythonFlagSendScriptLabel.Location = new Point(204, 408);
+            noPythonFlagSendScriptLabel.Name = "noPythonFlagSendScriptLabel";
+            noPythonFlagSendScriptLabel.Size = new Size(175, 15);
+            noPythonFlagSendScriptLabel.TabIndex = 21;
+            noPythonFlagSendScriptLabel.Text = "Choose Flag Send Python Script";
+            noPythonFlagSendScriptLabel.Click += noPythonFlagSendScriptLabel_Click;
+            // 
             // PresetStartForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DeepSkyBlue;
-            ClientSize = new Size(408, 479);
+            ClientSize = new Size(408, 528);
+            Controls.Add(noPythonFlagSendScriptLabel);
+            Controls.Add(noPythonGetScriptLabel);
+            Controls.Add(pythonFlagSendScriptChooseComboBox);
+            Controls.Add(pythonGetScriptChooseComboBox);
             Controls.Add(noFlagLifeTimeLabel);
             Controls.Add(flagLifeTimeTextBox);
             Controls.Add(noFlagsubmitterURLLabel);
@@ -314,5 +362,9 @@
         private Label noFlagsubmitterURLLabel;
         private TextBox flagLifeTimeTextBox;
         private Label noFlagLifeTimeLabel;
+        private ComboBox pythonGetScriptChooseComboBox;
+        private ComboBox pythonFlagSendScriptChooseComboBox;
+        private Label noPythonGetScriptLabel;
+        private Label noPythonFlagSendScriptLabel;
     }
 }

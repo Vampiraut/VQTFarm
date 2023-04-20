@@ -1,12 +1,6 @@
-#define POST
-#define DEBAG
 using Microsoft.Scripting.Hosting;
 using IronPython.Hosting;
 using System.Text.RegularExpressions;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text;
-using System.Net.Http.Headers;
 
 namespace VQTFarm
 {
@@ -17,32 +11,34 @@ namespace VQTFarm
 
 
         private Thread TeamsUpdateTHR;  //поток обновления данных о командах
-        private bool isTeamsUpdateTHRMustRun; //ОПРОС RoundTime
+        private bool isTeamsUpdateTHRMustRun;   //ОПРОС RoundTime
 
         private Thread FlagsUpdateTHR;  //поток обновления данных о флагах
-        private bool isFlagsUpdateTHRMustRun; //ОПРОС RoundTime
+        private bool isFlagsUpdateTHRMustRun;   //ОПРОС RoundTime
 
         private Thread SploitDirectoryCheckTHR; //поток проверки папки Sploits на наличие сплоитов, добавление их в общий процесс
-        private bool isSploitDirectoryCheckTHRMustRun; //ОПРОС GLOBALTimePauseForThreadings
+        private bool isSploitDirectoryCheckTHRMustRun;  //ОПРОС GLOBALTimePauseForThreadings
 
         private Thread AutoSploitRunTHR;    //поток автоматического запуска сплоитов в делай раунд тайма
         private bool isAutoSploitRunTHRMustRun; //ОПРОС RoundTime
 
         private Thread FailSafeTHR; //поток автозапуска потоков при их непредвиденной остановке
-        private bool isFailSafeTHRMustRun; //ОПРОС GLOBALTimePauseForThreadings
+        private bool isFailSafeTHRMustRun;  //ОПРОС GLOBALTimePauseForThreadings
 
-        private List<KeyValuePair<string, string>> teamsAttaskTHRs; //Словарь содержащий IP команды для атаки и список потоков, с подключёнными к ним функциями, являющиеся функциями запуска скриптов
+        private Thread FlagsSendTHR;    //поток автоотправки флагов
+        private bool isFlagsSendTHRMustRun; //ОПРОС 1 секунда
 
-        private List<string> SploitsList;  //список сплоитов(полный путь)
 
-        private int systemSafeCheck; //Защита системы (при привышении лимита (указан ниже) закрывает программу
+        private List<KeyValuePair<string, string>> teamsList;   //Список, содержащий пары IP команды, её название
+
+        private List<string> sploitsList;   //Cписок сплоитов(полный путь)
+
+        private int systemSafeCheck;    //Защита системы (при привышении лимита (указан ниже) закрывает программу
         private const int ErrorsCountToCloseForm = 15;
 
         private const int GLOBALTimePauseForThreadings = 20000;
 
-        private Queue<KeyValuePair<ThreadInfoClass, DateTime>> flagsQueue;
-        private Thread FlagsSendTHR;
-        private bool isFlagsSendTHRMustRun;
+        private Queue<KeyValuePair<ThreadInfoClass, DateTime>> flagsQueue;  //Очередь на отправку флагов, содержит информацию о полученном флаге и фремя получения этого флага
 
         public MainForm(FarmSettings fs, DataBaseWorkAplication DBWorkForm)
         {
@@ -53,22 +49,25 @@ namespace VQTFarm
             isSploitDirectoryCheckTHRMustRun = true;
             isAutoSploitRunTHRMustRun = true;
             isFailSafeTHRMustRun = true;
+            isFlagsSendTHRMustRun = true;
 
-            teamsAttaskTHRs = new List<KeyValuePair<string, string>>();
-
-            SploitsList = new List<string>();
+            teamsList = new List<KeyValuePair<string, string>>();
+            sploitsList = new List<string>();
 
             systemSafeCheck = 0;
 
             flagsQueue = new Queue<KeyValuePair<ThreadInfoClass, DateTime>>();
-            isFlagsSendTHRMustRun = true;
+
             InitializeComponent();
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
             try
             {
-                this.DoubleBuffered = true;
+                #region DEBAG PreSet
+                flagShowFilterPanel.Visible = false;
+                AutoTeamsParsFromScoreBoardCheckBox.Enabled = false;
+                #endregion
 
                 isTestGoodLabel.Visible = false;
 
@@ -84,21 +83,26 @@ namespace VQTFarm
                 setFlagStatusGridView();
                 setTeamsPlaceDataGridView();
 
-                this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
+                if (AutoTeamsParsFromScoreBoardCheckBox.Checked)
+                {
+                    updateAllTeams(DBWorkForm, false);///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                }
 
                 List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
                 if (ctfTeams != null)
                 {
-                    foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и списком потоков
+                    foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
                     {
                         CTFTeam team = teams as CTFTeam;
                         if (team.teamIP != fs.teamOwnerIP)
                         {
-                            teamsAttaskTHRs.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
+                            teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
+                            teamChooseComboBox.Items.Add(team.teamName);
                         }
                     }
                 }
 
+                #region Threads Start
                 TeamsUpdateTHR = new Thread(teamUpdate);
                 TeamsUpdateTHR.Start();
 
@@ -116,6 +120,10 @@ namespace VQTFarm
 
                 FailSafeTHR = new Thread(failSafe);
                 FailSafeTHR.Start();
+                #endregion
+
+
+                this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
             }
             catch (Exception exp)
             {
@@ -203,100 +211,78 @@ namespace VQTFarm
         }
         #endregion
 
-#if PUT
-        private string PutRequest(string flag)
+        #region Threadusable functions
+        private string PythonFlagSendRequest(string[] flags)
         {
-            HttpClient httpClient = new HttpClient();
-            try
-            {
-                HttpContent content = new StringContent(flag);
-                content.Headers.Add("X-Team-Token", fs.teamToken);
+            ScriptEngine engine = Python.CreateEngine();
+            ScriptScope scope = engine.CreateScope();
 
-                return httpClient.PutAsync(fs.flaSubmitterURL, content).Result.Content.ReadAsStringAsync().Result.ToString();
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show($"Warning!\nSome problem while do PUT request\n{exp}", "WARNING");
-                systemSafeCheck += 1;
-                return "ERROR";
-            }
-            finally
-            {
-                httpClient.Dispose();
-            }
+            engine.ExecuteFile(fs.pythonFlagSendScriptPath, scope);
+
+            dynamic script = scope.GetVariable("script");
+            dynamic result = script(fs.flagSubmitterURL, flags, fs.teamToken);
+
+            return result;
         }
-#endif
-#if POST
-        private string PostRequest(string flag)
+
+        private string PythonGetRequest()
         {
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            ScriptEngine engine = Python.CreateEngine();
+            ScriptScope scope = engine.CreateScope();
+
+            engine.ExecuteFile(fs.pythonGetScriptPath, scope);
+
+            dynamic script = scope.GetVariable("script");
+            dynamic result = script(fs.scoreBoardURL);
+
+            return result;
+        }
+
+
+        private void updateAllTeams(DataBaseWorkAplication DBWorkFormTeam, bool isUpdate)
+        {
             try
             {
-                using StringContent jsonContent = new(
-                    JsonSerializer.Serialize(new
+                if (isUpdate)
+                {
+                    List<CTFTeam> ctfTeams = new List<CTFTeam>();
+                    string html = PythonGetRequest();
+
+                    MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+                    MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+                    MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+
+                    for (int i = 0; i < teamNames.Count; i++)
                     {
-                        flag = flag,
-                        token = fs.teamToken
-                    }),
-                    Encoding.UTF8,
-                    "application/json");
-                return httpClient.PostAsync(fs.flaSubmitterURL, jsonContent).Result.Content.ReadAsStringAsync().Result.ToString();
+                        ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
+                    }
+                    foreach (var team in ctfTeams)
+                    {
+                        DBWorkFormTeam.UpdateClassInDB_byParams(team, new List<string>() { $"teamName={team.teamName}" });
+                    }
+                }
+                else
+                {
+                    List<CTFTeam> ctfTeams = new List<CTFTeam>();
+                    string html = PythonGetRequest();
+
+                    MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+                    MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+                    MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
+
+                    for (int i = 0; i < teamNames.Count; i++)
+                    {
+                        ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
+                    }
+                    foreach (var team in ctfTeams)
+                    {
+                        DBWorkFormTeam.AddClassToDB(team);
+                    }
+                }
             }
             catch (Exception exp)
             {
-                MessageBox.Show($"Warning!\nSome problem while do POST request\n{exp}", "WARNING");
-                systemSafeCheck += 1;
-                return "ERROR";
-            }
-            finally
-            {
-                httpClient.Dispose();
-            }
-        }
-#endif
-        private string GetRequest()
-        {
-            HttpClient httpClient = new HttpClient();
-            try
-            {
-                return httpClient.GetAsync(fs.scoreboardURL).Result.Content.ReadAsStringAsync().Result.ToString();
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show($"Warning!\nSome problem while do GET request\n{exp}", "WARNING");
-                systemSafeCheck += 1;
-                return "ERROR";
-            }
-            finally
-            {
-                httpClient.Dispose();
-            }
-        }
-
-        private void updateAllTeams(DataBaseWorkAplication DBWorkFormTeam)
-        {
-            try
-            {
-                List<CTFTeam> ctfTeams = new List<CTFTeam>();
-                string html = GetRequest();
-
-                MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-                MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-                MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-
-                for (int i = 0; i < teamNames.Count; i++)
-                {
-                    ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
-                }
-                foreach (var team in ctfTeams)
-                {
-                    DBWorkFormTeam.UpdateClassInDB_byParams(team, new List<string>() { $"teamName={team.teamName}" });
-                }
-            }
-            catch (Exception exs)
-            {
-                MessageBox.Show("Warning!\nSome problem while try to parse html code", "WARNING");
+                MessageBox.Show($"Warning!\nSome problem while try to parse html code\n{exp}", "WARNING");
                 systemSafeCheck += 1;
             }
         } //дописать
@@ -312,17 +298,11 @@ namespace VQTFarm
                 engine.ExecuteFile(thrInfo.scriptPath, scope);
 
                 dynamic script = scope.GetVariable("script");
-                dynamic result = script(thrInfo.ip);
-                thrInfo.flag = result.ToString();
-#if DEBAG
+                dynamic result = script(thrInfo.ip); //возвращает массив с флагами для отправки
+
+                thrInfo.flags = result; ///////////////////////////////////////////////////////////////////////УТОЧНИТЬ НА ФАКТ ПОЛУЧЕНИЯ И ОПРАВКИ
+
                 flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
-#endif
-#if !DEBAG
-                if (fs.flagFormat.Matches(thrInfo.flag).Count > 0)
-                {
-                    flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
-                }
-#endif
             }
             catch (Exception exp)
             {
@@ -330,6 +310,7 @@ namespace VQTFarm
                 systemSafeCheck += 1;
             }
         }
+        #endregion
 
         #region Threading Events
         private void StopThreadings()
@@ -347,41 +328,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Error!\nSome problem in stopping threadings.\nPlease, close threadings by using Task Manager and restart Farm\n{exp}", "ERROR");
-            }
-        }
-        private void flagsSend()
-        {
-            try
-            {
-                while (isFlagsSendTHRMustRun)
-                {
-                    var isQueueContainsFlags = flagsQueue.TryDequeue(out KeyValuePair<ThreadInfoClass, DateTime> thrInfo);
-                    if (isQueueContainsFlags)
-                    {
-                        if (thrInfo.Value.AddMilliseconds(fs.roundTime * fs.flagLifeTime) >= DateTime.Now)
-                        {
-#if POST
-                            string answer = PostRequest(thrInfo.Key.flag);
-#endif
-#if PUT
-                            string answer = PutRequest(thrInfo.Key.flag);
-#endif
-                            DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
-                            dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
-                            dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory(Path.GetFileName(thrInfo.Key.scriptPath), thrInfo.Key.team_name, thrInfo.Key.flag, DateTime.Now.ToString(), "123", "123"));
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                    Thread.Sleep(1000);
-                }
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show($"Warning!\nSome problem while flag sending\n{exp}", "WARNING");
-                systemSafeCheck += 1;
             }
         }
         private void failSafe()
@@ -435,6 +381,38 @@ namespace VQTFarm
                 systemSafeCheck += 1;
             }
         }
+        private void flagsSend()
+        {
+            try
+            {
+                while (isFlagsSendTHRMustRun)
+                {
+                    var isQueueContainsFlags = flagsQueue.TryDequeue(out KeyValuePair<ThreadInfoClass, DateTime> thrInfo);
+                    if (isQueueContainsFlags)
+                    {
+                        if (thrInfo.Value.AddMilliseconds(fs.roundTime * fs.flagLifeTime) >= DateTime.Now)
+                        {
+
+                            string answer = PythonFlagSendRequest(thrInfo.Key.flags);
+
+                            DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
+                            dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
+                            dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory(Path.GetFileName(thrInfo.Key.scriptPath), thrInfo.Key.team_name, "flag", DateTime.Now.ToString(), "status", "cheskSystemRespons"));
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem while flag sending\n{exp}", "WARNING");
+                systemSafeCheck += 1;
+            }
+        }
         private void teamUpdate()
         {
             try
@@ -443,7 +421,10 @@ namespace VQTFarm
                 DBWorkFormTeam.StartConnection("Data Source=FarmInfo.db");
                 while (isTeamsUpdateTHRMustRun)
                 {
-                    updateAllTeams(DBWorkFormTeam);
+                    if (AutoTeamsParsFromScoreBoardCheckBox.Checked)
+                    {
+                        updateAllTeams(DBWorkFormTeam, true); ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    }
                     List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
                     if (ctfteams != null)
                     {
@@ -491,12 +472,12 @@ namespace VQTFarm
             {
                 while (isAutoSploitRunTHRMustRun)
                 {
-                    foreach (var team in teamsAttaskTHRs)
+                    foreach (var team in teamsList)
                     {
-                        for (int i = 0; i < SploitsList.Count; i++)
+                        for (int i = 0; i < sploitsList.Count; i++)
                         {
                             Thread thread = new Thread(runScript);
-                            thread.Start(new ThreadInfoClass(SploitsList[i], team.Key, team.Value));
+                            thread.Start(new ThreadInfoClass(sploitsList[i], team.Key, team.Value));
                         }
                     }
                     Thread.Sleep(fs.roundTime);
@@ -527,7 +508,7 @@ namespace VQTFarm
 
                         for (int i = AllFlags.Count - 1; i >= 0; i--)
                         {
-                            if (j >= 10)//////////////////////////////////////////////////////////////////
+                            if (j >= 10)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             {
                                 break;
                             }
@@ -587,16 +568,16 @@ namespace VQTFarm
                     {
                         foreach (var item in sploits)
                         {
-                            if (!SploitsList.Contains(item) || !exploitChooseComboBox.Items.Contains(Path.GetFileName(item)))
+                            if (!sploitsList.Contains(item) || !exploitChooseComboBox.Items.Contains(Path.GetFileName(item)))
                             {
                                 exploitChooseComboBox.Items.Clear();
                                 exploitChooseComboBox.Items.Add("-Choose Exploit-");
                                 exploitChooseComboBox.SelectedItem = "-Choose Exploit-";
 
-                                SploitsList.Clear();
+                                sploitsList.Clear();
                                 foreach (var sploit in sploits)
                                 {
-                                    SploitsList.Add(sploit);
+                                    sploitsList.Add(sploit);
                                     exploitChooseComboBox.Items.Add(Path.GetFileName(sploit));
                                 }
                             }
@@ -607,7 +588,7 @@ namespace VQTFarm
                         exploitChooseComboBox.Items.Clear();
                         exploitChooseComboBox.Items.Add("-Choose Exploit-");
                         exploitChooseComboBox.SelectedItem = "-Choose Exploit-";
-                        SploitsList.Clear();
+                        sploitsList.Clear();
                     }
                     Thread.Sleep(GLOBALTimePauseForThreadings);
                 }
@@ -618,7 +599,7 @@ namespace VQTFarm
                 systemSafeCheck += 1;
             }
         }
-#endregion
+        #endregion
 
         #region Menu Strip
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -688,18 +669,12 @@ namespace VQTFarm
             {
                 if (!string.IsNullOrWhiteSpace(manualSubmitTextBox.Text))
                 {
-#if PUT
-                    string answer = PutRequest(manualSubmitTextBox.Text);
-#endif
-#if POST
-                    string answer = PostRequest(manualSubmitTextBox.Text);
-#endif
-#if DEBUG
-                    MessageBox.Show(answer, "Answer");
-#endif
+
+                    string answer = PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text });
+
                     DataBaseWorkAplication dbWorkFormFlagsAdd = new DataBaseWorkAplication();
                     dbWorkFormFlagsAdd.StartConnection("Data Source=FarmInfo.db");
-                    dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory("Manual Test", "Manual Test", manualSubmitTextBox.Text, DateTime.Now.ToString(), "123", answer));/////////////////////
+                    dbWorkFormFlagsAdd.AddClassToDB(new FlagHistory("Manual Test", "Manual Test", manualSubmitTextBox.Text, DateTime.Now.ToString(), "status", answer));/////////////////////
                 }
             }
             catch (Exception exp)
@@ -713,7 +688,7 @@ namespace VQTFarm
         {
 
         }
-#endregion
+        #endregion
 
         #region Exploit Test Panel
         private void exploitTestPanel_Paint(object sender, PaintEventArgs e)
@@ -768,7 +743,6 @@ namespace VQTFarm
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while testing sploit\n{exp}");
-                systemSafeCheck += 1;
                 isTestGoodLabel.Text = "Unsuccessful";
                 isTestGoodLabel.ForeColor = Color.Red;
                 isTestGoodLabel.Visible = true;
@@ -776,6 +750,7 @@ namespace VQTFarm
             finally
             {
                 Thread.Sleep(GLOBALTimePauseForThreadings);
+                isTestGoodLabel.Visible = false;
             }
         }
         #endregion
@@ -791,5 +766,33 @@ namespace VQTFarm
 
         }
         #endregion
+
+        private void addTeamManualToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManualTeamAddForm teamAddForm = new ManualTeamAddForm();
+            teamAddForm.FormClosed += new FormClosedEventHandler(teamAddForm_Closed);
+            teamAddForm.ShowDialog();
+        }
+        private void teamAddForm_Closed(object? sender, FormClosedEventArgs e)
+        {
+            List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
+            if (ctfTeams != null)
+            {
+                foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
+                {
+                    CTFTeam team = teams as CTFTeam;
+                    if (team.teamIP != fs.teamOwnerIP)
+                    {
+                        teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
+                        teamChooseComboBox.Items.Add(team.teamName);
+                    }
+                }
+            }
+        }
+
+        private void AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

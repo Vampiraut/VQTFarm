@@ -18,6 +18,6 @@ namespace VQTFarm
         public string scriptPath;
         public string ip;
         public string team_name;
-        public string flag;
+        public string[] flags;
     }
 }
