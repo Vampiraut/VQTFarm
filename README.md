@@ -11,7 +11,7 @@ nuget pakages:
 2. Microsoft.Data.Sqlite
 
 # Writing your exploits
-The exploit is written in the Python programming language. file_name.py it must contain one function with the name "script" and taking one argument "ip" (the address of the string type, which command will be attacked) and returning one variable of the string type (flag). After writing the exploit, this file should be added to the Sploits folder.
+The exploit is written in the Python programming language. file_name.py. The exploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via *sys.argv[1]. The result of the program is output via *print(\*array_of_flags, sep=',', end=""). After writing the exploit, this file should be added to the Sploits folder.
 Example:
 ```Python
 import sys
