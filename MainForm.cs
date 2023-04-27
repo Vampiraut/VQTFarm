@@ -716,7 +716,6 @@ namespace VQTFarm
                     CTFTeam team = teams as CTFTeam;
                     if (team.teamIP != fs.teamOwnerIP)
                     {
-                        teamsList.Clear();
                         teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
                         teamChooseComboBox.Items.Add(team.teamName);
                     }
