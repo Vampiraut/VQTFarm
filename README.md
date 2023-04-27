@@ -7,17 +7,21 @@ The farm is written in the C# programming language, the platform.NET 6.0, applic
 
 # Requirements
 nuget pakages:
-1. DynamicLanguageRuntime
-2. IronPython
-3. Microsoft.Data.Sqlite
+1. Guna.UI2.WinForms
+2. Microsoft.Data.Sqlite
 
 # Writing your exploits
 The exploit is written in the Python programming language. file_name.py it must contain one function with the name "script" and taking one argument "ip" (the address of the string type, which command will be attacked) and returning one variable of the string type (flag). After writing the exploit, this file should be added to the Sploits folder.
 Example:
 ```Python
-import ...
-def script(ip):
-  #your code is written here
-  return flag
+import sys
+#your import
+
+ip = sys.argv[1]
+
+#your code is written here
+
+print(*flags_arr, sep=',', end="")
 ```
+
 # The sequel will be coming soon
