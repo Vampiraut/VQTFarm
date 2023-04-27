@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamicLanguageRuntime" Version="1.3.3" />
-    <PackageReference Include="IronPython" Version="3.4.0" />
+    <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.4" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.5" />
   </ItemGroup>
 

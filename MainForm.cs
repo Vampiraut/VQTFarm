@@ -1,5 +1,5 @@
-using Microsoft.Scripting.Hosting;
-using IronPython.Hosting;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace VQTFarm
 {
@@ -32,7 +32,12 @@ namespace VQTFarm
 
         private List<string> sploitsList;   //Cписок сплоитов(полный путь)
 
-        private const int GLOBALTimePauseForThreadings = 20000;
+        private const int FailSafeTHRCoolDown = 20000;
+        private const int FlagsSendTHRCoolDown = 200;
+        private const int SploitDirectoryCheckTHRCoolDown = 20000;
+
+        private const int SploitTestCoolDown = 10000;
+        private const int ManualFlagSendCoolDown = 1000;
 
         private Queue<KeyValuePair<ThreadInfoClass, DateTime>> flagsQueue;  //Очередь на отправку флагов, содержит информацию о полученном флаге и фремя получения этого флага
 
@@ -207,99 +212,47 @@ namespace VQTFarm
         #region Threadusable functions
         private void PythonFlagSendRequest(string[] flags, string teamName, string exploitName)
         {
-            ScriptEngine engine = Python.CreateEngine();
-            ScriptScope scope = engine.CreateScope();
-
-            engine.ExecuteFile(fs.pythonFlagSendScriptPath, scope);
-
-            dynamic script = scope.GetVariable("script");
-            dynamic result = script(fs.flagSubmitterURL, flags, fs.teamToken, teamName, exploitName);
+            ProcessStartInfo start = new ProcessStartInfo() { 
+                FileName = "python.exe",
+                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\"", fs.pythonFlagSendScriptPath, fs.flagSubmitterURL, JsonSerializer.Serialize(flags), fs.teamToken, teamName, exploitName),
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true,
+            };
+            Process.Start(start);
         }
         private void PythonGetRequest(bool isUpdate)
         {
-            ScriptEngine engine = Python.CreateEngine();
-            ScriptScope scope = engine.CreateScope();
-
-            engine.ExecuteFile(fs.pythonGetScriptPath, scope);
-
-            dynamic script = scope.GetVariable("script");
-            dynamic result = script(fs.scoreBoardURL, isUpdate);
+            ProcessStartInfo start = new ProcessStartInfo()
+            {
+                FileName = "python.exe",
+                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", fs.pythonGetScriptPath, fs.scoreBoardURL, isUpdate == true ? "1" : "0" ),
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true,
+            };
+            Process.Start(start);
         }
-        //private string PythonGetRequest()
-        //{
-        //    ScriptEngine engine = Python.CreateEngine();
-        //    ScriptScope scope = engine.CreateScope();
-
-        //    engine.ExecuteFile(fs.pythonGetScriptPath, scope);
-
-        //    dynamic script = scope.GetVariable("script");
-        //    dynamic result = script(fs.scoreBoardURL);
-
-        //    return result;
-        //}
-        //private void updateAllTeams(DataBaseWorkAplication DBWorkFormTeam, bool isUpdate)
-        //{
-        //    try
-        //    {
-        //        if (isUpdate)
-        //        {
-        //            List<CTFTeam> ctfTeams = new List<CTFTeam>();
-        //            string html = PythonGetRequest();
-
-        //            MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-        //            MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-        //            MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-
-        //            for (int i = 0; i < teamNames.Count; i++)
-        //            {
-        //                ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
-        //            }
-        //            foreach (var team in ctfTeams)
-        //            {
-        //                DBWorkFormTeam.UpdateClassInDB_byParams(team, new List<string>() { $"teamName={team.teamName}" });
-        //            }
-        //        }
-        //        else
-        //        {
-        //            List<CTFTeam> ctfTeams = new List<CTFTeam>();
-        //            string html = PythonGetRequest();
-
-        //            MatchCollection teamNames = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-        //            MatchCollection teamIPs = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-        //            MatchCollection teamScores = Regex.Matches(html, @"<div class=""teamClass"">(.+)</div>", RegexOptions.Singleline);
-
-        //            for (int i = 0; i < teamNames.Count; i++)
-        //            {
-        //                ctfTeams.Add(new CTFTeam(Convert.ToString(i), teamNames[i].Groups[1].Value, teamIPs[i].Groups[1].Value, teamScores[i].Groups[1].Value));
-        //            }
-        //            foreach (var team in ctfTeams)
-        //            {
-        //                DBWorkFormTeam.AddClassToDB(team);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception exp)
-        //    {
-        //        MessageBox.Show($"Warning!\nSome problem while try to parse html code\n{exp}", "WARNING");
-        //        systemSafeCheck += 1;
-        //    }
-        //} //дописать
         private void runScript(object? obj)
         {
             try
             {
                 ThreadInfoClass thrInfo = obj as ThreadInfoClass;
-
-                ScriptEngine engine = Python.CreateEngine();
-                ScriptScope scope = engine.CreateScope();
-
-                engine.ExecuteFile(thrInfo.scriptPath, scope);
-
-                dynamic script = scope.GetVariable("script");
-                dynamic result = script(thrInfo.ip); //возвращает массив с флагами для отправки
-
-                thrInfo.flags = result;
-
+                ProcessStartInfo start = new ProcessStartInfo()
+                {
+                    FileName = "python.exe",
+                    Arguments = string.Format("\"{0}\" \"{1}\"", thrInfo.scriptPath, thrInfo.ip),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                };
+                using (Process process = Process.Start(start))
+                {
+                    using (StreamReader reader = process.StandardOutput)
+                    {
+                        thrInfo.flags = reader.ReadToEnd().Split(',');
+                    }
+                }
                 flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
             }
             catch (Exception exp)
@@ -315,7 +268,7 @@ namespace VQTFarm
             try
             {
                 isFailSafeTHRMustRun = false;
-                Thread.Sleep(21000);
+                Thread.Sleep(FailSafeTHRCoolDown + 1000);
                 isTeamsUpdateTHRMustRun = false;
                 isFlagsUpdateTHRMustRun = false;
                 isSploitDirectoryCheckTHRMustRun = false;
@@ -333,32 +286,32 @@ namespace VQTFarm
             {
                 while (isFailSafeTHRMustRun)
                 {
-                    Thread.Sleep(20000);
-                    if (TeamsUpdateTHR.ThreadState != ThreadState.Running && TeamsUpdateTHR.ThreadState != ThreadState.WaitSleepJoin)
+                    Thread.Sleep(FailSafeTHRCoolDown);
+                    if (TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
                         isTeamsUpdateTHRMustRun = true;
                         TeamsUpdateTHR = new Thread(teamUpdate);
                         TeamsUpdateTHR.Start();
                     }
-                    if (FlagsUpdateTHR.ThreadState != ThreadState.Running && FlagsUpdateTHR.ThreadState != ThreadState.WaitSleepJoin)
+                    if (FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
                         isFlagsUpdateTHRMustRun = true;
                         FlagsUpdateTHR = new Thread(flagsUpdate);
                         FlagsUpdateTHR.Start();
                     }
-                    if (SploitDirectoryCheckTHR.ThreadState != ThreadState.Running && SploitDirectoryCheckTHR.ThreadState != ThreadState.WaitSleepJoin)
+                    if (SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.Running && SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
                         isSploitDirectoryCheckTHRMustRun = true;
                         SploitDirectoryCheckTHR = new Thread(sploitDirectoryCheck);
                         SploitDirectoryCheckTHR.Start();
                     }
-                    if (AutoSploitRunTHR.ThreadState != ThreadState.Running && AutoSploitRunTHR.ThreadState != ThreadState.WaitSleepJoin)
+                    if (AutoSploitRunTHR.ThreadState != System.Threading.ThreadState.Running && AutoSploitRunTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
                         isAutoSploitRunTHRMustRun = true;
                         AutoSploitRunTHR = new Thread(autoSploitRun);
                         AutoSploitRunTHR.Start();
                     }
-                    if (FlagsSendTHR.ThreadState != ThreadState.Running && FlagsSendTHR.ThreadState != ThreadState.WaitSleepJoin)
+                    if (FlagsSendTHR.ThreadState != System.Threading.ThreadState.Running && FlagsSendTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
                         isFlagsSendTHRMustRun = true;
                         FlagsSendTHR = new Thread(flagsSend);
@@ -389,7 +342,7 @@ namespace VQTFarm
                             continue;
                         }
                     }
-                    Thread.Sleep(200);
+                    Thread.Sleep(FlagsSendTHRCoolDown);
                 }
             }
             catch (Exception exp)
@@ -571,7 +524,7 @@ namespace VQTFarm
                         exploitChooseComboBox.SelectedItem = "-Choose Exploit-";
                         sploitsList.Clear();
                     }
-                    Thread.Sleep(GLOBALTimePauseForThreadings);
+                    Thread.Sleep(SploitDirectoryCheckTHRCoolDown);
                 }
             }
             catch (Exception exp)
@@ -650,11 +603,16 @@ namespace VQTFarm
                 if (!string.IsNullOrWhiteSpace(manualSubmitTextBox.Text))
                 {
                     PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text }, "Manual Test", "Manual Test");
+                    manualSubmitTextBox.Text = "";
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while manual flag sending\n{exp}");
+            }
+            finally
+            {
+                Thread.Sleep(1000);
             }
         }
 
@@ -723,7 +681,7 @@ namespace VQTFarm
             }
             finally
             {
-                Thread.Sleep(GLOBALTimePauseForThreadings);
+                Thread.Sleep(SploitTestCoolDown);
                 isTestGoodLabel.Visible = false;
             }
         }
@@ -752,15 +710,21 @@ namespace VQTFarm
             List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
             if (ctfTeams != null)
             {
+                teamsList.Clear();
                 foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
                 {
                     CTFTeam team = teams as CTFTeam;
                     if (team.teamIP != fs.teamOwnerIP)
                     {
+                        teamsList.Clear();
                         teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
                         teamChooseComboBox.Items.Add(team.teamName);
                     }
                 }
+            }
+            else
+            {
+                teamsList.Clear();
             }
         }
 
