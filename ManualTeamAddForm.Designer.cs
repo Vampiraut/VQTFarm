@@ -97,6 +97,7 @@
             Controls.Add(AddButton);
             Controls.Add(teamNameTextBox);
             Controls.Add(teamIPTextBox);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "ManualTeamAddForm";

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Text.RegularExpressions;
 
 namespace VQTFarm
 {
@@ -36,6 +28,7 @@ namespace VQTFarm
             teamIPTextBox.Leave += new EventHandler(teamIPTextBox_Leave);
         }
 
+        #region TextBoxs EventHandlers
         private void teamIPTextBox_Leave(object? sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(teamIPTextBox.Text))
@@ -69,6 +62,7 @@ namespace VQTFarm
                 teamNameTextBox.ForeColor = Color.Black;
             }
         }
+        #endregion
 
         private void AddButton_Click(object sender, EventArgs e)
         {
@@ -97,23 +91,43 @@ namespace VQTFarm
             this.Close();
         }
 
+        #region TextBoxs
+        private void CursorMove_TextBoxs(TextBox textBox, int pos)
+        {
+            this.BeginInvoke((MethodInvoker)delegate ()
+            {
+                textBox.Select(pos, 0);
+            });
+        }
         private void teamNameTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
         private void teamIPTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            if (teamIPTextBox.Text != ">Team IP")
+            {
+                Regex regex = new Regex(@"[\d]|\.");
+                foreach (var simb in teamIPTextBox.Text)
+                {
+                    if (!regex.IsMatch(Convert.ToString(simb)))
+                    {
+                        teamIPTextBox.Text = teamIPTextBox.Text.Replace(Convert.ToString(simb), string.Empty);
+                        CursorMove_TextBoxs(teamIPTextBox, teamIPTextBox.Text.Length);
+                    }
+                }
+            }
         }
-
+        #endregion
+        #region Labels
         private void noTeamNameLabel_Click(object sender, EventArgs e)
         {
 
         }
-
         private void noTeamIPLabel_Click(object sender, EventArgs e)
         {
 
         }
+        #endregion
     }
 }
