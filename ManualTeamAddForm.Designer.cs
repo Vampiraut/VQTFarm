@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManualTeamAddForm));
             teamIPTextBox = new TextBox();
             teamNameTextBox = new TextBox();
             AddButton = new Button();
@@ -96,8 +97,11 @@
             Controls.Add(AddButton);
             Controls.Add(teamNameTextBox);
             Controls.Add(teamIPTextBox);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "ManualTeamAddForm";
-            Text = "Add team";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Add new team";
             Load += ManualTeamAddForm_Load;
             ResumeLayout(false);
             PerformLayout();

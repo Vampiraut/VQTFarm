@@ -5,10 +5,11 @@ namespace VQTFarm
 {
     public partial class MainForm : Form
     {
+        #region MainForm Fields
         private FarmSettings fs;    //настройки фермы, заданные в начальном окне (формат флага, время раунда и тп)
         private DataBaseWorkAplication DBWorkForm;  //подключённая бдшка
 
-
+        #region Threads
         private Thread TeamsUpdateTHR;  //поток обновления данных о командах
         private bool isTeamsUpdateTHRMustRun;   //ОПРОС RoundTime
 
@@ -27,19 +28,22 @@ namespace VQTFarm
         private Thread FlagsSendTHR;    //поток автоотправки флагов
         private bool isFlagsSendTHRMustRun; //ОПРОС 1 секунда
 
-
-        private List<KeyValuePair<string, string>> teamsList;   //Список, содержащий пары IP команды, её название
-
-        private List<string> sploitsList;   //Cписок сплоитов(полный путь)
-
         private const int FailSafeTHRCoolDown = 20000;
         private const int FlagsSendTHRCoolDown = 200;
         private const int SploitDirectoryCheckTHRCoolDown = 20000;
 
         private const int SploitTestCoolDown = 10000;
         private const int ManualFlagSendCoolDown = 1000;
+        #endregion
+
+        private List<KeyValuePair<string, string>> teamsList;   //Список, содержащий пары IP команды, её название
+
+        private List<string> sploitsList;   //Cписок сплоитов(полный путь)
 
         private Queue<KeyValuePair<ThreadInfoClass, DateTime>> flagsQueue;  //Очередь на отправку флагов, содержит информацию о полученном флаге и фремя получения этого флага
+
+        private string exploitPathForTest;
+        #endregion
 
         public MainForm(FarmSettings fs, DataBaseWorkAplication DBWorkForm)
         {
@@ -64,20 +68,26 @@ namespace VQTFarm
             try
             {
                 #region DEBAG PreSet//////////////////////////////////////////////////////////////////////////////
-                flagShowFilterPanel.Visible = false;
                 AutoTeamsParsFromScoreBoardCheckBox.Enabled = false;
                 #endregion////////////////////////////////////////////////////////////////////////////////////////
 
-                isTestGoodLabel.Visible = false;
+                teamsToolStripMenuItem.CheckState = CheckState.Checked;
+                flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
+                manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
+                exploitTestToolStripMenuItem.CheckState = CheckState.Checked;
+                flagShowFilterToolStripMenuItem.CheckState = CheckState.Checked;
 
-                exploitChooseComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
+                exploitChooseTextBox.Text = "-Choose Exploit for test-";
+
                 teamChooseComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-
-                exploitChooseComboBox.Items.Add("-Choose Exploit-");
-                exploitChooseComboBox.SelectedItem = "-Choose Exploit-";
-
                 teamChooseComboBox.Items.Add("-Select Team for test-");
                 teamChooseComboBox.SelectedItem = "-Select Team for test-";
+
+                exploitChooseTextBox.Click += new EventHandler(exploitChooseTextBox_Click);
+                exploitChooseTextBox.Enter += new EventHandler(exploitChooseTextBox_Enter);
+                exploitChooseTextBox.Cursor = Cursors.Arrow;
+
 
                 setFlagStatusGridView();
                 setTeamsPlaceDataGridView();
@@ -90,6 +100,7 @@ namespace VQTFarm
                 List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
                 if (ctfTeams != null)
                 {
+                    teamChooseComboBox.Items.Add("All teams");
                     foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
                     {
                         CTFTeam team = teams as CTFTeam;
@@ -120,7 +131,6 @@ namespace VQTFarm
                 FailSafeTHR = new Thread(failSafe);
                 FailSafeTHR.Start();
                 #endregion
-
 
                 this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
             }
@@ -209,10 +219,12 @@ namespace VQTFarm
         }
         #endregion
 
+
         #region Threadusable functions
         private void PythonFlagSendRequest(string[] flags, string teamName, string exploitName)
         {
-            ProcessStartInfo start = new ProcessStartInfo() { 
+            ProcessStartInfo start = new ProcessStartInfo()
+            {
                 FileName = "python.exe",
                 Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\"", fs.pythonFlagSendScriptPath, fs.flagSubmitterURL, JsonSerializer.Serialize(flags), fs.teamToken, teamName, exploitName),
                 UseShellExecute = false,
@@ -226,7 +238,7 @@ namespace VQTFarm
             ProcessStartInfo start = new ProcessStartInfo()
             {
                 FileName = "python.exe",
-                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", fs.pythonGetScriptPath, fs.scoreBoardURL, isUpdate == true ? "1" : "0" ),
+                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", fs.pythonGetScriptPath, fs.scoreBoardURL, isUpdate == true ? "1" : "0"),
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
@@ -261,7 +273,6 @@ namespace VQTFarm
             }
         }
         #endregion
-
         #region Threading Events
         private void StopThreadings()
         {
@@ -289,15 +300,21 @@ namespace VQTFarm
                     Thread.Sleep(FailSafeTHRCoolDown);
                     if (TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
-                        isTeamsUpdateTHRMustRun = true;
-                        TeamsUpdateTHR = new Thread(teamUpdate);
-                        TeamsUpdateTHR.Start();
+                        if (teamsListPanel.Visible == true)
+                        {
+                            isTeamsUpdateTHRMustRun = true;
+                            TeamsUpdateTHR = new Thread(teamUpdate);
+                            TeamsUpdateTHR.Start();
+                        }
                     }
                     if (FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
-                        isFlagsUpdateTHRMustRun = true;
-                        FlagsUpdateTHR = new Thread(flagsUpdate);
-                        FlagsUpdateTHR.Start();
+                        if (flagStatusPanel.Visible == true)
+                        {
+                            isFlagsUpdateTHRMustRun = true;
+                            FlagsUpdateTHR = new Thread(flagsUpdate);
+                            FlagsUpdateTHR.Start();
+                        }
                     }
                     if (SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.Running && SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                     {
@@ -502,26 +519,18 @@ namespace VQTFarm
                     {
                         foreach (var item in sploits)
                         {
-                            if (!sploitsList.Contains(item) || !exploitChooseComboBox.Items.Contains(Path.GetFileName(item)))
+                            if (!sploitsList.Contains(item))
                             {
-                                exploitChooseComboBox.Items.Clear();
-                                exploitChooseComboBox.Items.Add("-Choose Exploit-");
-                                exploitChooseComboBox.SelectedItem = "-Choose Exploit-";
-
                                 sploitsList.Clear();
                                 foreach (var sploit in sploits)
                                 {
                                     sploitsList.Add(sploit);
-                                    exploitChooseComboBox.Items.Add(Path.GetFileName(sploit));
                                 }
                             }
                         }
                     }
                     else
                     {
-                        exploitChooseComboBox.Items.Clear();
-                        exploitChooseComboBox.Items.Add("-Choose Exploit-");
-                        exploitChooseComboBox.SelectedItem = "-Choose Exploit-";
                         sploitsList.Clear();
                     }
                     Thread.Sleep(SploitDirectoryCheckTHRCoolDown);
@@ -534,24 +543,147 @@ namespace VQTFarm
         }
         #endregion
 
+
         #region Menu Strip
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }
 
+        #region Settings Menu
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
+        #region Add Team Manual Menu
+        private void addTeamManualToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManualTeamAddForm teamAddForm = new ManualTeamAddForm();
+            teamAddForm.FormClosed += new FormClosedEventHandler(teamAddForm_Closed);
+            teamAddForm.ShowDialog();
+        }
+        private void teamAddForm_Closed(object? sender, FormClosedEventArgs e)
+        {
+            List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
+            if (ctfTeams != null)
+            {
+                teamsList.Clear();
+                teamChooseComboBox.Items.Clear();
+                teamChooseComboBox.Items.Add("-Select Team for test-");
+                teamChooseComboBox.Items.Add("All teams");
+                teamChooseComboBox.SelectedItem = "-Select Team for test-";
+                foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
+                {
+                    CTFTeam team = teams as CTFTeam;
+                    if (team.teamIP != fs.teamOwnerIP)
+                    {
+                        teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
+                        teamChooseComboBox.Items.Add(team.teamName);
+                    }
+                }
+            }
+            else
+            {
+                teamsList.Clear();
+                teamChooseComboBox.Items.Clear();
+                teamChooseComboBox.Items.Add("-Select Team for test-");
+                teamChooseComboBox.SelectedItem = "-Select Team for test-";
+            }
+        }
+
+        #endregion
+
+        #region Show Menu
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void teamsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (teamsToolStripMenuItem.Checked)
+            {
+                teamsToolStripMenuItem.CheckState = CheckState.Unchecked;
+                teamsListPanel.Visible = false;
+                isTeamsUpdateTHRMustRun = false;
+            }
+            else
+            {
+                teamsToolStripMenuItem.CheckState = CheckState.Checked;
+                teamsListPanel.Visible = true;
+            }
+        }
+        private void flagHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (flagHistoryToolStripMenuItem.Checked)
+            {
+                flagHistoryToolStripMenuItem.CheckState = CheckState.Unchecked;
+                flagStatusPanel.Visible = false;
+                isFlagsUpdateTHRMustRun = false;
+            }
+            else
+            {
+                flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
+                flagStatusPanel.Visible = true;
+            }
+        }
+        private void manualSubmitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (manualSubmitToolStripMenuItem.Checked)
+            {
+                manualSubmitToolStripMenuItem.CheckState = CheckState.Unchecked;
+                manualSubmitPanel.Visible = false;
+            }
+            else
+            {
+                manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
+                manualSubmitPanel.Visible = true;
+            }
+        }
+        private void exploitTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (exploitTestToolStripMenuItem.Checked)
+            {
+                exploitTestToolStripMenuItem.CheckState = CheckState.Unchecked;
+                exploitTestPanel.Visible = false;
+            }
+            else
+            {
+                exploitTestToolStripMenuItem.CheckState = CheckState.Checked;
+                exploitTestPanel.Visible = true;
+            }
+        }
+        private void flagShowFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (flagShowFilterToolStripMenuItem.Checked)
+            {
+                flagShowFilterToolStripMenuItem.CheckState = CheckState.Unchecked;
+                flagShowFilterPanel.Visible = false;
+            }
+            else
+            {
+                flagShowFilterToolStripMenuItem.CheckState = CheckState.Checked;
+                flagShowFilterPanel.Visible = true;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Help Menu
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
+
         #endregion
 
-        #region Flag Status Grid View
+        #endregion
+
+
+        #region Flag Status Panel
         private void flagStatusGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -569,8 +701,7 @@ namespace VQTFarm
 
         }
         #endregion
-
-        #region Teams List Grid View
+        #region Teams List Panel
         private void teamsPlaceDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -579,12 +710,15 @@ namespace VQTFarm
         {
 
         }
+        private void AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
         private void teamsListPanel_Paint(object sender, PaintEventArgs e)
         {
 
         }
         #endregion
-
         #region Manual Submit Panel
         private void manualFlagSubmitPanelLabel_Click(object sender, EventArgs e)
         {
@@ -612,7 +746,7 @@ namespace VQTFarm
             }
             finally
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(ManualFlagSendCoolDown);
             }
         }
 
@@ -621,21 +755,36 @@ namespace VQTFarm
 
         }
         #endregion
-
         #region Exploit Test Panel
         private void exploitTestPanel_Paint(object sender, PaintEventArgs e)
         {
 
         }
-
         private void exploitTestPanelLabel_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void exploitChooseComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void exploitChooseTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+        private void exploitChooseTextBox_Enter(object? sender, EventArgs e)
+        {
+            runTestButton.Select();
+            exploitChooseTextBox.SelectionLength = 0;
+        }
+        private void exploitChooseTextBox_Click(object? sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Python files(*.py)|*.py";
+            openFileDialog.Multiselect = false;
+            openFileDialog.Title = "Choose exploit for test";
+            if (!(openFileDialog.ShowDialog() == DialogResult.Cancel))
+            {
+                exploitChooseTextBox.Text = Path.GetFileName(openFileDialog.FileName);
+                exploitPathForTest = openFileDialog.FileName;
+            }
         }
 
         private void teamChooseComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -651,42 +800,46 @@ namespace VQTFarm
         {
             try
             {
-                if (teamChooseComboBox.Text != "-Select Team for test-" && exploitChooseComboBox.Text != "-Choose Exploit-")
+                if (teamChooseComboBox.Text != "-Select Team for test-" && exploitChooseTextBox.Text != "-Choose Exploit for test-")
                 {
                     DataBaseWorkAplication dbForTest = new DataBaseWorkAplication();
                     dbForTest.StartConnection("Data Source=FarmInfo.db");
-
-                    var team = dbForTest.ReadClassFromDB_OneClass_byParams(new CTFTeam(), new List<string>() { $"teamName={teamChooseComboBox.Text}" });
-                    CTFTeam ctfTeam = team as CTFTeam;
-                    var sploits = Directory.GetFiles("Sploits");
-                    foreach (var sploit in sploits)
+                    if (teamChooseComboBox.Text != "All teams")
                     {
-                        if (Path.GetFileName(sploit) == exploitChooseComboBox.Text)
+                        var team = dbForTest.ReadClassFromDB_OneClass_byParams(new CTFTeam(), new List<string>() { $"teamName='{teamChooseComboBox.Text}'" });
+                        if (team != null)
                         {
-                            runScript(new ThreadInfoClass(sploit, ctfTeam.teamIP, ctfTeam.teamName));
-                            break;
+                            CTFTeam ctfTeam = team as CTFTeam;
+                            runScript(new ThreadInfoClass(exploitPathForTest, ctfTeam.teamIP, ctfTeam.teamName));
                         }
                     }
-                    isTestGoodLabel.Text = "Successfully";
-                    isTestGoodLabel.ForeColor = Color.Green;
-                    isTestGoodLabel.Visible = true;
+                    else
+                    {
+                        var teams = dbForTest.ReadClassFromDB_AllClass(new CTFTeam());
+                        if (teams != null)
+                        {
+                            foreach (var team in teams)
+                            {
+                                CTFTeam ctfTeam = team as CTFTeam;
+                                Thread thread = new Thread(runScript);
+                                thread.Start(new ThreadInfoClass(exploitPathForTest, ctfTeam.teamIP, ctfTeam.teamName));
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while testing sploit\n{exp}");
-                isTestGoodLabel.Text = "Unsuccessful";
-                isTestGoodLabel.ForeColor = Color.Red;
-                isTestGoodLabel.Visible = true;
             }
             finally
             {
+                exploitChooseTextBox.Text = "-Choose Exploit for test-";
+                teamChooseComboBox.SelectedIndex = 0;
                 Thread.Sleep(SploitTestCoolDown);
-                isTestGoodLabel.Visible = false;
             }
         }
         #endregion
-
         #region Filter Panel
         private void flagShowFilterPanelLabel_Click(object sender, EventArgs e)
         {
@@ -698,38 +851,5 @@ namespace VQTFarm
 
         }
         #endregion
-
-        private void addTeamManualToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ManualTeamAddForm teamAddForm = new ManualTeamAddForm();
-            teamAddForm.FormClosed += new FormClosedEventHandler(teamAddForm_Closed);
-            teamAddForm.ShowDialog();
-        }
-        private void teamAddForm_Closed(object? sender, FormClosedEventArgs e)
-        {
-            List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
-            if (ctfTeams != null)
-            {
-                teamsList.Clear();
-                foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
-                {
-                    CTFTeam team = teams as CTFTeam;
-                    if (team.teamIP != fs.teamOwnerIP)
-                    {
-                        teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
-                        teamChooseComboBox.Items.Add(team.teamName);
-                    }
-                }
-            }
-            else
-            {
-                teamsList.Clear();
-            }
-        }
-
-        private void AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

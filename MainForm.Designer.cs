@@ -35,14 +35,19 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             menuStrip1 = new MenuStrip();
             settingsToolStripMenuItem = new ToolStripMenuItem();
+            showToolStripMenuItem = new ToolStripMenuItem();
+            teamsToolStripMenuItem = new ToolStripMenuItem();
+            flagHistoryToolStripMenuItem = new ToolStripMenuItem();
+            manualSubmitToolStripMenuItem = new ToolStripMenuItem();
+            exploitTestToolStripMenuItem = new ToolStripMenuItem();
+            flagShowFilterToolStripMenuItem = new ToolStripMenuItem();
             addTeamManualToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             flagStatusGridView = new DataGridView();
             exploitTestPanel = new Panel();
-            isTestGoodLabel = new Label();
+            exploitChooseTextBox = new TextBox();
             runTestButton = new Button();
             teamChooseComboBox = new ComboBox();
-            exploitChooseComboBox = new ComboBox();
             exploitTestPanelLabel = new Label();
             flagStatusLabel = new Label();
             manualSubmitPanel = new Panel();
@@ -56,9 +61,9 @@
             flagShowFilterPanelLabel = new Label();
             teamsPlaceDataGridView = new DataGridView();
             teamsListPanel = new Panel();
+            AutoTeamsParsFromScoreBoardCheckBox = new CheckBox();
             teamsListLabel = new Label();
             flagStatusPanel = new Panel();
-            AutoTeamsParsFromScoreBoardCheckBox = new CheckBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flagStatusGridView).BeginInit();
             exploitTestPanel.SuspendLayout();
@@ -81,11 +86,64 @@
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addTeamManualToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { showToolStripMenuItem, addTeamManualToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
+            // 
+            // showToolStripMenuItem
+            // 
+            showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { teamsToolStripMenuItem, flagHistoryToolStripMenuItem, manualSubmitToolStripMenuItem, exploitTestToolStripMenuItem, flagShowFilterToolStripMenuItem });
+            showToolStripMenuItem.Name = "showToolStripMenuItem";
+            showToolStripMenuItem.Size = new Size(169, 22);
+            showToolStripMenuItem.Text = "Show";
+            showToolStripMenuItem.Click += showToolStripMenuItem_Click;
+            // 
+            // teamsToolStripMenuItem
+            // 
+            teamsToolStripMenuItem.Checked = true;
+            teamsToolStripMenuItem.CheckState = CheckState.Checked;
+            teamsToolStripMenuItem.Name = "teamsToolStripMenuItem";
+            teamsToolStripMenuItem.Size = new Size(157, 22);
+            teamsToolStripMenuItem.Text = "Teams";
+            teamsToolStripMenuItem.Click += teamsToolStripMenuItem_Click;
+            // 
+            // flagHistoryToolStripMenuItem
+            // 
+            flagHistoryToolStripMenuItem.Checked = true;
+            flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
+            flagHistoryToolStripMenuItem.Name = "flagHistoryToolStripMenuItem";
+            flagHistoryToolStripMenuItem.Size = new Size(157, 22);
+            flagHistoryToolStripMenuItem.Text = "Flag History";
+            flagHistoryToolStripMenuItem.Click += flagHistoryToolStripMenuItem_Click;
+            // 
+            // manualSubmitToolStripMenuItem
+            // 
+            manualSubmitToolStripMenuItem.Checked = true;
+            manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
+            manualSubmitToolStripMenuItem.Name = "manualSubmitToolStripMenuItem";
+            manualSubmitToolStripMenuItem.Size = new Size(157, 22);
+            manualSubmitToolStripMenuItem.Text = "Manual Submit";
+            manualSubmitToolStripMenuItem.Click += manualSubmitToolStripMenuItem_Click;
+            // 
+            // exploitTestToolStripMenuItem
+            // 
+            exploitTestToolStripMenuItem.Checked = true;
+            exploitTestToolStripMenuItem.CheckState = CheckState.Checked;
+            exploitTestToolStripMenuItem.Name = "exploitTestToolStripMenuItem";
+            exploitTestToolStripMenuItem.Size = new Size(157, 22);
+            exploitTestToolStripMenuItem.Text = "Exploit Test";
+            exploitTestToolStripMenuItem.Click += exploitTestToolStripMenuItem_Click;
+            // 
+            // flagShowFilterToolStripMenuItem
+            // 
+            flagShowFilterToolStripMenuItem.Checked = true;
+            flagShowFilterToolStripMenuItem.CheckState = CheckState.Checked;
+            flagShowFilterToolStripMenuItem.Name = "flagShowFilterToolStripMenuItem";
+            flagShowFilterToolStripMenuItem.Size = new Size(157, 22);
+            flagShowFilterToolStripMenuItem.Text = "Flag Show Filter";
+            flagShowFilterToolStripMenuItem.Click += flagShowFilterToolStripMenuItem_Click;
             // 
             // addTeamManualToolStripMenuItem
             // 
@@ -136,7 +194,7 @@
             flagStatusGridView.ShowCellToolTips = false;
             flagStatusGridView.ShowEditingIcon = false;
             flagStatusGridView.ShowRowErrors = false;
-            flagStatusGridView.Size = new Size(1221, 229);
+            flagStatusGridView.Size = new Size(1221, 290);
             flagStatusGridView.TabIndex = 1;
             flagStatusGridView.TabStop = false;
             flagStatusGridView.CellContentClick += flagStatusGridView_CellContentClick;
@@ -144,35 +202,34 @@
             // exploitTestPanel
             // 
             exploitTestPanel.BorderStyle = BorderStyle.FixedSingle;
-            exploitTestPanel.Controls.Add(isTestGoodLabel);
+            exploitTestPanel.Controls.Add(exploitChooseTextBox);
             exploitTestPanel.Controls.Add(runTestButton);
             exploitTestPanel.Controls.Add(teamChooseComboBox);
-            exploitTestPanel.Controls.Add(exploitChooseComboBox);
             exploitTestPanel.Controls.Add(exploitTestPanelLabel);
-            exploitTestPanel.Location = new Point(12, 152);
+            exploitTestPanel.Location = new Point(333, 27);
             exploitTestPanel.Name = "exploitTestPanel";
-            exploitTestPanel.Size = new Size(364, 128);
+            exploitTestPanel.Size = new Size(375, 125);
             exploitTestPanel.TabIndex = 2;
             exploitTestPanel.Paint += exploitTestPanel_Paint;
             // 
-            // isTestGoodLabel
+            // exploitChooseTextBox
             // 
-            isTestGoodLabel.AutoSize = true;
-            isTestGoodLabel.Font = new Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            isTestGoodLabel.ForeColor = Color.Green;
-            isTestGoodLabel.Location = new Point(3, 98);
-            isTestGoodLabel.Name = "isTestGoodLabel";
-            isTestGoodLabel.Size = new Size(107, 19);
-            isTestGoodLabel.TabIndex = 9;
-            isTestGoodLabel.Text = "Successfully";
-            isTestGoodLabel.Click += isTestGoodLabel_Click;
+            exploitChooseTextBox.BackColor = SystemColors.ButtonHighlight;
+            exploitChooseTextBox.BorderStyle = BorderStyle.FixedSingle;
+            exploitChooseTextBox.Font = new Font("Calibri", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            exploitChooseTextBox.Location = new Point(3, 68);
+            exploitChooseTextBox.Name = "exploitChooseTextBox";
+            exploitChooseTextBox.ReadOnly = true;
+            exploitChooseTextBox.Size = new Size(208, 27);
+            exploitChooseTextBox.TabIndex = 10;
+            exploitChooseTextBox.TextChanged += exploitChooseTextBox_TextChanged;
             // 
             // runTestButton
             // 
             runTestButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            runTestButton.Location = new Point(205, 35);
+            runTestButton.Location = new Point(217, 35);
             runTestButton.Name = "runTestButton";
-            runTestButton.Size = new Size(154, 60);
+            runTestButton.Size = new Size(153, 60);
             runTestButton.TabIndex = 8;
             runTestButton.Text = "START TEST";
             runTestButton.UseVisualStyleBackColor = true;
@@ -182,21 +239,11 @@
             // 
             teamChooseComboBox.Font = new Font("Calibri", 12F, FontStyle.Regular, GraphicsUnit.Point);
             teamChooseComboBox.FormattingEnabled = true;
-            teamChooseComboBox.Location = new Point(3, 68);
+            teamChooseComboBox.Location = new Point(3, 35);
             teamChooseComboBox.Name = "teamChooseComboBox";
-            teamChooseComboBox.Size = new Size(196, 27);
+            teamChooseComboBox.Size = new Size(208, 27);
             teamChooseComboBox.TabIndex = 7;
             teamChooseComboBox.SelectedIndexChanged += teamChooseComboBox_SelectedIndexChanged;
-            // 
-            // exploitChooseComboBox
-            // 
-            exploitChooseComboBox.Font = new Font("Calibri", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            exploitChooseComboBox.FormattingEnabled = true;
-            exploitChooseComboBox.Location = new Point(3, 35);
-            exploitChooseComboBox.Name = "exploitChooseComboBox";
-            exploitChooseComboBox.Size = new Size(196, 27);
-            exploitChooseComboBox.TabIndex = 6;
-            exploitChooseComboBox.SelectedIndexChanged += exploitChooseComboBox_SelectedIndexChanged;
             // 
             // exploitTestPanelLabel
             // 
@@ -230,16 +277,16 @@
             manualSubmitPanel.Controls.Add(manualFlagSubmitPanelLabel);
             manualSubmitPanel.Location = new Point(12, 27);
             manualSubmitPanel.Name = "manualSubmitPanel";
-            manualSubmitPanel.Size = new Size(364, 119);
+            manualSubmitPanel.Size = new Size(315, 125);
             manualSubmitPanel.TabIndex = 4;
             manualSubmitPanel.Paint += manualSubmitPanel_Paint;
             // 
             // manualSubmitButton
             // 
             manualSubmitButton.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            manualSubmitButton.Location = new Point(3, 64);
+            manualSubmitButton.Location = new Point(3, 70);
             manualSubmitButton.Name = "manualSubmitButton";
-            manualSubmitButton.Size = new Size(356, 50);
+            manualSubmitButton.Size = new Size(307, 50);
             manualSubmitButton.TabIndex = 8;
             manualSubmitButton.Text = "SUBMIT";
             manualSubmitButton.UseVisualStyleBackColor = true;
@@ -247,9 +294,9 @@
             // 
             // manualSubmitTextBox
             // 
-            manualSubmitTextBox.Location = new Point(3, 35);
+            manualSubmitTextBox.Location = new Point(3, 41);
             manualSubmitTextBox.Name = "manualSubmitTextBox";
-            manualSubmitTextBox.Size = new Size(356, 23);
+            manualSubmitTextBox.Size = new Size(307, 23);
             manualSubmitTextBox.TabIndex = 7;
             manualSubmitTextBox.TextChanged += manualSubmitTextBox_TextChanged;
             // 
@@ -285,7 +332,7 @@
             flagShowFilterPanel.Controls.Add(flagShowFilterPanelLabel);
             flagShowFilterPanel.Location = new Point(12, 286);
             flagShowFilterPanel.Name = "flagShowFilterPanel";
-            flagShowFilterPanel.Size = new Size(364, 134);
+            flagShowFilterPanel.Size = new Size(696, 134);
             flagShowFilterPanel.TabIndex = 6;
             flagShowFilterPanel.Paint += flagShowFilterPanel_Paint;
             // 
@@ -352,7 +399,7 @@
             teamsPlaceDataGridView.ShowCellToolTips = false;
             teamsPlaceDataGridView.ShowEditingIcon = false;
             teamsPlaceDataGridView.ShowRowErrors = false;
-            teamsPlaceDataGridView.Size = new Size(520, 278);
+            teamsPlaceDataGridView.Size = new Size(520, 328);
             teamsPlaceDataGridView.TabIndex = 7;
             teamsPlaceDataGridView.TabStop = false;
             teamsPlaceDataGridView.CellContentClick += teamsPlaceDataGridView_CellContentClick;
@@ -365,9 +412,20 @@
             teamsListPanel.Controls.Add(teamsPlaceDataGridView);
             teamsListPanel.Location = new Point(714, 27);
             teamsListPanel.Name = "teamsListPanel";
-            teamsListPanel.Size = new Size(528, 374);
+            teamsListPanel.Size = new Size(528, 393);
             teamsListPanel.TabIndex = 9;
             teamsListPanel.Paint += teamsListPanel_Paint;
+            // 
+            // AutoTeamsParsFromScoreBoardCheckBox
+            // 
+            AutoTeamsParsFromScoreBoardCheckBox.AutoSize = true;
+            AutoTeamsParsFromScoreBoardCheckBox.Location = new Point(3, 369);
+            AutoTeamsParsFromScoreBoardCheckBox.Name = "AutoTeamsParsFromScoreBoardCheckBox";
+            AutoTeamsParsFromScoreBoardCheckBox.Size = new Size(203, 19);
+            AutoTeamsParsFromScoreBoardCheckBox.TabIndex = 10;
+            AutoTeamsParsFromScoreBoardCheckBox.Text = "Auto teams pars from scoreboard";
+            AutoTeamsParsFromScoreBoardCheckBox.UseVisualStyleBackColor = true;
+            AutoTeamsParsFromScoreBoardCheckBox.CheckedChanged += AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged;
             // 
             // teamsListLabel
             // 
@@ -389,27 +447,16 @@
             flagStatusPanel.Controls.Add(flagStatusGridView);
             flagStatusPanel.Location = new Point(12, 426);
             flagStatusPanel.Name = "flagStatusPanel";
-            flagStatusPanel.Size = new Size(1230, 269);
+            flagStatusPanel.Size = new Size(1230, 330);
             flagStatusPanel.TabIndex = 9;
             flagStatusPanel.Paint += flagStatusPanel_Paint;
-            // 
-            // AutoTeamsParsFromScoreBoardCheckBox
-            // 
-            AutoTeamsParsFromScoreBoardCheckBox.AutoSize = true;
-            AutoTeamsParsFromScoreBoardCheckBox.Location = new Point(3, 319);
-            AutoTeamsParsFromScoreBoardCheckBox.Name = "AutoTeamsParsFromScoreBoardCheckBox";
-            AutoTeamsParsFromScoreBoardCheckBox.Size = new Size(203, 19);
-            AutoTeamsParsFromScoreBoardCheckBox.TabIndex = 10;
-            AutoTeamsParsFromScoreBoardCheckBox.Text = "Auto teams pars from scoreboard";
-            AutoTeamsParsFromScoreBoardCheckBox.UseVisualStyleBackColor = true;
-            AutoTeamsParsFromScoreBoardCheckBox.CheckedChanged += AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(1256, 707);
+            ClientSize = new Size(1256, 768);
             Controls.Add(flagStatusPanel);
             Controls.Add(teamsListPanel);
             Controls.Add(flagShowFilterPanel);
@@ -455,8 +502,6 @@
         private Label manualFlagSubmitPanelLabel;
         private Label flagTotalAceptedLabel;
         private Label exploitTestPanelLabel;
-        private ComboBox teamChooseComboBox;
-        private ComboBox exploitChooseComboBox;
         private Button runTestButton;
         private Panel flagShowFilterPanel;
         private Label flagShowFilterPanelLabel;
@@ -466,8 +511,15 @@
         private Panel teamsListPanel;
         private Label teamsListLabel;
         private Panel flagStatusPanel;
-        private Label isTestGoodLabel;
         private ToolStripMenuItem addTeamManualToolStripMenuItem;
         private CheckBox AutoTeamsParsFromScoreBoardCheckBox;
+        private ComboBox teamChooseComboBox;
+        private TextBox exploitChooseTextBox;
+        private ToolStripMenuItem showToolStripMenuItem;
+        private ToolStripMenuItem teamsToolStripMenuItem;
+        private ToolStripMenuItem flagHistoryToolStripMenuItem;
+        private ToolStripMenuItem manualSubmitToolStripMenuItem;
+        private ToolStripMenuItem exploitTestToolStripMenuItem;
+        private ToolStripMenuItem flagShowFilterToolStripMenuItem;
     }
 }

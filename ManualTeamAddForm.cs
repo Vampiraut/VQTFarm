@@ -84,7 +84,7 @@ namespace VQTFarm
                 noTeamIPLabel.Visible = true;
             }
 
-            if(noTeamNameLabel.Visible == true || noTeamIPLabel.Visible == true)
+            if (noTeamNameLabel.Visible == true || noTeamIPLabel.Visible == true)
             {
                 return;
             }
