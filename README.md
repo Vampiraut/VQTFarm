@@ -81,3 +81,12 @@ print(*flags_arr, sep=',', end="")
 
 # Feedback
 If you have any problems - contact telegram: `@Grime_Reaper`
+
+# First look
+1. Preset Farm Settings
+
+![Preset Farm Settings](https://user-images.githubusercontent.com/99714655/235325626-9f4959dd-031b-4f4f-8976-02b8d78d6cfb.png)
+
+2. Main Window
+
+![Main Window](https://user-images.githubusercontent.com/99714655/235325636-fa1bef7c-f8e0-4433-886f-ae19d295f2c9.png)
