@@ -54,16 +54,22 @@
             manualSubmitButton = new Button();
             manualSubmitTextBox = new TextBox();
             manualFlagSubmitPanelLabel = new Label();
-            flagTotalAceptedLabel = new Label();
+            flagTotalSendedLabel = new Label();
             flagShowFilterPanel = new Panel();
-            comboBox2 = new ComboBox();
-            comboBox1 = new ComboBox();
+            applyFilterButton = new Button();
+            cheskSystemResponsFilterTextBox = new TextBox();
+            statusFilterTextBox = new TextBox();
+            flagFilterTextBox = new TextBox();
+            teamFilterTextBox = new TextBox();
+            exploitFilterTextBox = new TextBox();
             flagShowFilterPanelLabel = new Label();
             teamsPlaceDataGridView = new DataGridView();
             teamsListPanel = new Panel();
             AutoTeamsParsFromScoreBoardCheckBox = new CheckBox();
             teamsListLabel = new Label();
             flagStatusPanel = new Panel();
+            flagTotalAceptedLabel = new Label();
+            ClearFiltersInputCheckBox = new CheckBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flagStatusGridView).BeginInit();
             exploitTestPanel.SuspendLayout();
@@ -208,7 +214,7 @@
             exploitTestPanel.Controls.Add(exploitTestPanelLabel);
             exploitTestPanel.Location = new Point(333, 27);
             exploitTestPanel.Name = "exploitTestPanel";
-            exploitTestPanel.Size = new Size(375, 125);
+            exploitTestPanel.Size = new Size(375, 116);
             exploitTestPanel.TabIndex = 2;
             exploitTestPanel.Paint += exploitTestPanel_Paint;
             // 
@@ -262,7 +268,7 @@
             flagStatusLabel.AutoSize = true;
             flagStatusLabel.BorderStyle = BorderStyle.Fixed3D;
             flagStatusLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            flagStatusLabel.Location = new Point(1053, 0);
+            flagStatusLabel.Location = new Point(519, 0);
             flagStatusLabel.Name = "flagStatusLabel";
             flagStatusLabel.Size = new Size(176, 32);
             flagStatusLabel.TabIndex = 3;
@@ -277,16 +283,16 @@
             manualSubmitPanel.Controls.Add(manualFlagSubmitPanelLabel);
             manualSubmitPanel.Location = new Point(12, 27);
             manualSubmitPanel.Name = "manualSubmitPanel";
-            manualSubmitPanel.Size = new Size(315, 125);
+            manualSubmitPanel.Size = new Size(315, 116);
             manualSubmitPanel.TabIndex = 4;
             manualSubmitPanel.Paint += manualSubmitPanel_Paint;
             // 
             // manualSubmitButton
             // 
             manualSubmitButton.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            manualSubmitButton.Location = new Point(3, 70);
+            manualSubmitButton.Location = new Point(3, 64);
             manualSubmitButton.Name = "manualSubmitButton";
-            manualSubmitButton.Size = new Size(307, 50);
+            manualSubmitButton.Size = new Size(307, 47);
             manualSubmitButton.TabIndex = 8;
             manualSubmitButton.Text = "SUBMIT";
             manualSubmitButton.UseVisualStyleBackColor = true;
@@ -294,7 +300,7 @@
             // 
             // manualSubmitTextBox
             // 
-            manualSubmitTextBox.Location = new Point(3, 41);
+            manualSubmitTextBox.Location = new Point(3, 35);
             manualSubmitTextBox.Name = "manualSubmitTextBox";
             manualSubmitTextBox.Size = new Size(307, 23);
             manualSubmitTextBox.TabIndex = 7;
@@ -312,23 +318,28 @@
             manualFlagSubmitPanelLabel.Text = "MANUAL SUBMIT";
             manualFlagSubmitPanelLabel.Click += manualFlagSubmitPanelLabel_Click;
             // 
-            // flagTotalAceptedLabel
+            // flagTotalSendedLabel
             // 
-            flagTotalAceptedLabel.AutoSize = true;
-            flagTotalAceptedLabel.BorderStyle = BorderStyle.Fixed3D;
-            flagTotalAceptedLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
-            flagTotalAceptedLabel.Location = new Point(-1, 0);
-            flagTotalAceptedLabel.Name = "flagTotalAceptedLabel";
-            flagTotalAceptedLabel.Size = new Size(333, 32);
-            flagTotalAceptedLabel.TabIndex = 5;
-            flagTotalAceptedLabel.Text = "TOTAL FLAGS ACCEPTED: 0";
-            flagTotalAceptedLabel.Click += flagTotalAceptedLabel_Click;
+            flagTotalSendedLabel.AutoSize = true;
+            flagTotalSendedLabel.BorderStyle = BorderStyle.Fixed3D;
+            flagTotalSendedLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            flagTotalSendedLabel.Location = new Point(-1, 0);
+            flagTotalSendedLabel.Name = "flagTotalSendedLabel";
+            flagTotalSendedLabel.Size = new Size(304, 32);
+            flagTotalSendedLabel.TabIndex = 5;
+            flagTotalSendedLabel.Text = "TOTAL FLAGS SENDED: 0";
+            flagTotalSendedLabel.Click += flagTotalSendedLabel_Click;
             // 
             // flagShowFilterPanel
             // 
             flagShowFilterPanel.BorderStyle = BorderStyle.FixedSingle;
-            flagShowFilterPanel.Controls.Add(comboBox2);
-            flagShowFilterPanel.Controls.Add(comboBox1);
+            flagShowFilterPanel.Controls.Add(ClearFiltersInputCheckBox);
+            flagShowFilterPanel.Controls.Add(applyFilterButton);
+            flagShowFilterPanel.Controls.Add(cheskSystemResponsFilterTextBox);
+            flagShowFilterPanel.Controls.Add(statusFilterTextBox);
+            flagShowFilterPanel.Controls.Add(flagFilterTextBox);
+            flagShowFilterPanel.Controls.Add(teamFilterTextBox);
+            flagShowFilterPanel.Controls.Add(exploitFilterTextBox);
             flagShowFilterPanel.Controls.Add(flagShowFilterPanelLabel);
             flagShowFilterPanel.Location = new Point(12, 286);
             flagShowFilterPanel.Name = "flagShowFilterPanel";
@@ -336,21 +347,61 @@
             flagShowFilterPanel.TabIndex = 6;
             flagShowFilterPanel.Paint += flagShowFilterPanel_Paint;
             // 
-            // comboBox2
+            // applyFilterButton
             // 
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(3, 64);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(240, 23);
-            comboBox2.TabIndex = 2;
+            applyFilterButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            applyFilterButton.Location = new Point(511, 61);
+            applyFilterButton.Name = "applyFilterButton";
+            applyFilterButton.Size = new Size(180, 43);
+            applyFilterButton.TabIndex = 11;
+            applyFilterButton.Text = "APPLY FILTER";
+            applyFilterButton.UseVisualStyleBackColor = true;
+            applyFilterButton.Click += applyFilterButton_Click;
             // 
-            // comboBox1
+            // cheskSystemResponsFilterTextBox
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(3, 35);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(240, 23);
-            comboBox1.TabIndex = 1;
+            cheskSystemResponsFilterTextBox.BorderStyle = BorderStyle.FixedSingle;
+            cheskSystemResponsFilterTextBox.Location = new Point(3, 93);
+            cheskSystemResponsFilterTextBox.Name = "cheskSystemResponsFilterTextBox";
+            cheskSystemResponsFilterTextBox.Size = new Size(412, 23);
+            cheskSystemResponsFilterTextBox.TabIndex = 8;
+            cheskSystemResponsFilterTextBox.TextChanged += cheskSystemResponsFilterTextBox_TextChanged;
+            // 
+            // statusFilterTextBox
+            // 
+            statusFilterTextBox.BorderStyle = BorderStyle.FixedSingle;
+            statusFilterTextBox.Location = new Point(274, 64);
+            statusFilterTextBox.Name = "statusFilterTextBox";
+            statusFilterTextBox.Size = new Size(141, 23);
+            statusFilterTextBox.TabIndex = 7;
+            statusFilterTextBox.TextChanged += statusFilterTextBox_TextChanged;
+            // 
+            // flagFilterTextBox
+            // 
+            flagFilterTextBox.BorderStyle = BorderStyle.FixedSingle;
+            flagFilterTextBox.Location = new Point(3, 64);
+            flagFilterTextBox.Name = "flagFilterTextBox";
+            flagFilterTextBox.Size = new Size(265, 23);
+            flagFilterTextBox.TabIndex = 6;
+            flagFilterTextBox.TextChanged += flagFilterTextBox_TextChanged;
+            // 
+            // teamFilterTextBox
+            // 
+            teamFilterTextBox.BorderStyle = BorderStyle.FixedSingle;
+            teamFilterTextBox.Location = new Point(212, 35);
+            teamFilterTextBox.Name = "teamFilterTextBox";
+            teamFilterTextBox.Size = new Size(203, 23);
+            teamFilterTextBox.TabIndex = 3;
+            teamFilterTextBox.TextChanged += teamFilterTextBox_TextChanged;
+            // 
+            // exploitFilterTextBox
+            // 
+            exploitFilterTextBox.BorderStyle = BorderStyle.FixedSingle;
+            exploitFilterTextBox.Location = new Point(3, 35);
+            exploitFilterTextBox.Name = "exploitFilterTextBox";
+            exploitFilterTextBox.Size = new Size(203, 23);
+            exploitFilterTextBox.TabIndex = 1;
+            exploitFilterTextBox.TextChanged += exploitFilterTextBox_TextChanged;
             // 
             // flagShowFilterPanelLabel
             // 
@@ -443,6 +494,7 @@
             // 
             flagStatusPanel.BorderStyle = BorderStyle.FixedSingle;
             flagStatusPanel.Controls.Add(flagTotalAceptedLabel);
+            flagStatusPanel.Controls.Add(flagTotalSendedLabel);
             flagStatusPanel.Controls.Add(flagStatusLabel);
             flagStatusPanel.Controls.Add(flagStatusGridView);
             flagStatusPanel.Location = new Point(12, 426);
@@ -450,6 +502,29 @@
             flagStatusPanel.Size = new Size(1230, 330);
             flagStatusPanel.TabIndex = 9;
             flagStatusPanel.Paint += flagStatusPanel_Paint;
+            // 
+            // flagTotalAceptedLabel
+            // 
+            flagTotalAceptedLabel.AutoSize = true;
+            flagTotalAceptedLabel.BorderStyle = BorderStyle.Fixed3D;
+            flagTotalAceptedLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            flagTotalAceptedLabel.Location = new Point(821, 0);
+            flagTotalAceptedLabel.Name = "flagTotalAceptedLabel";
+            flagTotalAceptedLabel.Size = new Size(333, 32);
+            flagTotalAceptedLabel.TabIndex = 6;
+            flagTotalAceptedLabel.Text = "TOTAL FLAGS ACCEPTED: 0";
+            flagTotalAceptedLabel.Click += flagTotalAceptedLabel_Click;
+            // 
+            // ClearFiltersInputCheckBox
+            // 
+            ClearFiltersInputCheckBox.AutoSize = true;
+            ClearFiltersInputCheckBox.Location = new Point(464, 110);
+            ClearFiltersInputCheckBox.Name = "ClearFiltersInputCheckBox";
+            ClearFiltersInputCheckBox.Size = new Size(227, 19);
+            ClearFiltersInputCheckBox.TabIndex = 12;
+            ClearFiltersInputCheckBox.Text = "Clean the entered filters after applying";
+            ClearFiltersInputCheckBox.UseVisualStyleBackColor = true;
+            ClearFiltersInputCheckBox.CheckedChanged += ClearFiltersInputCheckBox_CheckedChanged;
             // 
             // MainForm
             // 
@@ -501,13 +576,11 @@
         private Button manualSubmitButton;
         private TextBox manualSubmitTextBox;
         private Label manualFlagSubmitPanelLabel;
-        private Label flagTotalAceptedLabel;
+        private Label flagTotalSendedLabel;
         private Label exploitTestPanelLabel;
         private Button runTestButton;
         private Panel flagShowFilterPanel;
         private Label flagShowFilterPanelLabel;
-        private ComboBox comboBox2;
-        private ComboBox comboBox1;
         private DataGridView teamsPlaceDataGridView;
         private Panel teamsListPanel;
         private Label teamsListLabel;
@@ -522,5 +595,13 @@
         private ToolStripMenuItem manualSubmitToolStripMenuItem;
         private ToolStripMenuItem exploitTestToolStripMenuItem;
         private ToolStripMenuItem flagShowFilterToolStripMenuItem;
+        private TextBox exploitFilterTextBox;
+        private TextBox teamFilterTextBox;
+        private Label flagTotalAceptedLabel;
+        private TextBox flagFilterTextBox;
+        private TextBox statusFilterTextBox;
+        private TextBox cheskSystemResponsFilterTextBox;
+        private Button applyFilterButton;
+        private CheckBox ClearFiltersInputCheckBox;
     }
 }

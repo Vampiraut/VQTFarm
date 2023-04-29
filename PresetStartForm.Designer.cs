@@ -330,6 +330,7 @@
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
+            MaximizeBox = false;
             Name = "PresetStartForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Preset Settings for VQT Farm";

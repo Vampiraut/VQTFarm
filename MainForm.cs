@@ -43,6 +43,8 @@ namespace VQTFarm
         private Queue<KeyValuePair<ThreadInfoClass, DateTime>> flagsQueue;  //Очередь на отправку флагов, содержит информацию о полученном флаге и фремя получения этого флага
 
         private string exploitPathForTest;
+
+        private List<string> filtersForFlagShow;
         #endregion
 
         public MainForm(FarmSettings fs, DataBaseWorkAplication DBWorkForm)
@@ -60,6 +62,8 @@ namespace VQTFarm
             sploitsList = new List<string>();
 
             flagsQueue = new Queue<KeyValuePair<ThreadInfoClass, DateTime>>();
+
+            filtersForFlagShow = new List<string>();
 
             InitializeComponent();
         }
@@ -87,6 +91,32 @@ namespace VQTFarm
                 exploitChooseTextBox.Click += new EventHandler(exploitChooseTextBox_Click);
                 exploitChooseTextBox.Enter += new EventHandler(exploitChooseTextBox_Enter);
                 exploitChooseTextBox.Cursor = Cursors.Arrow;
+
+
+                exploitFilterTextBox.Text = ">Exploit Name";
+                exploitFilterTextBox.ForeColor = Color.Gray;
+                exploitFilterTextBox.Enter += new EventHandler(exploitFilterTextBox_Enter);
+                exploitFilterTextBox.Leave += new EventHandler(exploitFilterTextBox_Leave);
+
+                teamFilterTextBox.Text = ">Team Name";
+                teamFilterTextBox.ForeColor = Color.Gray;
+                teamFilterTextBox.Enter += new EventHandler(teamFilterTextBox_Enter);
+                teamFilterTextBox.Leave += new EventHandler(teamFilterTextBox_Leave);
+
+                flagFilterTextBox.Text = ">Flag";
+                flagFilterTextBox.ForeColor = Color.Gray;
+                flagFilterTextBox.Enter += new EventHandler(flagFilterTextBox_Enter);
+                flagFilterTextBox.Leave += new EventHandler(flagFilterTextBox_Leave);
+
+                statusFilterTextBox.Text = ">Status";
+                statusFilterTextBox.ForeColor = Color.Gray;
+                statusFilterTextBox.Enter += new EventHandler(statusFilterTextBox_Enter);
+                statusFilterTextBox.Leave += new EventHandler(statusFilterTextBox_Leave);
+
+                cheskSystemResponsFilterTextBox.Text = ">Chesk System Respons";
+                cheskSystemResponsFilterTextBox.ForeColor = Color.Gray;
+                cheskSystemResponsFilterTextBox.Enter += new EventHandler(cheskSystemResponsFilterTextBox_Enter);
+                cheskSystemResponsFilterTextBox.Leave += new EventHandler(cheskSystemResponsFilterTextBox_Leave);
 
 
                 setFlagStatusGridView();
@@ -449,18 +479,36 @@ namespace VQTFarm
                 DBWorkFormFlag.StartConnection("Data Source=FarmInfo.db");
                 while (isFlagsUpdateTHRMustRun)
                 {
-                    List<object>? AllFlags = DBWorkFormFlag.ReadClassFromDB_AllClass(new FlagHistory());
+                    List<object>? SendedFlags = DBWorkFormFlag.ReadClassFromDB_AllClass(new FlagHistory());
+                    List<object>? AcceptedFlags = DBWorkFormFlag.ReadClassFromDB_AllClass_byParams(new FlagHistory(), new List<string>() { "status='ACCEPTED'" });
+                    if (SendedFlags != null)
+                    {
+                        flagTotalSendedLabel.Text = $"TOTAL FLAGS SENDED: {SendedFlags.Count}";
+                        if (AcceptedFlags != null)
+                        {
+                            flagTotalAceptedLabel.Text = $"TOTAL FLAGS ACCEPTED: {AcceptedFlags.Count}";
+                        }
+                    }
+
+                    List<object>? AllFlags = new List<object>();
+                    if (filtersForFlagShow.Count > 0)
+                    {
+                        AllFlags = DBWorkFormFlag.ReadClassFromDB_AllClass_byParams(new FlagHistory(), filtersForFlagShow);
+                    }
+                    else
+                    {
+                        AllFlags = SendedFlags;
+                    }
+
                     if (AllFlags != null)
                     {
-                        flagTotalAceptedLabel.Text = $"TOTAL FLAGS ACCEPTED: {AllFlags.Count}";
-
                         flagStatusGridView.Rows.Clear();
 
                         int j = 0;
 
                         for (int i = AllFlags.Count - 1; i >= 0; i--)
                         {
-                            if (j >= 10)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            if (j >= 13)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             {
                                 break;
                             }
@@ -692,6 +740,10 @@ namespace VQTFarm
         {
 
         }
+        private void flagTotalSendedLabel_Click(object sender, EventArgs e)
+        {
+
+        }
         private void flagTotalAceptedLabel_Click(object sender, EventArgs e)
         {
 
@@ -842,6 +894,162 @@ namespace VQTFarm
         #endregion
         #region Filter Panel
         private void flagShowFilterPanelLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exploitFilterTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void teamFilterTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void flagFilterTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void statusFilterTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void cheskSystemResponsFilterTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        #region TextBoxs EventHandlers
+        private void exploitFilterTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (exploitFilterTextBox.Text == ">Exploit Name")
+            {
+                exploitFilterTextBox.Clear();
+                exploitFilterTextBox.ForeColor = Color.Black;
+            }
+        }
+        private void exploitFilterTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(exploitFilterTextBox.Text))
+            {
+                exploitFilterTextBox.Text = ">Exploit Name";
+                exploitFilterTextBox.ForeColor = Color.Gray;
+            }
+        }
+
+        private void teamFilterTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (teamFilterTextBox.Text == ">Team Name")
+            {
+                teamFilterTextBox.Clear();
+                teamFilterTextBox.ForeColor = Color.Black;
+            }
+        }
+        private void teamFilterTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(teamFilterTextBox.Text))
+            {
+                teamFilterTextBox.Text = ">Team Name";
+                teamFilterTextBox.ForeColor = Color.Gray;
+            }
+        }
+
+        private void flagFilterTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (flagFilterTextBox.Text == ">Flag")
+            {
+                flagFilterTextBox.Clear();
+                flagFilterTextBox.ForeColor = Color.Black;
+            }
+        }
+        private void flagFilterTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(flagFilterTextBox.Text))
+            {
+                flagFilterTextBox.Text = ">Flag";
+                flagFilterTextBox.ForeColor = Color.Gray;
+            }
+        }
+
+        private void statusFilterTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (statusFilterTextBox.Text == ">Status")
+            {
+                statusFilterTextBox.Clear();
+                statusFilterTextBox.ForeColor = Color.Black;
+            }
+        }
+        private void statusFilterTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(statusFilterTextBox.Text))
+            {
+                statusFilterTextBox.Text = ">Status";
+                statusFilterTextBox.ForeColor = Color.Gray;
+            }
+        }
+
+        private void cheskSystemResponsFilterTextBox_Enter(object? sender, EventArgs e)
+        {
+            if (cheskSystemResponsFilterTextBox.Text == ">Chesk System Respons")
+            {
+                cheskSystemResponsFilterTextBox.Clear();
+                cheskSystemResponsFilterTextBox.ForeColor = Color.Black;
+            }
+        }
+        private void cheskSystemResponsFilterTextBox_Leave(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(cheskSystemResponsFilterTextBox.Text))
+            {
+                cheskSystemResponsFilterTextBox.Text = ">Chesk System Respons";
+                cheskSystemResponsFilterTextBox.ForeColor = Color.Gray;
+            }
+        }
+        #endregion
+
+        private void applyFilterButton_Click(object sender, EventArgs e)
+        {
+            filtersForFlagShow.Clear();
+            if (exploitFilterTextBox.Text != ">Exploit Name" && !string.IsNullOrWhiteSpace(exploitFilterTextBox.Text))
+            {
+                filtersForFlagShow.Add($"sploit_name='{exploitFilterTextBox.Text}'");
+            }
+            if (teamFilterTextBox.Text != ">Team Name" && !string.IsNullOrWhiteSpace(teamFilterTextBox.Text))
+            {
+                filtersForFlagShow.Add($"team_name='{teamFilterTextBox.Text}'");
+            }
+            if (flagFilterTextBox.Text != ">Flag" && !string.IsNullOrWhiteSpace(flagFilterTextBox.Text))
+            {
+                filtersForFlagShow.Add($"sended_flag='{flagFilterTextBox.Text}'");
+            }
+            if (statusFilterTextBox.Text != ">Status" && !string.IsNullOrWhiteSpace(statusFilterTextBox.Text))
+            {
+                filtersForFlagShow.Add($"status='{statusFilterTextBox.Text}'");
+            }
+            if (cheskSystemResponsFilterTextBox.Text != ">Chesk System Respons" && !string.IsNullOrWhiteSpace(cheskSystemResponsFilterTextBox.Text))
+            {
+                filtersForFlagShow.Add($"cheskSystemRespons='{cheskSystemResponsFilterTextBox.Text}'");
+            }
+
+            if (ClearFiltersInputCheckBox.Checked)
+            {
+                exploitFilterTextBox.Text = ">Exploit Name";
+                exploitFilterTextBox.ForeColor = Color.Gray;
+
+                teamFilterTextBox.Text = ">Team Name";
+                teamFilterTextBox.ForeColor = Color.Gray;
+
+                flagFilterTextBox.Text = ">Flag";
+                flagFilterTextBox.ForeColor = Color.Gray;
+
+                statusFilterTextBox.Text = ">Status";
+                statusFilterTextBox.ForeColor = Color.Gray;
+
+                cheskSystemResponsFilterTextBox.Text = ">Chesk System Respons";
+                cheskSystemResponsFilterTextBox.ForeColor = Color.Gray;
+            }
+        }
+
+        private void ClearFiltersInputCheckBox_CheckedChanged(object sender, EventArgs e)
         {
 
         }

@@ -300,7 +300,7 @@ namespace VQTFarm
                 noPythonFlagSendScriptLabel.Visible = true;
             }
 
-            if(noFlagFormatLabel.Visible == true || noTeamTokenLabel.Visible == true || noTeamOwnerIPLabel.Visible == true || 
+            if (noFlagFormatLabel.Visible == true || noTeamTokenLabel.Visible == true || noTeamOwnerIPLabel.Visible == true ||
                 noRoundTimeLabel.Visible == true || noFlagLifeTimeLabel.Visible == true || noScoreboardURLLabel.Visible == true ||
                 noFlagsubmitterURLLabel.Visible == true || noPythonGetScriptLabel.Visible == true || noPythonFlagSendScriptLabel.Visible == true)
             {

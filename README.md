@@ -3,15 +3,70 @@ This is Vampiraut's QarabagTeam Farm for Attack-Defense CTF competitions. You ca
 
 The farm is engaged in regularly launching written exploits for all commands, parsing the result of the work, taking out flags from there and sending them to the checking system. The farm has a convenient GUI for windows. It is capable of working on multiple threads, processing each feature of the system in a separate thread.
 
-The farm is written in the C# programming language, the platform.NET 6.0, applications .NET Windows Form.
+The farm is written in the C# programming language, the platform.NET 6.0, applications .NET Windows Form, tests on OS Windows 11 ver.21H2.
 
 # Requirements
 nuget pakages:
-1. Guna.UI2.WinForms
-2. Microsoft.Data.Sqlite
+1. Microsoft.Data.Sqlite
+2. Guna.UI2.WinForms
+
+# START FARM
+1. Download the solution from GitHub
+2. Open VQTFarm.sln and run the project OR open VQTFarm.exe inside the catalog ..\VQTFarm\bin\Debug\net6.0-windows.
+3. Enter the first settings in the window that opens
+4. Click the "Deploy farm" button.
+
+# Writing your get/flagSend protocols
+The protocols is written in the Python programming language. After writing the protocol, this file should be added to the appropriate folder.
+Example:
+```Python
+import sys
+from datetime import datetime
+import requests
+import sqlite3
+'''
+your import
+'''
+
+url = sys.argv[1]
+flags = sys.argv[2]
+token = sys.argv[3]
+team_name = sys.argv[4]
+exploit_name = sys.argv[5]
+
+'''
+your request
+'''
+
+path = sys.argv[0]
+while path[len(path) - 1] != '\\':
+    path = path[:-1]
+path = path[:-1]
+while path[len(path) - 1] != '\\':
+    path = path[:-1]
+path = path + "FarmInfo.db"
+
+conn = sqlite3.connect(path)
+cur = conn.cursor()
+
+#example for RuCTF protocol (can be rewrited)
+for item in r.json():
+    response = item['msg'].strip()
+    response = response.replace('[{}] '.format(item['flag']), '')
+    status = ""
+    for i in response:
+        if i != ':':
+            status += i
+        else:
+            break
+    mess = (None, exploit_name, team_name, item['flag'], str(datetime.now()), status.upper(), response)
+    cur.execute("INSERT INTO FlagHistorys VALUES (?, ?, ?, ?, ?, ?, ?);", mess)
+    conn.commit()
+conn.close()
+```
 
 # Writing your exploits
-The exploit is written in the Python programming language. file_name.py. The exploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(\*array_of_flags, sep=',', end=""). After writing the exploit, this file should be added to the Sploits folder.
+The exploit is written in the Python programming language. The exploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(\*array_of_flags, sep=',', end=""). After writing the exploit, this file should be added to the Sploits folder.
 Example:
 ```Python
 import sys
