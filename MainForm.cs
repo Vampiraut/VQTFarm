@@ -71,10 +71,6 @@ namespace VQTFarm
         {
             try
             {
-                #region DEBAG PreSet//////////////////////////////////////////////////////////////////////////////
-                AutoTeamsParsFromScoreBoardCheckBox.Enabled = false;
-                #endregion////////////////////////////////////////////////////////////////////////////////////////
-
                 teamsToolStripMenuItem.CheckState = CheckState.Checked;
                 flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
                 manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
@@ -265,15 +261,22 @@ namespace VQTFarm
         }
         private void PythonGetRequest(bool isUpdate)
         {
-            ProcessStartInfo start = new ProcessStartInfo()
+            try
             {
-                FileName = "python.exe",
-                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", fs.pythonGetScriptPath, fs.scoreBoardURL, isUpdate == true ? "1" : "0"),
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true,
-            };
-            Process.Start(start);
+                ProcessStartInfo start = new ProcessStartInfo()
+                {
+                    FileName = "python.exe",
+                    Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", fs.pythonGetScriptPath, fs.scoreBoardURL, isUpdate == true ? "1" : "0"),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                };
+                Process.Start(start);
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem with parsing script\n{exp}", "WARNING");
+            }
         }
         private void runScript(object? obj)
         {
@@ -412,30 +415,46 @@ namespace VQTFarm
                     List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
                     if (ctfteams != null)
                     {
+                        if (ctfteams.Count <= 0)
+                        {
+                            Thread.Sleep(fs.roundTime);
+                            continue;
+                        }
                         teamsPlaceDataGridView.Rows.Clear();
 
                         int i = 0;
                         foreach (var ctfteam in ctfteams)
                         {
                             CTFTeam team = ctfteam as CTFTeam;
-
+                            
                             teamsPlaceDataGridView.Rows.Add();
+                            if(team.GetType().GetField("teamPlace") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                                textBoxCell1.Value = team.teamPlace;
+                                teamsPlaceDataGridView[0, i] = textBoxCell1;
+                            }
 
-                            DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
-                            textBoxCell1.Value = team.teamPlace;
-                            teamsPlaceDataGridView[0, i] = textBoxCell1;
+                            if (team.GetType().GetField("teamName") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                                textBoxCell2.Value = team.teamName;
+                                teamsPlaceDataGridView[1, i] = textBoxCell2;
+                            }
 
-                            DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
-                            textBoxCell2.Value = team.teamName;
-                            teamsPlaceDataGridView[1, i] = textBoxCell2;
+                            if (team.GetType().GetField("teamIP") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                                textBoxCell3.Value = team.teamIP;
+                                teamsPlaceDataGridView[2, i] = textBoxCell3;
+                            }
 
-                            DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
-                            textBoxCell3.Value = team.teamIP;
-                            teamsPlaceDataGridView[2, i] = textBoxCell3;
-
-                            DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
-                            textBoxCell4.Value = team.teamScore;
-                            teamsPlaceDataGridView[3, i] = textBoxCell4;
+                            if (team.GetType().GetField("teamScore") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                                textBoxCell4.Value = team.teamScore;
+                                teamsPlaceDataGridView[3, i] = textBoxCell4;
+                            }
 
                             i++;
                         }

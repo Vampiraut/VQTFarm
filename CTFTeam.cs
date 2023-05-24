@@ -3,11 +3,11 @@
     public class CTFTeam
     {
         public CTFTeam() { }
-        public CTFTeam(string teamPlace, string teamName, string teamId, string teamScore)
+        public CTFTeam(string teamPlace, string teamName, string teamIP, string teamScore)
         {
             this.teamPlace = teamPlace;
             this.teamName = teamName;
-            this.teamIP = teamId;
+            this.teamIP = teamIP;
             this.teamScore = teamScore;
         }
 
