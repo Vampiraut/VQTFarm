@@ -1,4 +1,4 @@
-# VQTFarm (Work in Progress)
+# VQTFarm Version 1
 This is Vampiraut's QarabagTeam Farm for Attack-Defense CTF competitions. You can read more about the competitions [here](https://ctftime.org/ctf-wtf).
 
 The farm is engaged in regularly launching written sploits for all commands, parsing the result of the work, taking out flags from there and sending them to the checking system. The farm has a convenient GUI for windows. It is capable of working on multiple threads, processing each feature of the system in a separate thread.
@@ -8,7 +8,6 @@ The farm is written in the C# programming language, the platform.NET 6.0, applic
 # Requirements
 nuget pakages:
 1. Microsoft.Data.Sqlite
-2. Guna.UI2.WinForms
 
 # START FARM
 1. Download the solution from GitHub
@@ -66,7 +65,7 @@ conn.close()
 ```
 
 # Writing your sploits
-The sploit is written in the Python programming language. The sploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(\*array_of_flags, sep=',', end=""). After writing the sploit, this file should be added to the Sploits folder.
+The sploit is written in the Python programming language. The sploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(flags), as you wish, !!!BUT, the execution of the code must be completed. After writing the sploit, this file should be added to the Sploits folder.
 Example:
 ```Python
 import sys
@@ -76,7 +75,17 @@ ip = sys.argv[1]
 
 #your code is written here
 
-print(*flags_arr, sep=',', end="")
+print(flags) #as you wish, !!!however, the execution of the code must be completed
 ```
 
-# The sequel will be coming soon
+# Feedback
+If you have any problems - contact telegram: `@Grime_Reaper`
+
+# First look
+1. Preset Farm Settings
+
+![Preset Farm Settings](https://user-images.githubusercontent.com/99714655/235325626-9f4959dd-031b-4f4f-8976-02b8d78d6cfb.png)
+
+2. Main Window
+
+![Main Window](https://user-images.githubusercontent.com/99714655/235325636-fa1bef7c-f8e0-4433-886f-ae19d295f2c9.png)
