@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace VQTFarm
 {
@@ -251,15 +253,22 @@ namespace VQTFarm
         #region Threadusable functions
         private void PythonFlagSendRequest(string[] flags, string teamName, string exploitName)
         {
-            ProcessStartInfo start = new ProcessStartInfo()
+            try
             {
-                FileName = "python.exe",
-                Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\"", fs.pythonFlagSendScriptPath, fs.flagSubmitterURL, JsonSerializer.Serialize(flags), fs.teamToken, teamName, exploitName),
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true,
-            };
-            Process.Start(start);
+                ProcessStartInfo start = new ProcessStartInfo()
+                {
+                    FileName = "python.exe",
+                    Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\"", fs.pythonFlagSendScriptPath, fs.flagSubmitterURL, JsonSerializer.Serialize(flags), fs.teamToken, teamName, exploitName),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                };
+                Process.Start(start);
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem with flag sending script\n{exp}", "WARNING");
+            }
         }
         private void PythonGetRequest(bool isUpdate)
         {
@@ -293,19 +302,26 @@ namespace VQTFarm
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                 };
+                string answ = "";
                 using (Process process = Process.Start(start))
                 {
                     using (StreamReader reader = process.StandardOutput)
                     {
-                        //thrInfo.flags = reader.ReadToEnd().Split(',');
-                        while (!reader.EndOfStream)
-                        {
-                            thrInfo.flags = reader.ReadLine().Split(',');
-                            flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
-                        }
+                        answ = reader.ReadToEnd();
                     }
                 }
-                //flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
+                var m1 = Regex.Matches(answ, fs.flagFormat);
+                var flags = new List<string>();
+                foreach (Match match in m1)
+                {
+                    flags.Add(match.Value);
+                }
+                thrInfo.flags = flags.ToArray();
+                if(thrInfo.flags.Length <= 0)
+                {
+                    return;
+                }
+                flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
             }
             catch (Exception exp)
             {
@@ -319,7 +335,7 @@ namespace VQTFarm
             try
             {
                 isFailSafeTHRMustRun = false;
-                Thread.Sleep(FailSafeTHRCoolDown + 1000);
+                Thread.Sleep(500);
                 isTeamsUpdateTHRMustRun = false;
                 isFlagsUpdateTHRMustRun = false;
                 isSploitDirectoryCheckTHRMustRun = false;
@@ -338,41 +354,48 @@ namespace VQTFarm
                 while (isFailSafeTHRMustRun)
                 {
                     Thread.Sleep(FailSafeTHRCoolDown);
-                    if (TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
+                    if (isFailSafeTHRMustRun)
                     {
-                        if (teamsListPanel.Visible == true)
+                        if (TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && TeamsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
                         {
-                            isTeamsUpdateTHRMustRun = true;
-                            TeamsUpdateTHR = new Thread(teamUpdate);
-                            TeamsUpdateTHR.Start();
+                            if (teamsListPanel.Visible == true)
+                            {
+                                isTeamsUpdateTHRMustRun = true;
+                                TeamsUpdateTHR = new Thread(teamUpdate);
+                                TeamsUpdateTHR.Start();
+                            }
+                        }
+                        if (FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
+                        {
+                            if (flagStatusPanel.Visible == true)
+                            {
+                                isFlagsUpdateTHRMustRun = true;
+                                FlagsUpdateTHR = new Thread(flagsUpdate);
+                                FlagsUpdateTHR.Start();
+                            }
+                        }
+                        if (SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.Running && SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
+                        {
+                            isSploitDirectoryCheckTHRMustRun = true;
+                            SploitDirectoryCheckTHR = new Thread(sploitDirectoryCheck);
+                            SploitDirectoryCheckTHR.Start();
+                        }
+                        if (AutoSploitRunTHR.ThreadState != System.Threading.ThreadState.Running && AutoSploitRunTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
+                        {
+                            isAutoSploitRunTHRMustRun = true;
+                            AutoSploitRunTHR = new Thread(autoSploitRun);
+                            AutoSploitRunTHR.Start();
+                        }
+                        if (FlagsSendTHR.ThreadState != System.Threading.ThreadState.Running && FlagsSendTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
+                        {
+                            isFlagsSendTHRMustRun = true;
+                            FlagsSendTHR = new Thread(flagsSend);
+                            FlagsSendTHR.Start();
                         }
                     }
-                    if (FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.Running && FlagsUpdateTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
+                    else
                     {
-                        if (flagStatusPanel.Visible == true)
-                        {
-                            isFlagsUpdateTHRMustRun = true;
-                            FlagsUpdateTHR = new Thread(flagsUpdate);
-                            FlagsUpdateTHR.Start();
-                        }
-                    }
-                    if (SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.Running && SploitDirectoryCheckTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
-                    {
-                        isSploitDirectoryCheckTHRMustRun = true;
-                        SploitDirectoryCheckTHR = new Thread(sploitDirectoryCheck);
-                        SploitDirectoryCheckTHR.Start();
-                    }
-                    if (AutoSploitRunTHR.ThreadState != System.Threading.ThreadState.Running && AutoSploitRunTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
-                    {
-                        isAutoSploitRunTHRMustRun = true;
-                        AutoSploitRunTHR = new Thread(autoSploitRun);
-                        AutoSploitRunTHR.Start();
-                    }
-                    if (FlagsSendTHR.ThreadState != System.Threading.ThreadState.Running && FlagsSendTHR.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
-                    {
-                        isFlagsSendTHRMustRun = true;
-                        FlagsSendTHR = new Thread(flagsSend);
-                        FlagsSendTHR.Start();
+                        break;
                     }
                 }
             }
@@ -744,6 +767,24 @@ namespace VQTFarm
 
         #endregion
 
+        #region On/Off Farm Menu
+        private void startStopFarmToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Text == "VQT Farm (Online)")
+            {
+                Text = "VQT Farm (Offline)";
+                StopThreadings();
+            }
+            else if (Text == "VQT Farm (Offline)")
+            {
+                Text = "VQT Farm (Online)";
+                isFailSafeTHRMustRun = true;
+                FailSafeTHR = new Thread(failSafe);
+                FailSafeTHR.Start();
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Help Menu
@@ -1085,19 +1126,5 @@ namespace VQTFarm
 
         }
         #endregion
-
-        private void startStopFarmToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if(this.Text == "VQT Farm (Online)")
-            {
-                this.Text = "VQT Farm (Offline)";
-                StopThreadings();
-            }
-            else if (this.Text == "VQT Farm (Offline)")
-            {
-                this.Text = "VQT Farm (Online)";
-                this.isFailSafeTHRMustRun = true;
-            }
-        }
     }
 }

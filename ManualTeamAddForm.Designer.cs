@@ -42,7 +42,7 @@
             teamIPTextBox.Location = new Point(12, 63);
             teamIPTextBox.Name = "teamIPTextBox";
             teamIPTextBox.Size = new Size(229, 30);
-            teamIPTextBox.TabIndex = 3;
+            teamIPTextBox.TabIndex = 2;
             teamIPTextBox.TextChanged += teamIPTextBox_TextChanged;
             // 
             // teamNameTextBox
@@ -51,7 +51,7 @@
             teamNameTextBox.Location = new Point(12, 12);
             teamNameTextBox.Name = "teamNameTextBox";
             teamNameTextBox.Size = new Size(229, 30);
-            teamNameTextBox.TabIndex = 4;
+            teamNameTextBox.TabIndex = 1;
             teamNameTextBox.TextChanged += teamNameTextBox_TextChanged;
             // 
             // AddButton
@@ -60,7 +60,7 @@
             AddButton.Location = new Point(247, 27);
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(162, 66);
-            AddButton.TabIndex = 9;
+            AddButton.TabIndex = 3;
             AddButton.Text = "Add Team";
             AddButton.UseVisualStyleBackColor = true;
             AddButton.Click += AddButton_Click;
