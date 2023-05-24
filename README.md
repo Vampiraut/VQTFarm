@@ -1,7 +1,7 @@
 # VQTFarm Version 1
 This is Vampiraut's QarabagTeam Farm for Attack-Defense CTF competitions. You can read more about the competitions [here](https://ctftime.org/ctf-wtf).
 
-The farm is engaged in regularly launching written exploits for all commands, parsing the result of the work, taking out flags from there and sending them to the checking system. The farm has a convenient GUI for windows. It is capable of working on multiple threads, processing each feature of the system in a separate thread.
+The farm is engaged in regularly launching written sploits for all commands, parsing the result of the work, taking out flags from there and sending them to the checking system. The farm has a convenient GUI for windows. It is capable of working on multiple threads, processing each feature of the system in a separate thread.
 
 The farm is written in the C# programming language, the platform.NET 6.0, applications .NET Windows Form, tests on OS Windows 11 ver.21H2.
 
