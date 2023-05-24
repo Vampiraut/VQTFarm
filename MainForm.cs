@@ -298,10 +298,15 @@ namespace VQTFarm
                 {
                     using (StreamReader reader = process.StandardOutput)
                     {
-                        thrInfo.flags = reader.ReadToEnd().Split(',');
+                        //thrInfo.flags = reader.ReadToEnd().Split(',');
+                        while (!reader.EndOfStream)
+                        {
+                            thrInfo.flags = reader.ReadLine().Split(',');
+                            flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
+                        }
                     }
                 }
-                flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
+                //flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
             }
             catch (Exception exp)
             {
