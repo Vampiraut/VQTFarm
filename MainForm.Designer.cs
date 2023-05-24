@@ -42,6 +42,7 @@
             exploitTestToolStripMenuItem = new ToolStripMenuItem();
             flagShowFilterToolStripMenuItem = new ToolStripMenuItem();
             addTeamManualToolStripMenuItem = new ToolStripMenuItem();
+            startStopFarmToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             flagStatusGridView = new DataGridView();
             exploitTestPanel = new Panel();
@@ -56,6 +57,7 @@
             manualFlagSubmitPanelLabel = new Label();
             flagTotalSendedLabel = new Label();
             flagShowFilterPanel = new Panel();
+            ClearFiltersInputCheckBox = new CheckBox();
             applyFilterButton = new Button();
             cheskSystemResponsFilterTextBox = new TextBox();
             statusFilterTextBox = new TextBox();
@@ -69,7 +71,6 @@
             teamsListLabel = new Label();
             flagStatusPanel = new Panel();
             flagTotalAceptedLabel = new Label();
-            ClearFiltersInputCheckBox = new CheckBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flagStatusGridView).BeginInit();
             exploitTestPanel.SuspendLayout();
@@ -92,7 +93,7 @@
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { showToolStripMenuItem, addTeamManualToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { showToolStripMenuItem, addTeamManualToolStripMenuItem, startStopFarmToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
@@ -102,7 +103,7 @@
             // 
             showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { teamsToolStripMenuItem, flagHistoryToolStripMenuItem, manualSubmitToolStripMenuItem, exploitTestToolStripMenuItem, flagShowFilterToolStripMenuItem });
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(169, 22);
+            showToolStripMenuItem.Size = new Size(180, 22);
             showToolStripMenuItem.Text = "Show";
             showToolStripMenuItem.Click += showToolStripMenuItem_Click;
             // 
@@ -154,9 +155,16 @@
             // addTeamManualToolStripMenuItem
             // 
             addTeamManualToolStripMenuItem.Name = "addTeamManualToolStripMenuItem";
-            addTeamManualToolStripMenuItem.Size = new Size(169, 22);
+            addTeamManualToolStripMenuItem.Size = new Size(180, 22);
             addTeamManualToolStripMenuItem.Text = "Add team manual";
             addTeamManualToolStripMenuItem.Click += addTeamManualToolStripMenuItem_Click;
+            // 
+            // startStopFarmToolStripMenuItem
+            // 
+            startStopFarmToolStripMenuItem.Name = "startStopFarmToolStripMenuItem";
+            startStopFarmToolStripMenuItem.Size = new Size(180, 22);
+            startStopFarmToolStripMenuItem.Text = "Start/Stop Farm";
+            startStopFarmToolStripMenuItem.Click += startStopFarmToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -347,6 +355,17 @@
             flagShowFilterPanel.TabIndex = 6;
             flagShowFilterPanel.Paint += flagShowFilterPanel_Paint;
             // 
+            // ClearFiltersInputCheckBox
+            // 
+            ClearFiltersInputCheckBox.AutoSize = true;
+            ClearFiltersInputCheckBox.Location = new Point(464, 110);
+            ClearFiltersInputCheckBox.Name = "ClearFiltersInputCheckBox";
+            ClearFiltersInputCheckBox.Size = new Size(227, 19);
+            ClearFiltersInputCheckBox.TabIndex = 12;
+            ClearFiltersInputCheckBox.Text = "Clean the entered filters after applying";
+            ClearFiltersInputCheckBox.UseVisualStyleBackColor = true;
+            ClearFiltersInputCheckBox.CheckedChanged += ClearFiltersInputCheckBox_CheckedChanged;
+            // 
             // applyFilterButton
             // 
             applyFilterButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
@@ -515,17 +534,6 @@
             flagTotalAceptedLabel.Text = "TOTAL FLAGS ACCEPTED: 0";
             flagTotalAceptedLabel.Click += flagTotalAceptedLabel_Click;
             // 
-            // ClearFiltersInputCheckBox
-            // 
-            ClearFiltersInputCheckBox.AutoSize = true;
-            ClearFiltersInputCheckBox.Location = new Point(464, 110);
-            ClearFiltersInputCheckBox.Name = "ClearFiltersInputCheckBox";
-            ClearFiltersInputCheckBox.Size = new Size(227, 19);
-            ClearFiltersInputCheckBox.TabIndex = 12;
-            ClearFiltersInputCheckBox.Text = "Clean the entered filters after applying";
-            ClearFiltersInputCheckBox.UseVisualStyleBackColor = true;
-            ClearFiltersInputCheckBox.CheckedChanged += ClearFiltersInputCheckBox_CheckedChanged;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -603,5 +611,6 @@
         private TextBox cheskSystemResponsFilterTextBox;
         private Button applyFilterButton;
         private CheckBox ClearFiltersInputCheckBox;
+        private ToolStripMenuItem startStopFarmToolStripMenuItem;
     }
 }

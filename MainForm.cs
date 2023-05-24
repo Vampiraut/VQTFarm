@@ -71,6 +71,7 @@ namespace VQTFarm
         {
             try
             {
+                this.Text = "VQT Farm (Starting)";
                 teamsToolStripMenuItem.CheckState = CheckState.Checked;
                 flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
                 manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
@@ -159,6 +160,8 @@ namespace VQTFarm
                 #endregion
 
                 this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
+                this.Text = "VQT Farm (Online)";
+                this.ForeColor = Color.Green;
             }
             catch (Exception exp)
             {
@@ -426,9 +429,9 @@ namespace VQTFarm
                         foreach (var ctfteam in ctfteams)
                         {
                             CTFTeam team = ctfteam as CTFTeam;
-                            
+
                             teamsPlaceDataGridView.Rows.Add();
-                            if(team.GetType().GetField("teamPlace") != null)
+                            if (team.GetType().GetField("teamPlace") != null)
                             {
                                 DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
                                 textBoxCell1.Value = team.teamPlace;
@@ -1078,5 +1081,21 @@ namespace VQTFarm
 
         }
         #endregion
+
+        private void startStopFarmToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(this.Text == "VQT Farm (Online)")
+            {
+                this.Text = "VQT Farm (Offline)";
+                this.ForeColor = Color.Red;
+                StopThreadings();
+            }
+            else if (this.Text == "VQT Farm (Offline)")
+            {
+                this.Text = "VQT Farm (Online)";
+                this.ForeColor = Color.Green;
+                this.isFailSafeTHRMustRun = true;
+            }
+        }
     }
 }
