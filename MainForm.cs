@@ -161,7 +161,6 @@ namespace VQTFarm
 
                 this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
                 this.Text = "VQT Farm (Online)";
-                this.ForeColor = Color.Green;
             }
             catch (Exception exp)
             {
@@ -1092,13 +1091,11 @@ namespace VQTFarm
             if(this.Text == "VQT Farm (Online)")
             {
                 this.Text = "VQT Farm (Offline)";
-                this.ForeColor = Color.Red;
                 StopThreadings();
             }
             else if (this.Text == "VQT Farm (Offline)")
             {
                 this.Text = "VQT Farm (Online)";
-                this.ForeColor = Color.Green;
                 this.isFailSafeTHRMustRun = true;
             }
         }
