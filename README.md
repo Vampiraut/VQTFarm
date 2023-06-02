@@ -23,6 +23,7 @@ import sys
 from datetime import datetime
 import requests
 import sqlite3
+
 '''
 your import
 '''
@@ -53,9 +54,6 @@ STATUS = {
     "ACCEPTED": ["Flag accepted!"],
     "DENIED": ["Flag is invalid or too old."]
 }
-
-conn = sqlite3.connect(path)
-cur = conn.cursor()
 for item in r.json():
     response = item['msg'].strip()
     response = response.replace('[{}] '.format(item['flag']), '')
@@ -76,7 +74,7 @@ conn.close()
 ```
 
 # Writing your sploits
-The sploit is written in the Python programming language. The sploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(\*array_of_flags, sep=',', end=""). After writing the sploit, this file should be added to the Sploits folder.
+The sploit is written in the Python programming language. The sploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(flags), as you wish, !!!BUT, the execution of the code must be completed. After writing the sploit, this file should be added to the Sploits folder.
 Example:
 ```Python
 import sys
@@ -86,7 +84,18 @@ ip = sys.argv[1]
 
 #your code is written here
 
-print(flags_arr)
+print(flags) #as you wish, !!!however, the execution of the code must be completed
 ```
 
+# First look
+1. Preset Farm Settings
+
+![Preset Farm Settings](https://github.com/Vampiraut/VQTFarm/assets/99714655/434235f2-0749-4fc3-b668-958c922bcd13)
+
+2. Main Window
+
+![Main Window](https://github.com/Vampiraut/VQTFarm/assets/99714655/71a8651c-cc76-49d6-a149-43f5caf94886)
+
+# Feedback
+If you have any problems - contact telegram: `@Grime_Reaper`
 # The sequel will be coming soon
