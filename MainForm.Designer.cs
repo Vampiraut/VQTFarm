@@ -43,6 +43,7 @@
             flagShowFilterToolStripMenuItem = new ToolStripMenuItem();
             addTeamManualToolStripMenuItem = new ToolStripMenuItem();
             startStopFarmToolStripMenuItem = new ToolStripMenuItem();
+            fixTablesToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             flagStatusGridView = new DataGridView();
             exploitTestPanel = new Panel();
@@ -67,9 +68,19 @@
             flagShowFilterPanelLabel = new Label();
             teamsPlaceDataGridView = new DataGridView();
             teamsListPanel = new Panel();
+            pagesOfMaxForTeamsPanelLabel = new Label();
+            curPageTeamsTableTextBox = new TextBox();
+            pageForTeamsPanelLabel = new Label();
+            nextPageTeamsTableButton = new Button();
+            prevPageTeamsTableButton = new Button();
             AutoTeamsParsFromScoreBoardCheckBox = new CheckBox();
             teamsListLabel = new Label();
             flagStatusPanel = new Panel();
+            pagesOfMaxForFlagsPanelLabel = new Label();
+            curPageFlagsTableTextBox = new TextBox();
+            pageForFlagsPanelLabel = new Label();
+            nextPageFlagsTableButton = new Button();
+            prevPageFlagsTableButton = new Button();
             flagTotalAceptedLabel = new Label();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flagStatusGridView).BeginInit();
@@ -93,7 +104,7 @@
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { showToolStripMenuItem, addTeamManualToolStripMenuItem, startStopFarmToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { showToolStripMenuItem, addTeamManualToolStripMenuItem, startStopFarmToolStripMenuItem, fixTablesToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
@@ -103,7 +114,7 @@
             // 
             showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { teamsToolStripMenuItem, flagHistoryToolStripMenuItem, manualSubmitToolStripMenuItem, exploitTestToolStripMenuItem, flagShowFilterToolStripMenuItem });
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(180, 22);
+            showToolStripMenuItem.Size = new Size(169, 22);
             showToolStripMenuItem.Text = "Show";
             showToolStripMenuItem.Click += showToolStripMenuItem_Click;
             // 
@@ -155,16 +166,23 @@
             // addTeamManualToolStripMenuItem
             // 
             addTeamManualToolStripMenuItem.Name = "addTeamManualToolStripMenuItem";
-            addTeamManualToolStripMenuItem.Size = new Size(180, 22);
+            addTeamManualToolStripMenuItem.Size = new Size(169, 22);
             addTeamManualToolStripMenuItem.Text = "Add team manual";
             addTeamManualToolStripMenuItem.Click += addTeamManualToolStripMenuItem_Click;
             // 
             // startStopFarmToolStripMenuItem
             // 
             startStopFarmToolStripMenuItem.Name = "startStopFarmToolStripMenuItem";
-            startStopFarmToolStripMenuItem.Size = new Size(180, 22);
+            startStopFarmToolStripMenuItem.Size = new Size(169, 22);
             startStopFarmToolStripMenuItem.Text = "Start/Stop Farm";
             startStopFarmToolStripMenuItem.Click += startStopFarmToolStripMenuItem_Click;
+            // 
+            // fixTablesToolStripMenuItem
+            // 
+            fixTablesToolStripMenuItem.Name = "fixTablesToolStripMenuItem";
+            fixTablesToolStripMenuItem.Size = new Size(169, 22);
+            fixTablesToolStripMenuItem.Text = "Fix Tables";
+            fixTablesToolStripMenuItem.Click += fixTablesToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -179,6 +197,7 @@
             flagStatusGridView.AllowUserToDeleteRows = false;
             flagStatusGridView.AllowUserToResizeColumns = false;
             flagStatusGridView.AllowUserToResizeRows = false;
+            flagStatusGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             flagStatusGridView.BackgroundColor = SystemColors.Window;
             flagStatusGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -208,7 +227,7 @@
             flagStatusGridView.ShowCellToolTips = false;
             flagStatusGridView.ShowEditingIcon = false;
             flagStatusGridView.ShowRowErrors = false;
-            flagStatusGridView.Size = new Size(1221, 290);
+            flagStatusGridView.Size = new Size(1222, 372);
             flagStatusGridView.TabIndex = 1;
             flagStatusGridView.TabStop = false;
             flagStatusGridView.CellContentClick += flagStatusGridView_CellContentClick;
@@ -440,6 +459,7 @@
             teamsPlaceDataGridView.AllowUserToDeleteRows = false;
             teamsPlaceDataGridView.AllowUserToResizeColumns = false;
             teamsPlaceDataGridView.AllowUserToResizeRows = false;
+            teamsPlaceDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             teamsPlaceDataGridView.BackgroundColor = SystemColors.Window;
             teamsPlaceDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -477,6 +497,11 @@
             // teamsListPanel
             // 
             teamsListPanel.BorderStyle = BorderStyle.FixedSingle;
+            teamsListPanel.Controls.Add(pagesOfMaxForTeamsPanelLabel);
+            teamsListPanel.Controls.Add(curPageTeamsTableTextBox);
+            teamsListPanel.Controls.Add(pageForTeamsPanelLabel);
+            teamsListPanel.Controls.Add(nextPageTeamsTableButton);
+            teamsListPanel.Controls.Add(prevPageTeamsTableButton);
             teamsListPanel.Controls.Add(AutoTeamsParsFromScoreBoardCheckBox);
             teamsListPanel.Controls.Add(teamsListLabel);
             teamsListPanel.Controls.Add(teamsPlaceDataGridView);
@@ -485,6 +510,57 @@
             teamsListPanel.Size = new Size(528, 393);
             teamsListPanel.TabIndex = 9;
             teamsListPanel.Paint += teamsListPanel_Paint;
+            // 
+            // pagesOfMaxForTeamsPanelLabel
+            // 
+            pagesOfMaxForTeamsPanelLabel.AutoSize = true;
+            pagesOfMaxForTeamsPanelLabel.Location = new Point(413, 10);
+            pagesOfMaxForTeamsPanelLabel.Name = "pagesOfMaxForTeamsPanelLabel";
+            pagesOfMaxForTeamsPanelLabel.Size = new Size(75, 15);
+            pagesOfMaxForTeamsPanelLabel.TabIndex = 18;
+            pagesOfMaxForTeamsPanelLabel.Text = "of 999999999";
+            pagesOfMaxForTeamsPanelLabel.Click += pagesOfMaxForTeamsPanelLabel_Click;
+            // 
+            // curPageTeamsTableTextBox
+            // 
+            curPageTeamsTableTextBox.BorderStyle = BorderStyle.None;
+            curPageTeamsTableTextBox.Location = new Point(346, 10);
+            curPageTeamsTableTextBox.Name = "curPageTeamsTableTextBox";
+            curPageTeamsTableTextBox.ReadOnly = true;
+            curPageTeamsTableTextBox.Size = new Size(61, 16);
+            curPageTeamsTableTextBox.TabIndex = 17;
+            curPageTeamsTableTextBox.Text = "999999999";
+            curPageTeamsTableTextBox.TextChanged += curPageTeamsTableTextBox_TextChanged;
+            // 
+            // pageForTeamsPanelLabel
+            // 
+            pageForTeamsPanelLabel.AutoSize = true;
+            pageForTeamsPanelLabel.Location = new Point(304, 10);
+            pageForTeamsPanelLabel.Name = "pageForTeamsPanelLabel";
+            pageForTeamsPanelLabel.Size = new Size(36, 15);
+            pageForTeamsPanelLabel.TabIndex = 14;
+            pageForTeamsPanelLabel.Text = "Page:";
+            pageForTeamsPanelLabel.Click += pageForTeamsPanelLabel_Click;
+            // 
+            // nextPageTeamsTableButton
+            // 
+            nextPageTeamsTableButton.Location = new Point(494, 3);
+            nextPageTeamsTableButton.Name = "nextPageTeamsTableButton";
+            nextPageTeamsTableButton.Size = new Size(29, 29);
+            nextPageTeamsTableButton.TabIndex = 13;
+            nextPageTeamsTableButton.Text = ">";
+            nextPageTeamsTableButton.UseVisualStyleBackColor = true;
+            nextPageTeamsTableButton.Click += nextPageTeamsTableButton_Click;
+            // 
+            // prevPageTeamsTableButton
+            // 
+            prevPageTeamsTableButton.Location = new Point(269, 3);
+            prevPageTeamsTableButton.Name = "prevPageTeamsTableButton";
+            prevPageTeamsTableButton.Size = new Size(29, 29);
+            prevPageTeamsTableButton.TabIndex = 12;
+            prevPageTeamsTableButton.Text = "<";
+            prevPageTeamsTableButton.UseVisualStyleBackColor = true;
+            prevPageTeamsTableButton.Click += prevPageTeamsTableButton_Click;
             // 
             // AutoTeamsParsFromScoreBoardCheckBox
             // 
@@ -512,15 +588,71 @@
             // flagStatusPanel
             // 
             flagStatusPanel.BorderStyle = BorderStyle.FixedSingle;
+            flagStatusPanel.Controls.Add(pagesOfMaxForFlagsPanelLabel);
+            flagStatusPanel.Controls.Add(curPageFlagsTableTextBox);
+            flagStatusPanel.Controls.Add(pageForFlagsPanelLabel);
+            flagStatusPanel.Controls.Add(nextPageFlagsTableButton);
+            flagStatusPanel.Controls.Add(prevPageFlagsTableButton);
             flagStatusPanel.Controls.Add(flagTotalAceptedLabel);
             flagStatusPanel.Controls.Add(flagTotalSendedLabel);
             flagStatusPanel.Controls.Add(flagStatusLabel);
             flagStatusPanel.Controls.Add(flagStatusGridView);
             flagStatusPanel.Location = new Point(12, 426);
             flagStatusPanel.Name = "flagStatusPanel";
-            flagStatusPanel.Size = new Size(1230, 330);
+            flagStatusPanel.Size = new Size(1230, 443);
             flagStatusPanel.TabIndex = 9;
             flagStatusPanel.Paint += flagStatusPanel_Paint;
+            // 
+            // pagesOfMaxForFlagsPanelLabel
+            // 
+            pagesOfMaxForFlagsPanelLabel.AutoSize = true;
+            pagesOfMaxForFlagsPanelLabel.Location = new Point(1115, 416);
+            pagesOfMaxForFlagsPanelLabel.Name = "pagesOfMaxForFlagsPanelLabel";
+            pagesOfMaxForFlagsPanelLabel.Size = new Size(75, 15);
+            pagesOfMaxForFlagsPanelLabel.TabIndex = 17;
+            pagesOfMaxForFlagsPanelLabel.Text = "of 999999999";
+            pagesOfMaxForFlagsPanelLabel.Click += pagesOfMaxForFlagsPanelLabel_Click;
+            // 
+            // curPageFlagsTableTextBox
+            // 
+            curPageFlagsTableTextBox.BorderStyle = BorderStyle.None;
+            curPageFlagsTableTextBox.Location = new Point(1048, 416);
+            curPageFlagsTableTextBox.Name = "curPageFlagsTableTextBox";
+            curPageFlagsTableTextBox.ReadOnly = true;
+            curPageFlagsTableTextBox.Size = new Size(61, 16);
+            curPageFlagsTableTextBox.TabIndex = 16;
+            curPageFlagsTableTextBox.Text = "999999999";
+            curPageFlagsTableTextBox.TextChanged += curPageFlagsTableTextBox_TextChanged;
+            // 
+            // pageForFlagsPanelLabel
+            // 
+            pageForFlagsPanelLabel.AutoSize = true;
+            pageForFlagsPanelLabel.Location = new Point(1006, 416);
+            pageForFlagsPanelLabel.Name = "pageForFlagsPanelLabel";
+            pageForFlagsPanelLabel.Size = new Size(36, 15);
+            pageForFlagsPanelLabel.TabIndex = 15;
+            pageForFlagsPanelLabel.Text = "Page:";
+            pageForFlagsPanelLabel.Click += pageForFlagsPanelLabel_Click;
+            // 
+            // nextPageFlagsTableButton
+            // 
+            nextPageFlagsTableButton.Location = new Point(1196, 409);
+            nextPageFlagsTableButton.Name = "nextPageFlagsTableButton";
+            nextPageFlagsTableButton.Size = new Size(29, 29);
+            nextPageFlagsTableButton.TabIndex = 14;
+            nextPageFlagsTableButton.Text = ">";
+            nextPageFlagsTableButton.UseVisualStyleBackColor = true;
+            nextPageFlagsTableButton.Click += nextPageFlagsTableButton_Click;
+            // 
+            // prevPageFlagsTableButton
+            // 
+            prevPageFlagsTableButton.Location = new Point(971, 409);
+            prevPageFlagsTableButton.Name = "prevPageFlagsTableButton";
+            prevPageFlagsTableButton.Size = new Size(29, 29);
+            prevPageFlagsTableButton.TabIndex = 13;
+            prevPageFlagsTableButton.Text = "<";
+            prevPageFlagsTableButton.UseVisualStyleBackColor = true;
+            prevPageFlagsTableButton.Click += prevPageFlagsTableButton_Click;
             // 
             // flagTotalAceptedLabel
             // 
@@ -539,7 +671,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(1256, 768);
+            ClientSize = new Size(1256, 881);
             Controls.Add(flagStatusPanel);
             Controls.Add(teamsListPanel);
             Controls.Add(flagShowFilterPanel);
@@ -612,5 +744,16 @@
         private Button applyFilterButton;
         private CheckBox ClearFiltersInputCheckBox;
         private ToolStripMenuItem startStopFarmToolStripMenuItem;
+        private ToolStripMenuItem fixTablesToolStripMenuItem;
+        private Label pageForTeamsPanelLabel;
+        private Button nextPageTeamsTableButton;
+        private Button prevPageTeamsTableButton;
+        private Label pagesOfMaxForFlagsPanelLabel;
+        private TextBox curPageFlagsTableTextBox;
+        private Label pageForFlagsPanelLabel;
+        private Button nextPageFlagsTableButton;
+        private Button prevPageFlagsTableButton;
+        private TextBox curPageTeamsTableTextBox;
+        private Label pagesOfMaxForTeamsPanelLabel;
     }
 }

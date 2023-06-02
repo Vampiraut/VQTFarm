@@ -283,7 +283,7 @@ namespace VQTFarm
             {
                 noFlagLifeTimeLabel.Visible = true;
             }
-            if (string.IsNullOrWhiteSpace(scoreBoardURLTextBox.Text) || scoreBoardURLTextBox.Text == ">Flag Submitter URL")
+            if (string.IsNullOrWhiteSpace(scoreBoardURLTextBox.Text) || scoreBoardURLTextBox.Text == ">Scoreboard URL")
             {
                 noScoreboardURLLabel.Visible = true;
             }
@@ -595,6 +595,11 @@ namespace VQTFarm
 
         }
         private void pythonFlagSendScriptChooseComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }

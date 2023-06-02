@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -118,6 +117,27 @@ namespace VQTFarm
                 cheskSystemResponsFilterTextBox.Leave += new EventHandler(cheskSystemResponsFilterTextBox_Leave);
 
 
+                #region Pages of tables
+                curPageFlagsTableTextBox.Text = "1";
+                pagesOfMaxForFlagsPanelLabel.Text = "of 1";
+                List<object>? flags = DBWorkForm.ReadClassFromDB_AllClass(new FlagHistory());
+                if (flags != null)
+                {
+                    if (flags.Count % 13 == 0)
+                    {
+                        pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((flags.Count - (flags.Count % 13)) / 13));
+                    }
+                    else
+                    {
+                        pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((flags.Count - (flags.Count % 13)) / 13) + 1);
+                    }
+                }
+
+                curPageTeamsTableTextBox.Text = "1";
+                pagesOfMaxForTeamsPanelLabel.Text = "of 1";
+                #endregion
+
+
                 setFlagStatusGridView();
                 setTeamsPlaceDataGridView();
 
@@ -129,6 +149,14 @@ namespace VQTFarm
                 List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
                 if (ctfTeams != null)
                 {
+                    if (ctfTeams.Count % 11 == 0)
+                    {
+                        pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfTeams.Count - (ctfTeams.Count % 11)) / 11);
+                    }
+                    else
+                    {
+                        pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfTeams.Count - (ctfTeams.Count % 11)) / 11) + 1);
+                    }
                     teamChooseComboBox.Items.Add("All teams");
                     foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
                     {
@@ -201,7 +229,7 @@ namespace VQTFarm
                 flagStatusGridView.Columns[4].Width = 100;
                 flagStatusGridView.Columns[5].Width = 300;
 
-                flagStatusGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                //flagStatusGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 flagStatusGridView.Width = flagStatusGridView.Columns[0].Width +
                     flagStatusGridView.Columns[1].Width +
                     flagStatusGridView.Columns[2].Width +
@@ -234,7 +262,7 @@ namespace VQTFarm
                 teamsPlaceDataGridView.Columns[2].Width = 100;
                 teamsPlaceDataGridView.Columns[3].Width = 150;
 
-                teamsPlaceDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                //teamsPlaceDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 teamsPlaceDataGridView.Width = teamsPlaceDataGridView.Columns[0].Width +
                     teamsPlaceDataGridView.Columns[1].Width +
                     teamsPlaceDataGridView.Columns[2].Width +
@@ -263,7 +291,23 @@ namespace VQTFarm
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                 };
-                Process.Start(start);
+                Process flagSendProc = Process.Start(start);
+                for (int i = 0; i <= 500; i++)
+                {
+                    if (flagSendProc.HasExited)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (flagSendProc.WaitForExit(20))
+                            return;
+                        else
+                            continue;
+                    }
+                }
+                flagSendProc.Kill();
+                MessageBox.Show("The \"PythonFlagSendRequest\" process is killed", "TimeOut Exception");
             }
             catch (Exception exp)
             {
@@ -282,7 +326,20 @@ namespace VQTFarm
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                 };
-                Process.Start(start);
+                Process getProc = Process.Start(start);
+                for (int i = 0; i <= 500; i++)
+                {
+                    if (getProc.HasExited)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        getProc.WaitForExit(20);
+                    }
+                }
+                getProc.Kill();
+                MessageBox.Show("The \"PythonGetRequest\" process is killed", "TimeOut Exception");
             }
             catch (Exception exp)
             {
@@ -317,7 +374,7 @@ namespace VQTFarm
                     flags.Add(match.Value);
                 }
                 thrInfo.flags = flags.ToArray();
-                if(thrInfo.flags.Length <= 0)
+                if (thrInfo.flags.Length <= 0)
                 {
                     return;
                 }
@@ -443,19 +500,28 @@ namespace VQTFarm
                         PythonGetRequest(true);
                     }
                     List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
+                    nextPageTeamsTableButton.Enabled = false;
+                    prevPageTeamsTableButton.Enabled = false;
                     if (ctfteams != null)
                     {
-                        if (ctfteams.Count <= 0)
+                        if (ctfteams.Count % 11 == 0)
                         {
-                            Thread.Sleep(fs.roundTime);
-                            continue;
+                            pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfteams.Count - (ctfteams.Count % 11)) / 11);
+                        }
+                        else
+                        {
+                            pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfteams.Count - (ctfteams.Count % 11)) / 11) + 1);
                         }
                         teamsPlaceDataGridView.Rows.Clear();
 
                         int i = 0;
-                        foreach (var ctfteam in ctfteams)
+                        for(int j = (Convert.ToInt32(curPageTeamsTableTextBox.Text) - 1) * 11; j < ctfteams.Count; j++)
                         {
-                            CTFTeam team = ctfteam as CTFTeam;
+                            if (i >= 11)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            {
+                                break;
+                            }
+                            CTFTeam team = ctfteams[j] as CTFTeam;
 
                             teamsPlaceDataGridView.Rows.Add();
                             if (team.GetType().GetField("teamPlace") != null)
@@ -490,12 +556,19 @@ namespace VQTFarm
                         }
                         teamsPlaceDataGridView.Sort(teamsPlaceDataGridView.Columns["team_place"], System.ComponentModel.ListSortDirection.Ascending);
                     }
+                    nextPageTeamsTableButton.Enabled = true;
+                    prevPageTeamsTableButton.Enabled = true;
                     Thread.Sleep(fs.roundTime);
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while updating teams info\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageTeamsTableButton.Enabled = true;
+                prevPageTeamsTableButton.Enabled = true;
             }
         }
         private void autoSploitRun()
@@ -549,13 +622,24 @@ namespace VQTFarm
                         AllFlags = SendedFlags;
                     }
 
+                    nextPageFlagsTableButton.Enabled = false;
+                    prevPageFlagsTableButton.Enabled = false;
+
                     if (AllFlags != null)
                     {
+                        if (AllFlags.Count % 13 == 0)
+                        {
+                            pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13));
+                        }
+                        else
+                        {
+                            pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13) + 1);
+                        }
                         flagStatusGridView.Rows.Clear();
 
                         int j = 0;
 
-                        for (int i = AllFlags.Count - 1; i >= 0; i--)
+                        for (int i = (AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13 < 0) ? AllFlags.Count - 1 : AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13; i >= 0; i--)
                         {
                             if (j >= 13)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             {
@@ -565,39 +649,59 @@ namespace VQTFarm
 
                             flagStatusGridView.Rows.Add();
 
-                            DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
-                            textBoxCell1.Value = flag.sploit_name;
-                            flagStatusGridView[0, j] = textBoxCell1;
-
-                            DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
-                            textBoxCell2.Value = flag.team_name;
-                            flagStatusGridView[1, j] = textBoxCell2;
-
-                            DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
-                            textBoxCell3.Value = flag.sended_flag;
-                            flagStatusGridView[2, j] = textBoxCell3;
-
-                            DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
-                            textBoxCell4.Value = flag.time;
-                            flagStatusGridView[3, j] = textBoxCell4;
-
-                            DataGridViewTextBoxCell textBoxCell5 = new DataGridViewTextBoxCell();
-                            textBoxCell5.Value = flag.status;
-                            flagStatusGridView[4, j] = textBoxCell5;
-
-                            DataGridViewTextBoxCell textBoxCell6 = new DataGridViewTextBoxCell();
-                            textBoxCell6.Value = flag.cheskSystemRespons;
-                            flagStatusGridView[5, j] = textBoxCell6;
+                            if (flag.GetType().GetField("sploit_name") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                                textBoxCell1.Value = flag.sploit_name;
+                                flagStatusGridView[0, j] = textBoxCell1;
+                            }
+                            if (flag.GetType().GetField("team_name") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                                textBoxCell2.Value = flag.team_name;
+                                flagStatusGridView[1, j] = textBoxCell2;
+                            }
+                            if (flag.GetType().GetField("sended_flag") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                                textBoxCell3.Value = flag.sended_flag;
+                                flagStatusGridView[2, j] = textBoxCell3;
+                            }
+                            if (flag.GetType().GetField("time") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                                textBoxCell4.Value = flag.time;
+                                flagStatusGridView[3, j] = textBoxCell4;
+                            }
+                            if (flag.GetType().GetField("status") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell5 = new DataGridViewTextBoxCell();
+                                textBoxCell5.Value = flag.status;
+                                flagStatusGridView[4, j] = textBoxCell5;
+                            }
+                            if (flag.GetType().GetField("cheskSystemRespons") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell6 = new DataGridViewTextBoxCell();
+                                textBoxCell6.Value = flag.cheskSystemRespons;
+                                flagStatusGridView[5, j] = textBoxCell6;
+                            }
 
                             j++;
                         }
                     }
+                    nextPageFlagsTableButton.Enabled = true;
+                    prevPageFlagsTableButton.Enabled = true;
                     Thread.Sleep(fs.roundTime);
                 }
             }
             catch (Exception exp)
             {
                 MessageBox.Show($"Warning!\nSome problem while updating flag history\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageFlagsTableButton.Enabled = true;
+                prevPageFlagsTableButton.Enabled = true;
             }
         }
         private void sploitDirectoryCheck()
@@ -665,6 +769,14 @@ namespace VQTFarm
             List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
             if (ctfTeams != null)
             {
+                if (ctfTeams.Count % 11 == 0)
+                {
+                    pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfTeams.Count - (ctfTeams.Count % 11)) / 11);
+                }
+                else
+                {
+                    pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfTeams.Count - (ctfTeams.Count % 11)) / 11) + 1);
+                }
                 teamsList.Clear();
                 teamChooseComboBox.Items.Clear();
                 teamChooseComboBox.Items.Add("-Select Team for test-");
@@ -785,6 +897,114 @@ namespace VQTFarm
         }
         #endregion
 
+        #region Fix Tables Menu
+        private void fixTablesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopThreadings();
+            this.Controls.Clear();
+            InitializeComponent();
+            this.Text = "VQT Farm (Starting)";
+            teamsToolStripMenuItem.CheckState = CheckState.Checked;
+            flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
+            manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
+            exploitTestToolStripMenuItem.CheckState = CheckState.Checked;
+            flagShowFilterToolStripMenuItem.CheckState = CheckState.Checked;
+
+
+            exploitChooseTextBox.Text = "-Choose Exploit for test-";
+
+            teamChooseComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            teamChooseComboBox.Items.Add("-Select Team for test-");
+            teamChooseComboBox.SelectedItem = "-Select Team for test-";
+
+            exploitChooseTextBox.Click += new EventHandler(exploitChooseTextBox_Click);
+            exploitChooseTextBox.Enter += new EventHandler(exploitChooseTextBox_Enter);
+            exploitChooseTextBox.Cursor = Cursors.Arrow;
+
+
+            exploitFilterTextBox.Text = ">Exploit Name";
+            exploitFilterTextBox.ForeColor = Color.Gray;
+            exploitFilterTextBox.Enter += new EventHandler(exploitFilterTextBox_Enter);
+            exploitFilterTextBox.Leave += new EventHandler(exploitFilterTextBox_Leave);
+
+            teamFilterTextBox.Text = ">Team Name";
+            teamFilterTextBox.ForeColor = Color.Gray;
+            teamFilterTextBox.Enter += new EventHandler(teamFilterTextBox_Enter);
+            teamFilterTextBox.Leave += new EventHandler(teamFilterTextBox_Leave);
+
+            flagFilterTextBox.Text = ">Flag";
+            flagFilterTextBox.ForeColor = Color.Gray;
+            flagFilterTextBox.Enter += new EventHandler(flagFilterTextBox_Enter);
+            flagFilterTextBox.Leave += new EventHandler(flagFilterTextBox_Leave);
+
+            statusFilterTextBox.Text = ">Status";
+            statusFilterTextBox.ForeColor = Color.Gray;
+            statusFilterTextBox.Enter += new EventHandler(statusFilterTextBox_Enter);
+            statusFilterTextBox.Leave += new EventHandler(statusFilterTextBox_Leave);
+
+            cheskSystemResponsFilterTextBox.Text = ">Chesk System Respons";
+            cheskSystemResponsFilterTextBox.ForeColor = Color.Gray;
+            cheskSystemResponsFilterTextBox.Enter += new EventHandler(cheskSystemResponsFilterTextBox_Enter);
+            cheskSystemResponsFilterTextBox.Leave += new EventHandler(cheskSystemResponsFilterTextBox_Leave);
+
+
+            #region Pages of tables
+            curPageFlagsTableTextBox.Text = "1";
+            pagesOfMaxForFlagsPanelLabel.Text = "of 1";
+            List<object>? flags = DBWorkForm.ReadClassFromDB_AllClass(new FlagHistory());
+            if (flags != null)
+            {
+                if (flags.Count % 13 == 0)
+                {
+                    pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((flags.Count - (flags.Count % 13)) / 13));
+                }
+                else
+                {
+                    pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((flags.Count - (flags.Count % 13)) / 13) + 1);
+                }
+            }
+
+            curPageTeamsTableTextBox.Text = "1";
+            pagesOfMaxForTeamsPanelLabel.Text = "of 1";
+            #endregion
+
+
+
+            setFlagStatusGridView();
+            setTeamsPlaceDataGridView();
+
+
+            List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
+            if (ctfTeams != null)
+            {
+                if (ctfTeams.Count % 11 == 0)
+                {
+                    pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfTeams.Count - (ctfTeams.Count % 11)) / 11);
+                }
+                else
+                {
+                    pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfTeams.Count - (ctfTeams.Count % 11)) / 11) + 1);
+                }
+                teamChooseComboBox.Items.Add("All teams");
+                foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
+                {
+                    CTFTeam team = teams as CTFTeam;
+                    if (team.teamIP != fs.teamOwnerIP)
+                    {
+                        teamChooseComboBox.Items.Add(team.teamName);
+                    }
+                }
+            }
+
+            this.FormClosed += new FormClosedEventHandler(MainForm_Closed);
+            this.Text = "VQT Farm (Online)";
+
+            isFailSafeTHRMustRun = true;
+            FailSafeTHR = new Thread(failSafe);
+            FailSafeTHR.Start();
+        }
+        #endregion
+
         #endregion
 
         #region Help Menu
@@ -819,6 +1039,226 @@ namespace VQTFarm
         {
 
         }
+
+
+        private void prevPageFlagsTableButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string buf = curPageFlagsTableTextBox.Text;
+                curPageFlagsTableTextBox.Text = Convert.ToInt32(curPageFlagsTableTextBox.Text) > 1 ? Convert.ToString(Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) : Convert.ToString(curPageFlagsTableTextBox.Text);
+                if (buf != curPageFlagsTableTextBox.Text)
+                {
+                    DataBaseWorkAplication DBWorkFormFlagFilter = new DataBaseWorkAplication();
+                    DBWorkFormFlagFilter.StartConnection("Data Source=FarmInfo.db");
+                    List<object>? AllFlags = new List<object>();
+                    if (filtersForFlagShow.Count > 0)
+                    {
+                        AllFlags = DBWorkFormFlagFilter.ReadClassFromDB_AllClass_byParams(new FlagHistory(), filtersForFlagShow);
+                    }
+                    else
+                    {
+                        AllFlags = DBWorkFormFlagFilter.ReadClassFromDB_AllClass(new FlagHistory()); ;
+                    }
+
+
+                    nextPageFlagsTableButton.Enabled = false;
+                    prevPageFlagsTableButton.Enabled = false;
+
+                    flagStatusGridView.Rows.Clear();
+                    if (AllFlags != null)
+                    {
+                        if (AllFlags.Count % 13 == 0)
+                        {
+                            pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13));
+                        }
+                        else
+                        {
+                            pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13) + 1);
+                        }
+                        int j = 0;
+
+                        for (int i = (AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13 < 0) ? AllFlags.Count - 1 : AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13; i >= 0; i--)
+                        {
+                            if (j >= 13)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            {
+                                break;
+                            }
+                            FlagHistory flag = AllFlags[i] as FlagHistory;
+
+                            flagStatusGridView.Rows.Add();
+
+                            if (flag.GetType().GetField("sploit_name") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                                textBoxCell1.Value = flag.sploit_name;
+                                flagStatusGridView[0, j] = textBoxCell1;
+                            }
+                            if (flag.GetType().GetField("team_name") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                                textBoxCell2.Value = flag.team_name;
+                                flagStatusGridView[1, j] = textBoxCell2;
+                            }
+                            if (flag.GetType().GetField("sended_flag") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                                textBoxCell3.Value = flag.sended_flag;
+                                flagStatusGridView[2, j] = textBoxCell3;
+                            }
+                            if (flag.GetType().GetField("time") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                                textBoxCell4.Value = flag.time;
+                                flagStatusGridView[3, j] = textBoxCell4;
+                            }
+                            if (flag.GetType().GetField("status") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell5 = new DataGridViewTextBoxCell();
+                                textBoxCell5.Value = flag.status;
+                                flagStatusGridView[4, j] = textBoxCell5;
+                            }
+                            if (flag.GetType().GetField("cheskSystemRespons") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell6 = new DataGridViewTextBoxCell();
+                                textBoxCell6.Value = flag.cheskSystemRespons;
+                                flagStatusGridView[5, j] = textBoxCell6;
+                            }
+
+                            j++;
+                        }
+                    }
+                    nextPageFlagsTableButton.Enabled = true;
+                    prevPageFlagsTableButton.Enabled = true;
+                    prevPageFlagsTableButton.Select();
+                }
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem while swithing flags pages\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageFlagsTableButton.Enabled = true;
+                prevPageFlagsTableButton.Enabled = true;
+                prevPageFlagsTableButton.Select();
+            }
+        }
+        private void nextPageFlagsTableButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string buf = curPageFlagsTableTextBox.Text;
+                curPageFlagsTableTextBox.Text = Convert.ToInt32(curPageFlagsTableTextBox.Text) < Convert.ToInt32(pagesOfMaxForFlagsPanelLabel.Text.Split(' ')[1]) ? Convert.ToString(Convert.ToInt32(curPageFlagsTableTextBox.Text) + 1) : Convert.ToString(curPageFlagsTableTextBox.Text);
+                if (buf != curPageFlagsTableTextBox.Text)
+                {
+                    DataBaseWorkAplication DBWorkFormFlagFilter = new DataBaseWorkAplication();
+                    DBWorkFormFlagFilter.StartConnection("Data Source=FarmInfo.db");
+                    List<object>? AllFlags = new List<object>();
+                    if (filtersForFlagShow.Count > 0)
+                    {
+                        AllFlags = DBWorkFormFlagFilter.ReadClassFromDB_AllClass_byParams(new FlagHistory(), filtersForFlagShow);
+                    }
+                    else
+                    {
+                        AllFlags = DBWorkFormFlagFilter.ReadClassFromDB_AllClass(new FlagHistory()); ;
+                    }
+
+
+                    nextPageFlagsTableButton.Enabled = false;
+                    prevPageFlagsTableButton.Enabled = false;
+
+                    flagStatusGridView.Rows.Clear();
+                    if (AllFlags != null)
+                    {
+                        if (AllFlags.Count % 13 == 0)
+                        {
+                            pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13));
+                        }
+                        else
+                        {
+                            pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13) + 1);
+                        }
+                        int j = 0;
+
+                        for (int i = (AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13 < 0) ? AllFlags.Count - 1 : AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13; i >= 0; i--)
+                        {
+                            if (j >= 13)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            {
+                                break;
+                            }
+                            FlagHistory flag = AllFlags[i] as FlagHistory;
+
+                            flagStatusGridView.Rows.Add();
+
+                            if (flag.GetType().GetField("sploit_name") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                                textBoxCell1.Value = flag.sploit_name;
+                                flagStatusGridView[0, j] = textBoxCell1;
+                            }
+                            if (flag.GetType().GetField("team_name") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                                textBoxCell2.Value = flag.team_name;
+                                flagStatusGridView[1, j] = textBoxCell2;
+                            }
+                            if (flag.GetType().GetField("sended_flag") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                                textBoxCell3.Value = flag.sended_flag;
+                                flagStatusGridView[2, j] = textBoxCell3;
+                            }
+                            if (flag.GetType().GetField("time") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                                textBoxCell4.Value = flag.time;
+                                flagStatusGridView[3, j] = textBoxCell4;
+                            }
+                            if (flag.GetType().GetField("status") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell5 = new DataGridViewTextBoxCell();
+                                textBoxCell5.Value = flag.status;
+                                flagStatusGridView[4, j] = textBoxCell5;
+                            }
+                            if (flag.GetType().GetField("cheskSystemRespons") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell6 = new DataGridViewTextBoxCell();
+                                textBoxCell6.Value = flag.cheskSystemRespons;
+                                flagStatusGridView[5, j] = textBoxCell6;
+                            }
+
+                            j++;
+                        }
+                    }
+                    nextPageFlagsTableButton.Enabled = true;
+                    prevPageFlagsTableButton.Enabled = true;
+                    nextPageFlagsTableButton.Select();
+                }
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem while swithing flags pages\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageFlagsTableButton.Enabled = true;
+                prevPageFlagsTableButton.Enabled = true;
+                nextPageFlagsTableButton.Select();
+            }
+        }
+        private void curPageFlagsTableTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void pageForFlagsPanelLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void pagesOfMaxForFlagsPanelLabel_Click(object sender, EventArgs e)
+        {
+
+        }
         #endregion
         #region Teams List Panel
         private void teamsPlaceDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -834,6 +1274,186 @@ namespace VQTFarm
 
         }
         private void teamsListPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+
+        private void prevPageTeamsTableButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string buf = curPageTeamsTableTextBox.Text;
+                curPageTeamsTableTextBox.Text = Convert.ToInt32(curPageTeamsTableTextBox.Text) > 1 ? Convert.ToString(Convert.ToInt32(curPageTeamsTableTextBox.Text) - 1) : Convert.ToString(curPageTeamsTableTextBox.Text);
+                if(buf != curPageTeamsTableTextBox.Text)
+                {
+                    DataBaseWorkAplication DBWorkFormTeam = new DataBaseWorkAplication();
+                    DBWorkFormTeam.StartConnection("Data Source=FarmInfo.db");
+                    List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
+                    nextPageTeamsTableButton.Enabled = false;
+                    prevPageTeamsTableButton.Enabled = false;
+                    if (ctfteams != null)
+                    {
+                        if (ctfteams.Count % 11 == 0)
+                        {
+                            pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfteams.Count - (ctfteams.Count % 11)) / 11);
+                        }
+                        else
+                        {
+                            pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfteams.Count - (ctfteams.Count % 11)) / 11) + 1);
+                        }
+                        teamsPlaceDataGridView.Rows.Clear();
+
+                        int i = 0;
+                        for (int j = (Convert.ToInt32(curPageTeamsTableTextBox.Text) - 1) * 11; j < ctfteams.Count; j++)
+                        {
+                            if (i >= 11)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            {
+                                break;
+                            }
+                            CTFTeam team = ctfteams[j] as CTFTeam;
+
+                            teamsPlaceDataGridView.Rows.Add();
+                            if (team.GetType().GetField("teamPlace") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                                textBoxCell1.Value = team.teamPlace;
+                                teamsPlaceDataGridView[0, i] = textBoxCell1;
+                            }
+
+                            if (team.GetType().GetField("teamName") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                                textBoxCell2.Value = team.teamName;
+                                teamsPlaceDataGridView[1, i] = textBoxCell2;
+                            }
+
+                            if (team.GetType().GetField("teamIP") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                                textBoxCell3.Value = team.teamIP;
+                                teamsPlaceDataGridView[2, i] = textBoxCell3;
+                            }
+
+                            if (team.GetType().GetField("teamScore") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                                textBoxCell4.Value = team.teamScore;
+                                teamsPlaceDataGridView[3, i] = textBoxCell4;
+                            }
+
+                            i++;
+                        }
+                        teamsPlaceDataGridView.Sort(teamsPlaceDataGridView.Columns["team_place"], System.ComponentModel.ListSortDirection.Ascending);
+                    }
+                    nextPageTeamsTableButton.Enabled = true;
+                    prevPageTeamsTableButton.Enabled = true;
+                    prevPageTeamsTableButton.Select();
+                }
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem while swithing teams pages\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageTeamsTableButton.Enabled = true;
+                prevPageTeamsTableButton.Enabled = true;
+                prevPageTeamsTableButton.Select();
+            }
+        }
+        private void nextPageTeamsTableButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string buf = curPageTeamsTableTextBox.Text;
+                curPageTeamsTableTextBox.Text = Convert.ToInt32(curPageTeamsTableTextBox.Text) < Convert.ToInt32(pagesOfMaxForTeamsPanelLabel.Text.Split(' ')[1]) ? Convert.ToString(Convert.ToInt32(curPageTeamsTableTextBox.Text) + 1) : Convert.ToString(curPageTeamsTableTextBox.Text);
+                if (buf != curPageTeamsTableTextBox.Text)
+                {
+                    DataBaseWorkAplication DBWorkFormTeam = new DataBaseWorkAplication();
+                    DBWorkFormTeam.StartConnection("Data Source=FarmInfo.db");
+                    List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
+                    nextPageTeamsTableButton.Enabled = false;
+                    prevPageTeamsTableButton.Enabled = false;
+                    if (ctfteams != null)
+                    {
+                        if (ctfteams.Count % 11 == 0)
+                        {
+                            pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfteams.Count - (ctfteams.Count % 11)) / 11);
+                        }
+                        else
+                        {
+                            pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfteams.Count - (ctfteams.Count % 11)) / 11) + 1);
+                        }
+                        teamsPlaceDataGridView.Rows.Clear();
+
+                        int i = 0;
+                        for (int j = (Convert.ToInt32(curPageTeamsTableTextBox.Text) - 1) * 11; j < ctfteams.Count; j++)
+                        {
+                            if (i >= 11)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            {
+                                break;
+                            }
+                            CTFTeam team = ctfteams[j] as CTFTeam;
+
+                            teamsPlaceDataGridView.Rows.Add();
+                            if (team.GetType().GetField("teamPlace") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                                textBoxCell1.Value = team.teamPlace;
+                                teamsPlaceDataGridView[0, i] = textBoxCell1;
+                            }
+
+                            if (team.GetType().GetField("teamName") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                                textBoxCell2.Value = team.teamName;
+                                teamsPlaceDataGridView[1, i] = textBoxCell2;
+                            }
+
+                            if (team.GetType().GetField("teamIP") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                                textBoxCell3.Value = team.teamIP;
+                                teamsPlaceDataGridView[2, i] = textBoxCell3;
+                            }
+
+                            if (team.GetType().GetField("teamScore") != null)
+                            {
+                                DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                                textBoxCell4.Value = team.teamScore;
+                                teamsPlaceDataGridView[3, i] = textBoxCell4;
+                            }
+
+                            i++;
+                        }
+                        teamsPlaceDataGridView.Sort(teamsPlaceDataGridView.Columns["team_place"], System.ComponentModel.ListSortDirection.Ascending);
+                    }
+                    nextPageTeamsTableButton.Enabled = true;
+                    prevPageTeamsTableButton.Enabled = true;
+                    nextPageTeamsTableButton.Select();
+                }
+            }
+            catch (Exception exp)
+            {
+                MessageBox.Show($"Warning!\nSome problem while swithing teams pages\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageTeamsTableButton.Enabled = true;
+                prevPageTeamsTableButton.Enabled = true;
+                nextPageTeamsTableButton.Select();
+            }
+        }
+        private void curPageTeamsTableTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void pageForTeamsPanelLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void pagesOfMaxForTeamsPanelLabel_Click(object sender, EventArgs e)
         {
 
         }
@@ -855,8 +1475,10 @@ namespace VQTFarm
             {
                 if (!string.IsNullOrWhiteSpace(manualSubmitTextBox.Text))
                 {
-                    PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text }, "Manual Test", "Manual Test");
-                    manualSubmitTextBox.Text = "";
+                    if (Regex.IsMatch(manualSubmitTextBox.Text, fs.flagFormat))
+                    {
+                        PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text }, "Manual Test", "Manual Test");
+                    }
                 }
             }
             catch (Exception exp)
@@ -865,6 +1487,7 @@ namespace VQTFarm
             }
             finally
             {
+                manualSubmitTextBox.Text = "";
                 Thread.Sleep(ManualFlagSendCoolDown);
             }
         }
@@ -1076,43 +1699,137 @@ namespace VQTFarm
         private void applyFilterButton_Click(object sender, EventArgs e)
         {
             filtersForFlagShow.Clear();
-            if (exploitFilterTextBox.Text != ">Exploit Name" && !string.IsNullOrWhiteSpace(exploitFilterTextBox.Text))
+            try
             {
-                filtersForFlagShow.Add($"sploit_name='{exploitFilterTextBox.Text}'");
-            }
-            if (teamFilterTextBox.Text != ">Team Name" && !string.IsNullOrWhiteSpace(teamFilterTextBox.Text))
-            {
-                filtersForFlagShow.Add($"team_name='{teamFilterTextBox.Text}'");
-            }
-            if (flagFilterTextBox.Text != ">Flag" && !string.IsNullOrWhiteSpace(flagFilterTextBox.Text))
-            {
-                filtersForFlagShow.Add($"sended_flag='{flagFilterTextBox.Text}'");
-            }
-            if (statusFilterTextBox.Text != ">Status" && !string.IsNullOrWhiteSpace(statusFilterTextBox.Text))
-            {
-                filtersForFlagShow.Add($"status='{statusFilterTextBox.Text}'");
-            }
-            if (cheskSystemResponsFilterTextBox.Text != ">Chesk System Respons" && !string.IsNullOrWhiteSpace(cheskSystemResponsFilterTextBox.Text))
-            {
-                filtersForFlagShow.Add($"cheskSystemRespons='{cheskSystemResponsFilterTextBox.Text}'");
-            }
+                if (exploitFilterTextBox.Text != ">Exploit Name" && !string.IsNullOrWhiteSpace(exploitFilterTextBox.Text))
+                {
+                    filtersForFlagShow.Add($"sploit_name='{exploitFilterTextBox.Text}'");
+                }
+                if (teamFilterTextBox.Text != ">Team Name" && !string.IsNullOrWhiteSpace(teamFilterTextBox.Text))
+                {
+                    filtersForFlagShow.Add($"team_name='{teamFilterTextBox.Text}'");
+                }
+                if (flagFilterTextBox.Text != ">Flag" && !string.IsNullOrWhiteSpace(flagFilterTextBox.Text))
+                {
+                    filtersForFlagShow.Add($"sended_flag='{flagFilterTextBox.Text}'");
+                }
+                if (statusFilterTextBox.Text != ">Status" && !string.IsNullOrWhiteSpace(statusFilterTextBox.Text))
+                {
+                    filtersForFlagShow.Add($"status='{statusFilterTextBox.Text}'");
+                }
+                if (cheskSystemResponsFilterTextBox.Text != ">Chesk System Respons" && !string.IsNullOrWhiteSpace(cheskSystemResponsFilterTextBox.Text))
+                {
+                    filtersForFlagShow.Add($"cheskSystemRespons='{cheskSystemResponsFilterTextBox.Text}'");
+                }
 
-            if (ClearFiltersInputCheckBox.Checked)
+                if (ClearFiltersInputCheckBox.Checked)
+                {
+                    exploitFilterTextBox.Text = ">Exploit Name";
+                    exploitFilterTextBox.ForeColor = Color.Gray;
+
+                    teamFilterTextBox.Text = ">Team Name";
+                    teamFilterTextBox.ForeColor = Color.Gray;
+
+                    flagFilterTextBox.Text = ">Flag";
+                    flagFilterTextBox.ForeColor = Color.Gray;
+
+                    statusFilterTextBox.Text = ">Status";
+                    statusFilterTextBox.ForeColor = Color.Gray;
+
+                    cheskSystemResponsFilterTextBox.Text = ">Chesk System Respons";
+                    cheskSystemResponsFilterTextBox.ForeColor = Color.Gray;
+                }
+
+                DataBaseWorkAplication DBWorkFormFlagFilter = new DataBaseWorkAplication();
+                DBWorkFormFlagFilter.StartConnection("Data Source=FarmInfo.db");
+                List<object>? AllFlags = new List<object>();
+                if (filtersForFlagShow.Count > 0)
+                {
+                    AllFlags = DBWorkFormFlagFilter.ReadClassFromDB_AllClass_byParams(new FlagHistory(), filtersForFlagShow);
+                }
+                else
+                {
+                    AllFlags = DBWorkFormFlagFilter.ReadClassFromDB_AllClass(new FlagHistory()); ;
+                }
+
+
+                nextPageFlagsTableButton.Enabled = false;
+                prevPageFlagsTableButton.Enabled = false;
+
+                flagStatusGridView.Rows.Clear();
+                if (AllFlags != null)
+                {
+                    if (AllFlags.Count % 13 == 0)
+                    {
+                        pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13));
+                    }
+                    else
+                    {
+                        pagesOfMaxForFlagsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((AllFlags.Count - (AllFlags.Count % 13)) / 13) + 1);
+                    }
+                    int j = 0;
+
+                    for (int i = (AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13 < 0) ? AllFlags.Count - 1 : AllFlags.Count - 1 - (Convert.ToInt32(curPageFlagsTableTextBox.Text) - 1) * 13; i >= 0; i--)
+                    {
+                        if (j >= 13)///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        {
+                            break;
+                        }
+                        FlagHistory flag = AllFlags[i] as FlagHistory;
+
+                        flagStatusGridView.Rows.Add();
+
+                        if (flag.GetType().GetField("sploit_name") != null)
+                        {
+                            DataGridViewTextBoxCell textBoxCell1 = new DataGridViewTextBoxCell();
+                            textBoxCell1.Value = flag.sploit_name;
+                            flagStatusGridView[0, j] = textBoxCell1;
+                        }
+                        if (flag.GetType().GetField("team_name") != null)
+                        {
+                            DataGridViewTextBoxCell textBoxCell2 = new DataGridViewTextBoxCell();
+                            textBoxCell2.Value = flag.team_name;
+                            flagStatusGridView[1, j] = textBoxCell2;
+                        }
+                        if (flag.GetType().GetField("sended_flag") != null)
+                        {
+                            DataGridViewTextBoxCell textBoxCell3 = new DataGridViewTextBoxCell();
+                            textBoxCell3.Value = flag.sended_flag;
+                            flagStatusGridView[2, j] = textBoxCell3;
+                        }
+                        if (flag.GetType().GetField("time") != null)
+                        {
+                            DataGridViewTextBoxCell textBoxCell4 = new DataGridViewTextBoxCell();
+                            textBoxCell4.Value = flag.time;
+                            flagStatusGridView[3, j] = textBoxCell4;
+                        }
+                        if (flag.GetType().GetField("status") != null)
+                        {
+                            DataGridViewTextBoxCell textBoxCell5 = new DataGridViewTextBoxCell();
+                            textBoxCell5.Value = flag.status;
+                            flagStatusGridView[4, j] = textBoxCell5;
+                        }
+                        if (flag.GetType().GetField("cheskSystemRespons") != null)
+                        {
+                            DataGridViewTextBoxCell textBoxCell6 = new DataGridViewTextBoxCell();
+                            textBoxCell6.Value = flag.cheskSystemRespons;
+                            flagStatusGridView[5, j] = textBoxCell6;
+                        }
+
+                        j++;
+                    }
+                }
+                nextPageFlagsTableButton.Enabled = true;
+                prevPageFlagsTableButton.Enabled = true;
+            }
+            catch (Exception exp)
             {
-                exploitFilterTextBox.Text = ">Exploit Name";
-                exploitFilterTextBox.ForeColor = Color.Gray;
-
-                teamFilterTextBox.Text = ">Team Name";
-                teamFilterTextBox.ForeColor = Color.Gray;
-
-                flagFilterTextBox.Text = ">Flag";
-                flagFilterTextBox.ForeColor = Color.Gray;
-
-                statusFilterTextBox.Text = ">Status";
-                statusFilterTextBox.ForeColor = Color.Gray;
-
-                cheskSystemResponsFilterTextBox.Text = ">Chesk System Respons";
-                cheskSystemResponsFilterTextBox.ForeColor = Color.Gray;
+                MessageBox.Show($"Warning!\nSome problem while applying filters\n{exp}", "WARNING");
+            }
+            finally
+            {
+                nextPageFlagsTableButton.Enabled = true;
+                prevPageFlagsTableButton.Enabled = true;
             }
         }
 
