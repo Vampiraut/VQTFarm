@@ -1,4 +1,4 @@
-# VQTFarm (Work in Progress)
+# VQTFarm (Work in Progress so may contains bugs!!!)
 This is Vampiraut's QarabagTeam Farm for Attack-Defense CTF competitions. You can read more about the competitions [here](https://ctftime.org/ctf-wtf).
 
 The farm is engaged in regularly launching written sploits for all commands, parsing the result of the work, taking out flags from there and sending them to the checking system. The farm has a convenient GUI for windows. It is capable of working on multiple threads, processing each feature of the system in a separate thread.
@@ -8,7 +8,6 @@ The farm is written in the C# programming language, the platform.NET 6.0, applic
 # Requirements
 nuget pakages:
 1. Microsoft.Data.Sqlite
-2. Guna.UI2.WinForms
 
 # START FARM
 1. Download the solution from GitHub
@@ -29,7 +28,7 @@ your import
 '''
 
 url = sys.argv[1]
-flags = sys.argv[2]
+flags = re.findall(r'[A-Z0-9]{31}=', sys.argv[2])
 token = sys.argv[3]
 team_name = sys.argv[4]
 exploit_name = sys.argv[5]
@@ -50,16 +49,27 @@ conn = sqlite3.connect(path)
 cur = conn.cursor()
 
 #example for RuCTF protocol (can be rewrited)
+STATUS = {
+    "ACCEPTED": ["Flag accepted!"],
+    "DENIED": ["Flag is invalid or too old."]
+}
+
+conn = sqlite3.connect(path)
+cur = conn.cursor()
 for item in r.json():
     response = item['msg'].strip()
     response = response.replace('[{}] '.format(item['flag']), '')
+
     status = ""
-    for i in response:
-        if i != ':':
-            status += i
-        else:
-            break
-    mess = (None, exploit_name, team_name, item['flag'], str(datetime.now()), status.upper(), response)
+    for key in STATUS:
+        for i in range(len(STATUS[key])):
+            if STATUS[key][i] in response:
+                status = key
+                break
+    if status == "":
+        status = "INVALIDE"
+
+    mess = (None, exploit_name, team_name, item['flag'], str(datetime.now()), status, response)
     cur.execute("INSERT INTO FlagHistorys VALUES (?, ?, ?, ?, ?, ?, ?);", mess)
     conn.commit()
 conn.close()
@@ -76,7 +86,7 @@ ip = sys.argv[1]
 
 #your code is written here
 
-print(*flags_arr, sep=',', end="")
+print(flags_arr)
 ```
 
 # The sequel will be coming soon
