@@ -1,4 +1,4 @@
-# VQTFarm (Work in Progress so may contains bugs!!!)
+# VQTFarm Version 3
 This is Vampiraut's QarabagTeam Farm for Attack-Defense CTF competitions. You can read more about the competitions [here](https://ctftime.org/ctf-wtf).
 
 The farm is engaged in regularly launching written sploits for all commands, parsing the result of the work, taking out flags from there and sending them to the checking system. The farm has a convenient GUI for windows. It is capable of working on multiple threads, processing each feature of the system in a separate thread.
@@ -90,12 +90,13 @@ print(flags) #as you wish, !!!however, the execution of the code must be complet
 # First look
 1. Preset Farm Settings
 
-![Preset Farm Settings](https://github.com/Vampiraut/VQTFarm/assets/99714655/434235f2-0749-4fc3-b668-958c922bcd13)
+![Preset Farm Settings](https://github.com/Vampiraut/VQTFarm/assets/99714655/e8a58b7e-b85a-45d2-b93d-212cb540c284)
+
 
 2. Main Window
 
-![Main Window](https://github.com/Vampiraut/VQTFarm/assets/99714655/71a8651c-cc76-49d6-a149-43f5caf94886)
+![Main Window](https://github.com/Vampiraut/VQTFarm/assets/99714655/7ee33035-2a65-45b4-967e-83d2ea2efaf0)
+
 
 # Feedback
 If you have any problems - contact telegram: `@Grime_Reaper`
-# The sequel will be coming soon
