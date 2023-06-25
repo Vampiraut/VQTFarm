@@ -28,21 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             menuStrip1 = new MenuStrip();
             settingsToolStripMenuItem = new ToolStripMenuItem();
+            addTeamManualToolStripMenuItem = new ToolStripMenuItem();
             showToolStripMenuItem = new ToolStripMenuItem();
             teamsToolStripMenuItem = new ToolStripMenuItem();
             flagHistoryToolStripMenuItem = new ToolStripMenuItem();
             manualSubmitToolStripMenuItem = new ToolStripMenuItem();
             exploitTestToolStripMenuItem = new ToolStripMenuItem();
             flagShowFilterToolStripMenuItem = new ToolStripMenuItem();
-            addTeamManualToolStripMenuItem = new ToolStripMenuItem();
             startStopFarmToolStripMenuItem = new ToolStripMenuItem();
+            onOffAutoTeamParseToolStripMenuItem = new ToolStripMenuItem();
+            onOffConectionCheckToolStripMenuItem = new ToolStripMenuItem();
+            DisablePopUpMessagesToolStripMenuItem = new ToolStripMenuItem();
+            informationToolStripMenuItem = new ToolStripMenuItem();
+            warningsToolStripMenuItem = new ToolStripMenuItem();
+            errorsToolStripMenuItem = new ToolStripMenuItem();
             fixTablesToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             flagStatusGridView = new DataGridView();
@@ -73,7 +79,6 @@
             pageForTeamsPanelLabel = new Label();
             nextPageTeamsTableButton = new Button();
             prevPageTeamsTableButton = new Button();
-            AutoTeamsParsFromScoreBoardCheckBox = new CheckBox();
             teamsListLabel = new Label();
             flagStatusPanel = new Panel();
             pagesOfMaxForFlagsPanelLabel = new Label();
@@ -104,17 +109,24 @@
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { showToolStripMenuItem, addTeamManualToolStripMenuItem, startStopFarmToolStripMenuItem, fixTablesToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addTeamManualToolStripMenuItem, showToolStripMenuItem, startStopFarmToolStripMenuItem, onOffAutoTeamParseToolStripMenuItem, onOffConectionCheckToolStripMenuItem, DisablePopUpMessagesToolStripMenuItem, fixTablesToolStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
             // 
+            // addTeamManualToolStripMenuItem
+            // 
+            addTeamManualToolStripMenuItem.Name = "addTeamManualToolStripMenuItem";
+            addTeamManualToolStripMenuItem.Size = new Size(214, 22);
+            addTeamManualToolStripMenuItem.Text = "Add team manual";
+            addTeamManualToolStripMenuItem.Click += addTeamManualToolStripMenuItem_Click;
+            // 
             // showToolStripMenuItem
             // 
             showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { teamsToolStripMenuItem, flagHistoryToolStripMenuItem, manualSubmitToolStripMenuItem, exploitTestToolStripMenuItem, flagShowFilterToolStripMenuItem });
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(169, 22);
+            showToolStripMenuItem.Size = new Size(214, 22);
             showToolStripMenuItem.Text = "Show";
             showToolStripMenuItem.Click += showToolStripMenuItem_Click;
             // 
@@ -163,24 +175,62 @@
             flagShowFilterToolStripMenuItem.Text = "Flag Show Filter";
             flagShowFilterToolStripMenuItem.Click += flagShowFilterToolStripMenuItem_Click;
             // 
-            // addTeamManualToolStripMenuItem
-            // 
-            addTeamManualToolStripMenuItem.Name = "addTeamManualToolStripMenuItem";
-            addTeamManualToolStripMenuItem.Size = new Size(169, 22);
-            addTeamManualToolStripMenuItem.Text = "Add team manual";
-            addTeamManualToolStripMenuItem.Click += addTeamManualToolStripMenuItem_Click;
-            // 
             // startStopFarmToolStripMenuItem
             // 
             startStopFarmToolStripMenuItem.Name = "startStopFarmToolStripMenuItem";
-            startStopFarmToolStripMenuItem.Size = new Size(169, 22);
+            startStopFarmToolStripMenuItem.Size = new Size(214, 22);
             startStopFarmToolStripMenuItem.Text = "Start/Stop Farm";
             startStopFarmToolStripMenuItem.Click += startStopFarmToolStripMenuItem_Click;
+            // 
+            // onOffAutoTeamParseToolStripMenuItem
+            // 
+            onOffAutoTeamParseToolStripMenuItem.ForeColor = Color.Red;
+            onOffAutoTeamParseToolStripMenuItem.Name = "onOffAutoTeamParseToolStripMenuItem";
+            onOffAutoTeamParseToolStripMenuItem.Size = new Size(214, 22);
+            onOffAutoTeamParseToolStripMenuItem.Text = "On Auto team parse (OFF)";
+            onOffAutoTeamParseToolStripMenuItem.Click += onOffAutoTeamParseToolStripMenuItem_Click;
+            // 
+            // onOffConectionCheckToolStripMenuItem
+            // 
+            onOffConectionCheckToolStripMenuItem.ForeColor = Color.Red;
+            onOffConectionCheckToolStripMenuItem.Name = "onOffConectionCheckToolStripMenuItem";
+            onOffConectionCheckToolStripMenuItem.Size = new Size(214, 22);
+            onOffConectionCheckToolStripMenuItem.Text = "On Conection check (OFF)";
+            onOffConectionCheckToolStripMenuItem.Click += onOffConectionCheckToolStripMenuItem_Click;
+            // 
+            // DisablePopUpMessagesToolStripMenuItem
+            // 
+            DisablePopUpMessagesToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { informationToolStripMenuItem, warningsToolStripMenuItem, errorsToolStripMenuItem });
+            DisablePopUpMessagesToolStripMenuItem.Name = "DisablePopUpMessagesToolStripMenuItem";
+            DisablePopUpMessagesToolStripMenuItem.Size = new Size(214, 22);
+            DisablePopUpMessagesToolStripMenuItem.Text = "Disable pop-up messages";
+            DisablePopUpMessagesToolStripMenuItem.Click += disablePopUpMessagesToolStripMenuItem_Click;
+            // 
+            // informationToolStripMenuItem
+            // 
+            informationToolStripMenuItem.Name = "informationToolStripMenuItem";
+            informationToolStripMenuItem.Size = new Size(180, 22);
+            informationToolStripMenuItem.Text = "Information";
+            informationToolStripMenuItem.Click += informationToolStripMenuItem_Click;
+            // 
+            // warningsToolStripMenuItem
+            // 
+            warningsToolStripMenuItem.Name = "warningsToolStripMenuItem";
+            warningsToolStripMenuItem.Size = new Size(180, 22);
+            warningsToolStripMenuItem.Text = "Warnings";
+            warningsToolStripMenuItem.Click += warningsToolStripMenuItem_Click;
+            // 
+            // errorsToolStripMenuItem
+            // 
+            errorsToolStripMenuItem.Name = "errorsToolStripMenuItem";
+            errorsToolStripMenuItem.Size = new Size(180, 22);
+            errorsToolStripMenuItem.Text = "Errors";
+            errorsToolStripMenuItem.Click += errorsToolStripMenuItem_Click;
             // 
             // fixTablesToolStripMenuItem
             // 
             fixTablesToolStripMenuItem.Name = "fixTablesToolStripMenuItem";
-            fixTablesToolStripMenuItem.Size = new Size(169, 22);
+            fixTablesToolStripMenuItem.Size = new Size(214, 22);
             fixTablesToolStripMenuItem.Text = "Fix Tables";
             fixTablesToolStripMenuItem.Click += fixTablesToolStripMenuItem_Click;
             // 
@@ -200,23 +250,23 @@
             flagStatusGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             flagStatusGridView.BackgroundColor = SystemColors.Window;
             flagStatusGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            flagStatusGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Control;
+            dataGridViewCellStyle5.Font = new Font("Calibri", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            flagStatusGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             flagStatusGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            flagStatusGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Window;
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle6.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
+            flagStatusGridView.DefaultCellStyle = dataGridViewCellStyle6;
             flagStatusGridView.Location = new Point(3, 35);
             flagStatusGridView.MultiSelect = false;
             flagStatusGridView.Name = "flagStatusGridView";
@@ -285,9 +335,9 @@
             exploitTestPanelLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
             exploitTestPanelLabel.Location = new Point(-1, 0);
             exploitTestPanelLabel.Name = "exploitTestPanelLabel";
-            exploitTestPanelLabel.Size = new Size(183, 32);
+            exploitTestPanelLabel.Size = new Size(167, 32);
             exploitTestPanelLabel.TabIndex = 5;
-            exploitTestPanelLabel.Text = "EXPLOIT TEST";
+            exploitTestPanelLabel.Text = "SPLOIT TEST";
             exploitTestPanelLabel.Click += exploitTestPanelLabel_Click;
             // 
             // flagStatusLabel
@@ -462,23 +512,23 @@
             teamsPlaceDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             teamsPlaceDataGridView.BackgroundColor = SystemColors.Window;
             teamsPlaceDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            teamsPlaceDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = SystemColors.Control;
+            dataGridViewCellStyle7.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            teamsPlaceDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             teamsPlaceDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Window;
-            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
-            teamsPlaceDataGridView.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = SystemColors.Window;
+            dataGridViewCellStyle8.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = SystemColors.HighlightText;
+            dataGridViewCellStyle8.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
+            teamsPlaceDataGridView.DefaultCellStyle = dataGridViewCellStyle8;
             teamsPlaceDataGridView.Location = new Point(3, 35);
             teamsPlaceDataGridView.MultiSelect = false;
             teamsPlaceDataGridView.Name = "teamsPlaceDataGridView";
@@ -502,7 +552,6 @@
             teamsListPanel.Controls.Add(pageForTeamsPanelLabel);
             teamsListPanel.Controls.Add(nextPageTeamsTableButton);
             teamsListPanel.Controls.Add(prevPageTeamsTableButton);
-            teamsListPanel.Controls.Add(AutoTeamsParsFromScoreBoardCheckBox);
             teamsListPanel.Controls.Add(teamsListLabel);
             teamsListPanel.Controls.Add(teamsPlaceDataGridView);
             teamsListPanel.Location = new Point(714, 27);
@@ -561,17 +610,6 @@
             prevPageTeamsTableButton.Text = "<";
             prevPageTeamsTableButton.UseVisualStyleBackColor = true;
             prevPageTeamsTableButton.Click += prevPageTeamsTableButton_Click;
-            // 
-            // AutoTeamsParsFromScoreBoardCheckBox
-            // 
-            AutoTeamsParsFromScoreBoardCheckBox.AutoSize = true;
-            AutoTeamsParsFromScoreBoardCheckBox.Location = new Point(3, 369);
-            AutoTeamsParsFromScoreBoardCheckBox.Name = "AutoTeamsParsFromScoreBoardCheckBox";
-            AutoTeamsParsFromScoreBoardCheckBox.Size = new Size(203, 19);
-            AutoTeamsParsFromScoreBoardCheckBox.TabIndex = 10;
-            AutoTeamsParsFromScoreBoardCheckBox.Text = "Auto teams pars from scoreboard";
-            AutoTeamsParsFromScoreBoardCheckBox.UseVisualStyleBackColor = true;
-            AutoTeamsParsFromScoreBoardCheckBox.CheckedChanged += AutoTeamsParsFromScoreBoardCheckBox_CheckedChanged;
             // 
             // teamsListLabel
             // 
@@ -726,7 +764,6 @@
         private Label teamsListLabel;
         private Panel flagStatusPanel;
         private ToolStripMenuItem addTeamManualToolStripMenuItem;
-        private CheckBox AutoTeamsParsFromScoreBoardCheckBox;
         private ComboBox teamChooseComboBox;
         private TextBox exploitChooseTextBox;
         private ToolStripMenuItem showToolStripMenuItem;
@@ -755,5 +792,11 @@
         private Button prevPageFlagsTableButton;
         private TextBox curPageTeamsTableTextBox;
         private Label pagesOfMaxForTeamsPanelLabel;
+        private ToolStripMenuItem onOffConectionCheckToolStripMenuItem;
+        private ToolStripMenuItem onOffAutoTeamParseToolStripMenuItem;
+        private ToolStripMenuItem DisablePopUpMessagesToolStripMenuItem;
+        private ToolStripMenuItem informationToolStripMenuItem;
+        private ToolStripMenuItem warningsToolStripMenuItem;
+        private ToolStripMenuItem errorsToolStripMenuItem;
     }
 }

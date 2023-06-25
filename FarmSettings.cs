@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace VQTFarm
+﻿namespace VQTFarm
 {
     [Serializable]
     public class FarmSettings
