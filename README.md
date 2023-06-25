@@ -74,7 +74,7 @@ conn.close()
 ```
 
 # Writing your sploits
-The sploit is written in the Python programming language. The sploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(flags), as you wish, !!!BUT, the execution of the code must be completed. After writing the sploit, this file should be added to the Sploits folder.
+The sploit is written in the Python programming language. The sploit must contain the import of the "sys" library and obtaining the ip address of the attacked command via sys.argv[1]. The result of the program is output via print(flags), as you wish. After writing the sploit, this file should be added to the Sploits folder.
 Example:
 ```Python
 import sys
@@ -84,7 +84,7 @@ ip = sys.argv[1]
 
 #your code is written here
 
-print(flags) #as you wish, !!!however, the execution of the code must be completed
+print(flags) #as you wish
 ```
 
 # First look
