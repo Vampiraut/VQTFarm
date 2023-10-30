@@ -47,6 +47,9 @@ namespace VQTFarm
             defaultNameTextBox.Enter += new EventHandler(defaultNameTextBox_Enter);
             defaultNameTextBox.Leave += new EventHandler(defaultNameTextBox_Leave);
 
+            startGenerationButton.MouseEnter += new EventHandler(startGenerationButton_Enter);
+            startGenerationButton.MouseLeave += new EventHandler(startGenerationButton_Leave);
+
             warningMesLabel.Visible = false;
         }
         private void defaultNameTextBox_Leave(object? sender, EventArgs e)
@@ -157,5 +160,16 @@ namespace VQTFarm
         {
 
         }
+
+        #region Button EventHandlers
+        private void startGenerationButton_Enter(object? sender, EventArgs e)
+        {
+            startGenerationButton.BackColor = Color.Purple;
+        }
+        private void startGenerationButton_Leave(object? sender, EventArgs e)
+        {
+            startGenerationButton.BackColor = Color.Black;
+        }
+        #endregion
     }
 }

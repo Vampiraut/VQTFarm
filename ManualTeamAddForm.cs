@@ -26,6 +26,9 @@ namespace VQTFarm
 
             teamIPTextBox.Enter += new EventHandler(teamIPTextBox_Enter);
             teamIPTextBox.Leave += new EventHandler(teamIPTextBox_Leave);
+
+            AddButton.MouseEnter += new EventHandler(AddButton_Enter);
+            AddButton.MouseLeave += new EventHandler(AddButton_Leave);
         }
 
         #region TextBoxs EventHandlers
@@ -127,6 +130,19 @@ namespace VQTFarm
         private void noTeamIPLabel_Click(object sender, EventArgs e)
         {
 
+        }
+        #endregion
+
+
+
+        #region Button EventHandlers
+        private void AddButton_Enter(object? sender, EventArgs e)
+        {
+            AddButton.BackColor = Color.Purple;
+        }
+        private void AddButton_Leave(object? sender, EventArgs e)
+        {
+            AddButton.BackColor = Color.Black;
         }
         #endregion
     }

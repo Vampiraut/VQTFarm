@@ -118,6 +118,29 @@ namespace VQTFarm
                 cheskSystemResponsFilterTextBox.Leave += new EventHandler(cheskSystemResponsFilterTextBox_Leave);
 
 
+
+                manualSubmitButton.MouseEnter += new EventHandler(manualSubmitButton_Enter);
+                manualSubmitButton.MouseLeave += new EventHandler(manualSubmitButton_Leave);
+
+                runTestButton.MouseEnter += new EventHandler(runTestButton_Enter);
+                runTestButton.MouseLeave += new EventHandler(runTestButton_Leave);
+
+                applyFilterButton.MouseEnter += new EventHandler(applyFilterButton_Enter);
+                applyFilterButton.MouseLeave += new EventHandler(applyFilterButton_Leave);
+
+                nextPageFlagsTableButton.MouseEnter += new EventHandler(nextPageFlagsTableButton_Enter);
+                nextPageFlagsTableButton.MouseLeave += new EventHandler(nextPageFlagsTableButton_Leave);
+
+                prevPageFlagsTableButton.MouseEnter += new EventHandler(prevPageFlagsTableButton_Enter);
+                prevPageFlagsTableButton.MouseLeave += new EventHandler(prevPageFlagsTableButton_Leave);
+
+                nextPageTeamsTableButton.MouseEnter += new EventHandler(nextPageTeamsTableButton_Enter);
+                nextPageTeamsTableButton.MouseLeave += new EventHandler(nextPageTeamsTableButton_Leave);
+
+                prevPageTeamsTableButton.MouseEnter += new EventHandler(prevPageTeamsTableButton_Enter);
+                prevPageTeamsTableButton.MouseLeave += new EventHandler(prevPageTeamsTableButton_Leave);
+
+
                 #region Pages of tables
                 curPageFlagsTableTextBox.Text = "1";
                 pagesOfMaxForFlagsPanelLabel.Text = "of 1";
@@ -2156,6 +2179,72 @@ namespace VQTFarm
         private void flagShowFilterPanel_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+        #endregion
+
+
+        #region Button EventHandlers
+        private void manualSubmitButton_Enter(object? sender, EventArgs e)
+        {
+            manualSubmitButton.BackColor = Color.Purple;
+        }
+        private void manualSubmitButton_Leave(object? sender, EventArgs e)
+        {
+            manualSubmitButton.BackColor = Color.Black;
+        }
+
+        private void runTestButton_Enter(object? sender, EventArgs e)
+        {
+            runTestButton.BackColor = Color.Purple;
+        }
+        private void runTestButton_Leave(object? sender, EventArgs e)
+        {
+            runTestButton.BackColor = Color.Black;
+        }
+
+        private void applyFilterButton_Enter(object? sender, EventArgs e)
+        {
+            applyFilterButton.BackColor = Color.Purple;
+        }
+        private void applyFilterButton_Leave(object? sender, EventArgs e)
+        {
+            applyFilterButton.BackColor = Color.Black;
+        }
+
+        private void nextPageFlagsTableButton_Enter(object? sender, EventArgs e)
+        {
+            nextPageFlagsTableButton.BackColor = Color.Purple;
+        }
+        private void nextPageFlagsTableButton_Leave(object? sender, EventArgs e)
+        {
+            nextPageFlagsTableButton.BackColor = Color.Black;
+        }
+
+        private void prevPageFlagsTableButton_Enter(object? sender, EventArgs e)
+        {
+            prevPageFlagsTableButton.BackColor = Color.Purple;
+        }
+        private void prevPageFlagsTableButton_Leave(object? sender, EventArgs e)
+        {
+            prevPageFlagsTableButton.BackColor = Color.Black;
+        }
+
+        private void nextPageTeamsTableButton_Enter(object? sender, EventArgs e)
+        {
+            nextPageTeamsTableButton.BackColor = Color.Purple;
+        }
+        private void nextPageTeamsTableButton_Leave(object? sender, EventArgs e)
+        {
+            nextPageTeamsTableButton.BackColor = Color.Black;
+        }
+
+        private void prevPageTeamsTableButton_Enter(object? sender, EventArgs e)
+        {
+            prevPageTeamsTableButton.BackColor = Color.Purple;
+        }
+        private void prevPageTeamsTableButton_Leave(object? sender, EventArgs e)
+        {
+            prevPageTeamsTableButton.BackColor = Color.Black;
         }
         #endregion
     }

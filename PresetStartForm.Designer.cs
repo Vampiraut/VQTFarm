@@ -70,7 +70,7 @@
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            settingsToolStripMenuItem.ForeColor = Color.Black;
+            settingsToolStripMenuItem.ForeColor = Color.Lime;
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(66, 21);
             settingsToolStripMenuItem.Text = "Settings";
@@ -78,7 +78,7 @@
             // helpToolStripMenuItem
             // 
             helpToolStripMenuItem.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            helpToolStripMenuItem.ForeColor = Color.Black;
+            helpToolStripMenuItem.ForeColor = Color.Lime;
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(47, 21);
             helpToolStripMenuItem.Text = "Help";
@@ -87,7 +87,7 @@
             // 
             PresetSettingsLabel.AutoSize = true;
             PresetSettingsLabel.Font = new Font("Calibri", 20F, FontStyle.Bold, GraphicsUnit.Point);
-            PresetSettingsLabel.ForeColor = Color.Indigo;
+            PresetSettingsLabel.ForeColor = Color.Lime;
             PresetSettingsLabel.Location = new Point(27, 40);
             PresetSettingsLabel.Name = "PresetSettingsLabel";
             PresetSettingsLabel.Size = new Size(336, 33);
@@ -156,7 +156,7 @@
             // noFlagFormatLabel
             // 
             noFlagFormatLabel.AutoSize = true;
-            noFlagFormatLabel.ForeColor = Color.DarkRed;
+            noFlagFormatLabel.ForeColor = Color.Red;
             noFlagFormatLabel.Location = new Point(12, 109);
             noFlagFormatLabel.Name = "noFlagFormatLabel";
             noFlagFormatLabel.Size = new Size(96, 15);
@@ -167,7 +167,7 @@
             // noTeamTokenLabel
             // 
             noTeamTokenLabel.AutoSize = true;
-            noTeamTokenLabel.ForeColor = Color.DarkRed;
+            noTeamTokenLabel.ForeColor = Color.Red;
             noTeamTokenLabel.Location = new Point(12, 160);
             noTeamTokenLabel.Name = "noTeamTokenLabel";
             noTeamTokenLabel.Size = new Size(97, 15);
@@ -178,7 +178,7 @@
             // noTeamOwnerIPLabel
             // 
             noTeamOwnerIPLabel.AutoSize = true;
-            noTeamOwnerIPLabel.ForeColor = Color.DarkRed;
+            noTeamOwnerIPLabel.ForeColor = Color.Red;
             noTeamOwnerIPLabel.Location = new Point(12, 211);
             noTeamOwnerIPLabel.Name = "noTeamOwnerIPLabel";
             noTeamOwnerIPLabel.Size = new Size(104, 15);
@@ -189,7 +189,7 @@
             // noRoundTimeLabel
             // 
             noRoundTimeLabel.AutoSize = true;
-            noRoundTimeLabel.ForeColor = Color.DarkRed;
+            noRoundTimeLabel.ForeColor = Color.Red;
             noRoundTimeLabel.Location = new Point(12, 262);
             noRoundTimeLabel.Name = "noRoundTimeLabel";
             noRoundTimeLabel.Size = new Size(96, 15);
@@ -200,7 +200,7 @@
             // noScoreboardURLLabel
             // 
             noScoreboardURLLabel.AutoSize = true;
-            noScoreboardURLLabel.ForeColor = Color.DarkRed;
+            noScoreboardURLLabel.ForeColor = Color.Red;
             noScoreboardURLLabel.Location = new Point(12, 313);
             noScoreboardURLLabel.Name = "noScoreboardURLLabel";
             noScoreboardURLLabel.Size = new Size(121, 15);
@@ -212,6 +212,7 @@
             // 
             ifClearLastWorkCheckBox.AutoSize = true;
             ifClearLastWorkCheckBox.Font = new Font("Arial", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            ifClearLastWorkCheckBox.ForeColor = Color.Lime;
             ifClearLastWorkCheckBox.Location = new Point(12, 426);
             ifClearLastWorkCheckBox.Name = "ifClearLastWorkCheckBox";
             ifClearLastWorkCheckBox.Size = new Size(156, 20);
@@ -232,7 +233,7 @@
             // noFlagsubmitterURLLabel
             // 
             noFlagsubmitterURLLabel.AutoSize = true;
-            noFlagsubmitterURLLabel.ForeColor = Color.DarkRed;
+            noFlagsubmitterURLLabel.ForeColor = Color.Red;
             noFlagsubmitterURLLabel.Location = new Point(12, 364);
             noFlagsubmitterURLLabel.Name = "noFlagsubmitterURLLabel";
             noFlagsubmitterURLLabel.Size = new Size(134, 15);
@@ -252,7 +253,7 @@
             // noFlagLifeTimeLabel
             // 
             noFlagLifeTimeLabel.AutoSize = true;
-            noFlagLifeTimeLabel.ForeColor = Color.DarkRed;
+            noFlagLifeTimeLabel.ForeColor = Color.Red;
             noFlagLifeTimeLabel.Location = new Point(191, 262);
             noFlagLifeTimeLabel.Name = "noFlagLifeTimeLabel";
             noFlagLifeTimeLabel.Size = new Size(100, 15);
@@ -281,7 +282,7 @@
             // noPythonGetScriptLabel
             // 
             noPythonGetScriptLabel.AutoSize = true;
-            noPythonGetScriptLabel.ForeColor = Color.DarkRed;
+            noPythonGetScriptLabel.ForeColor = Color.Red;
             noPythonGetScriptLabel.Location = new Point(12, 408);
             noPythonGetScriptLabel.Name = "noPythonGetScriptLabel";
             noPythonGetScriptLabel.Size = new Size(142, 15);
@@ -292,7 +293,7 @@
             // noPythonFlagSendScriptLabel
             // 
             noPythonFlagSendScriptLabel.AutoSize = true;
-            noPythonFlagSendScriptLabel.ForeColor = Color.DarkRed;
+            noPythonFlagSendScriptLabel.ForeColor = Color.Red;
             noPythonFlagSendScriptLabel.Location = new Point(204, 408);
             noPythonFlagSendScriptLabel.Name = "noPythonFlagSendScriptLabel";
             noPythonFlagSendScriptLabel.Size = new Size(175, 15);
@@ -304,7 +305,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.DeepSkyBlue;
+            BackColor = Color.DarkBlue;
             ClientSize = new Size(408, 528);
             Controls.Add(noPythonFlagSendScriptLabel);
             Controls.Add(noPythonGetScriptLabel);
@@ -334,7 +335,7 @@
             MaximizeBox = false;
             Name = "PresetStartForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Preset Settings for VQT Farm";
+            Text = "Settings for VQT Farm";
             Load += PresetStartForm_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

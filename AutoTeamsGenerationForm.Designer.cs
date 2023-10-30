@@ -93,6 +93,7 @@
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Segoe UI Black", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.ForeColor = Color.Lime;
             label1.Location = new Point(67, 3);
             label1.Name = "label1";
             label1.Size = new Size(22, 32);
@@ -104,6 +105,7 @@
             label2.AutoSize = true;
             label2.BackColor = Color.Transparent;
             label2.Font = new Font("Segoe UI Black", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.ForeColor = Color.Lime;
             label2.Location = new Point(150, 3);
             label2.Name = "label2";
             label2.Size = new Size(22, 32);
@@ -115,6 +117,7 @@
             label3.AutoSize = true;
             label3.BackColor = Color.Transparent;
             label3.Font = new Font("Segoe UI Black", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.ForeColor = Color.Lime;
             label3.Location = new Point(233, 3);
             label3.Name = "label3";
             label3.Size = new Size(22, 32);
@@ -126,6 +129,7 @@
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
             label4.Font = new Font("Segoe UI Black", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label4.ForeColor = Color.Lime;
             label4.Location = new Point(233, 32);
             label4.Name = "label4";
             label4.Size = new Size(22, 32);
@@ -137,6 +141,7 @@
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
             label5.Font = new Font("Segoe UI Black", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label5.ForeColor = Color.Lime;
             label5.Location = new Point(150, 32);
             label5.Name = "label5";
             label5.Size = new Size(22, 32);
@@ -148,6 +153,7 @@
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
             label6.Font = new Font("Segoe UI Black", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            label6.ForeColor = Color.Lime;
             label6.Location = new Point(67, 32);
             label6.Name = "label6";
             label6.Size = new Size(22, 32);
@@ -196,13 +202,15 @@
             // 
             // startGenerationButton
             // 
+            startGenerationButton.BackColor = SystemColors.WindowText;
             startGenerationButton.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            startGenerationButton.ForeColor = Color.Lime;
             startGenerationButton.Location = new Point(329, 41);
             startGenerationButton.Name = "startGenerationButton";
-            startGenerationButton.Size = new Size(132, 23);
+            startGenerationButton.Size = new Size(132, 36);
             startGenerationButton.TabIndex = 20;
             startGenerationButton.Text = "Generate";
-            startGenerationButton.UseVisualStyleBackColor = true;
+            startGenerationButton.UseVisualStyleBackColor = false;
             startGenerationButton.Click += startGenerationButton_Click;
             // 
             // warningMesLabel
@@ -220,6 +228,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.DarkBlue;
             ClientSize = new Size(473, 89);
             Controls.Add(warningMesLabel);
             Controls.Add(startGenerationButton);

@@ -56,19 +56,21 @@
             // 
             // AddButton
             // 
+            AddButton.BackColor = SystemColors.WindowText;
             AddButton.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            AddButton.ForeColor = Color.Lime;
             AddButton.Location = new Point(247, 27);
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(162, 66);
             AddButton.TabIndex = 3;
             AddButton.Text = "Add Team";
-            AddButton.UseVisualStyleBackColor = true;
+            AddButton.UseVisualStyleBackColor = false;
             AddButton.Click += AddButton_Click;
             // 
             // noTeamNameLabel
             // 
             noTeamNameLabel.AutoSize = true;
-            noTeamNameLabel.ForeColor = Color.DarkRed;
+            noTeamNameLabel.ForeColor = Color.Red;
             noTeamNameLabel.Location = new Point(12, 45);
             noTeamNameLabel.Name = "noTeamNameLabel";
             noTeamNameLabel.Size = new Size(97, 15);
@@ -79,7 +81,7 @@
             // noTeamIPLabel
             // 
             noTeamIPLabel.AutoSize = true;
-            noTeamIPLabel.ForeColor = Color.DarkRed;
+            noTeamIPLabel.ForeColor = Color.Red;
             noTeamIPLabel.Location = new Point(12, 96);
             noTeamIPLabel.Name = "noTeamIPLabel";
             noTeamIPLabel.Size = new Size(77, 15);
@@ -91,12 +93,14 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.DarkBlue;
             ClientSize = new Size(421, 120);
             Controls.Add(noTeamIPLabel);
             Controls.Add(noTeamNameLabel);
             Controls.Add(AddButton);
             Controls.Add(teamNameTextBox);
             Controls.Add(teamIPTextBox);
+            ForeColor = SystemColors.ControlText;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;

@@ -32,19 +32,21 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             menuStrip1 = new MenuStrip();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             addTeamManualToolStripMenuItem = new ToolStripMenuItem();
+            autoTeamsGenerationToolStripMenuItem = new ToolStripMenuItem();
+            startStopFarmToolStripMenuItem = new ToolStripMenuItem();
+            onOffAutoTeamParseToolStripMenuItem = new ToolStripMenuItem();
+            onOffConectionCheckToolStripMenuItem = new ToolStripMenuItem();
             showToolStripMenuItem = new ToolStripMenuItem();
             teamsToolStripMenuItem = new ToolStripMenuItem();
             flagHistoryToolStripMenuItem = new ToolStripMenuItem();
             manualSubmitToolStripMenuItem = new ToolStripMenuItem();
             exploitTestToolStripMenuItem = new ToolStripMenuItem();
             flagShowFilterToolStripMenuItem = new ToolStripMenuItem();
-            startStopFarmToolStripMenuItem = new ToolStripMenuItem();
-            onOffAutoTeamParseToolStripMenuItem = new ToolStripMenuItem();
-            onOffConectionCheckToolStripMenuItem = new ToolStripMenuItem();
             DisablePopUpMessagesToolStripMenuItem = new ToolStripMenuItem();
             informationToolStripMenuItem = new ToolStripMenuItem();
             warningsToolStripMenuItem = new ToolStripMenuItem();
@@ -87,7 +89,6 @@
             nextPageFlagsTableButton = new Button();
             prevPageFlagsTableButton = new Button();
             flagTotalAceptedLabel = new Label();
-            autoTeamsGenerationToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flagStatusGridView).BeginInit();
             exploitTestPanel.SuspendLayout();
@@ -100,6 +101,7 @@
             // 
             // menuStrip1
             // 
+            menuStrip1.BackColor = Color.Transparent;
             menuStrip1.Items.AddRange(new ToolStripItem[] { settingsToolStripMenuItem, helpToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
@@ -111,6 +113,7 @@
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addTeamManualToolStripMenuItem, autoTeamsGenerationToolStripMenuItem, startStopFarmToolStripMenuItem, onOffAutoTeamParseToolStripMenuItem, onOffConectionCheckToolStripMenuItem, showToolStripMenuItem, DisablePopUpMessagesToolStripMenuItem, fixTablesToolStripMenuItem });
+            settingsToolStripMenuItem.ForeColor = Color.Lime;
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
@@ -118,63 +121,18 @@
             // 
             // addTeamManualToolStripMenuItem
             // 
+            addTeamManualToolStripMenuItem.ForeColor = SystemColors.ControlText;
             addTeamManualToolStripMenuItem.Name = "addTeamManualToolStripMenuItem";
             addTeamManualToolStripMenuItem.Size = new Size(214, 22);
             addTeamManualToolStripMenuItem.Text = "Add team manual";
             addTeamManualToolStripMenuItem.Click += addTeamManualToolStripMenuItem_Click;
             // 
-            // showToolStripMenuItem
+            // autoTeamsGenerationToolStripMenuItem
             // 
-            showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { teamsToolStripMenuItem, flagHistoryToolStripMenuItem, manualSubmitToolStripMenuItem, exploitTestToolStripMenuItem, flagShowFilterToolStripMenuItem });
-            showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(214, 22);
-            showToolStripMenuItem.Text = "Show";
-            showToolStripMenuItem.Click += showToolStripMenuItem_Click;
-            // 
-            // teamsToolStripMenuItem
-            // 
-            teamsToolStripMenuItem.Checked = true;
-            teamsToolStripMenuItem.CheckState = CheckState.Checked;
-            teamsToolStripMenuItem.Name = "teamsToolStripMenuItem";
-            teamsToolStripMenuItem.Size = new Size(180, 22);
-            teamsToolStripMenuItem.Text = "Teams";
-            teamsToolStripMenuItem.Click += teamsToolStripMenuItem_Click;
-            // 
-            // flagHistoryToolStripMenuItem
-            // 
-            flagHistoryToolStripMenuItem.Checked = true;
-            flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
-            flagHistoryToolStripMenuItem.Name = "flagHistoryToolStripMenuItem";
-            flagHistoryToolStripMenuItem.Size = new Size(180, 22);
-            flagHistoryToolStripMenuItem.Text = "Flag History";
-            flagHistoryToolStripMenuItem.Click += flagHistoryToolStripMenuItem_Click;
-            // 
-            // manualSubmitToolStripMenuItem
-            // 
-            manualSubmitToolStripMenuItem.Checked = true;
-            manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
-            manualSubmitToolStripMenuItem.Name = "manualSubmitToolStripMenuItem";
-            manualSubmitToolStripMenuItem.Size = new Size(180, 22);
-            manualSubmitToolStripMenuItem.Text = "Manual Submit";
-            manualSubmitToolStripMenuItem.Click += manualSubmitToolStripMenuItem_Click;
-            // 
-            // exploitTestToolStripMenuItem
-            // 
-            exploitTestToolStripMenuItem.Checked = true;
-            exploitTestToolStripMenuItem.CheckState = CheckState.Checked;
-            exploitTestToolStripMenuItem.Name = "exploitTestToolStripMenuItem";
-            exploitTestToolStripMenuItem.Size = new Size(180, 22);
-            exploitTestToolStripMenuItem.Text = "Exploit Test";
-            exploitTestToolStripMenuItem.Click += exploitTestToolStripMenuItem_Click;
-            // 
-            // flagShowFilterToolStripMenuItem
-            // 
-            flagShowFilterToolStripMenuItem.Checked = true;
-            flagShowFilterToolStripMenuItem.CheckState = CheckState.Checked;
-            flagShowFilterToolStripMenuItem.Name = "flagShowFilterToolStripMenuItem";
-            flagShowFilterToolStripMenuItem.Size = new Size(180, 22);
-            flagShowFilterToolStripMenuItem.Text = "Flag Show Filter";
-            flagShowFilterToolStripMenuItem.Click += flagShowFilterToolStripMenuItem_Click;
+            autoTeamsGenerationToolStripMenuItem.Name = "autoTeamsGenerationToolStripMenuItem";
+            autoTeamsGenerationToolStripMenuItem.Size = new Size(214, 22);
+            autoTeamsGenerationToolStripMenuItem.Text = "Auto teams generation";
+            autoTeamsGenerationToolStripMenuItem.Click += autoTeamsGenerationToolStripMenuItem_Click;
             // 
             // startStopFarmToolStripMenuItem
             // 
@@ -198,6 +156,59 @@
             onOffConectionCheckToolStripMenuItem.Size = new Size(214, 22);
             onOffConectionCheckToolStripMenuItem.Text = "On Conection check (OFF)";
             onOffConectionCheckToolStripMenuItem.Click += onOffConectionCheckToolStripMenuItem_Click;
+            // 
+            // showToolStripMenuItem
+            // 
+            showToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { teamsToolStripMenuItem, flagHistoryToolStripMenuItem, manualSubmitToolStripMenuItem, exploitTestToolStripMenuItem, flagShowFilterToolStripMenuItem });
+            showToolStripMenuItem.Name = "showToolStripMenuItem";
+            showToolStripMenuItem.Size = new Size(214, 22);
+            showToolStripMenuItem.Text = "Show";
+            showToolStripMenuItem.Click += showToolStripMenuItem_Click;
+            // 
+            // teamsToolStripMenuItem
+            // 
+            teamsToolStripMenuItem.Checked = true;
+            teamsToolStripMenuItem.CheckState = CheckState.Checked;
+            teamsToolStripMenuItem.Name = "teamsToolStripMenuItem";
+            teamsToolStripMenuItem.Size = new Size(157, 22);
+            teamsToolStripMenuItem.Text = "Teams";
+            teamsToolStripMenuItem.Click += teamsToolStripMenuItem_Click;
+            // 
+            // flagHistoryToolStripMenuItem
+            // 
+            flagHistoryToolStripMenuItem.Checked = true;
+            flagHistoryToolStripMenuItem.CheckState = CheckState.Checked;
+            flagHistoryToolStripMenuItem.Name = "flagHistoryToolStripMenuItem";
+            flagHistoryToolStripMenuItem.Size = new Size(157, 22);
+            flagHistoryToolStripMenuItem.Text = "Flag History";
+            flagHistoryToolStripMenuItem.Click += flagHistoryToolStripMenuItem_Click;
+            // 
+            // manualSubmitToolStripMenuItem
+            // 
+            manualSubmitToolStripMenuItem.Checked = true;
+            manualSubmitToolStripMenuItem.CheckState = CheckState.Checked;
+            manualSubmitToolStripMenuItem.Name = "manualSubmitToolStripMenuItem";
+            manualSubmitToolStripMenuItem.Size = new Size(157, 22);
+            manualSubmitToolStripMenuItem.Text = "Manual Submit";
+            manualSubmitToolStripMenuItem.Click += manualSubmitToolStripMenuItem_Click;
+            // 
+            // exploitTestToolStripMenuItem
+            // 
+            exploitTestToolStripMenuItem.Checked = true;
+            exploitTestToolStripMenuItem.CheckState = CheckState.Checked;
+            exploitTestToolStripMenuItem.Name = "exploitTestToolStripMenuItem";
+            exploitTestToolStripMenuItem.Size = new Size(157, 22);
+            exploitTestToolStripMenuItem.Text = "Exploit Test";
+            exploitTestToolStripMenuItem.Click += exploitTestToolStripMenuItem_Click;
+            // 
+            // flagShowFilterToolStripMenuItem
+            // 
+            flagShowFilterToolStripMenuItem.Checked = true;
+            flagShowFilterToolStripMenuItem.CheckState = CheckState.Checked;
+            flagShowFilterToolStripMenuItem.Name = "flagShowFilterToolStripMenuItem";
+            flagShowFilterToolStripMenuItem.Size = new Size(157, 22);
+            flagShowFilterToolStripMenuItem.Text = "Flag Show Filter";
+            flagShowFilterToolStripMenuItem.Click += flagShowFilterToolStripMenuItem_Click;
             // 
             // DisablePopUpMessagesToolStripMenuItem
             // 
@@ -237,6 +248,8 @@
             // 
             // helpToolStripMenuItem
             // 
+            helpToolStripMenuItem.BackColor = Color.Transparent;
+            helpToolStripMenuItem.ForeColor = Color.Lime;
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(44, 20);
             helpToolStripMenuItem.Text = "Help";
@@ -249,10 +262,10 @@
             flagStatusGridView.AllowUserToResizeColumns = false;
             flagStatusGridView.AllowUserToResizeRows = false;
             flagStatusGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            flagStatusGridView.BackgroundColor = SystemColors.Window;
+            flagStatusGridView.BackgroundColor = Color.DarkBlue;
             flagStatusGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.BackColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Regular, GraphicsUnit.Point);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.HighlightText;
@@ -261,7 +274,7 @@
             flagStatusGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             flagStatusGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.BackColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.HighlightText;
@@ -310,13 +323,15 @@
             // 
             // runTestButton
             // 
+            runTestButton.BackColor = SystemColors.WindowText;
             runTestButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            runTestButton.ForeColor = Color.Lime;
             runTestButton.Location = new Point(217, 35);
             runTestButton.Name = "runTestButton";
             runTestButton.Size = new Size(153, 60);
             runTestButton.TabIndex = 8;
             runTestButton.Text = "START TEST";
-            runTestButton.UseVisualStyleBackColor = true;
+            runTestButton.UseVisualStyleBackColor = false;
             runTestButton.Click += runTestButton_Click;
             // 
             // teamChooseComboBox
@@ -332,11 +347,11 @@
             // exploitTestPanelLabel
             // 
             exploitTestPanelLabel.AutoSize = true;
-            exploitTestPanelLabel.BorderStyle = BorderStyle.Fixed3D;
             exploitTestPanelLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exploitTestPanelLabel.ForeColor = Color.Lime;
             exploitTestPanelLabel.Location = new Point(-1, 0);
             exploitTestPanelLabel.Name = "exploitTestPanelLabel";
-            exploitTestPanelLabel.Size = new Size(167, 32);
+            exploitTestPanelLabel.Size = new Size(165, 30);
             exploitTestPanelLabel.TabIndex = 5;
             exploitTestPanelLabel.Text = "SPLOIT TEST";
             exploitTestPanelLabel.Click += exploitTestPanelLabel_Click;
@@ -344,11 +359,11 @@
             // flagStatusLabel
             // 
             flagStatusLabel.AutoSize = true;
-            flagStatusLabel.BorderStyle = BorderStyle.Fixed3D;
             flagStatusLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            flagStatusLabel.ForeColor = Color.Lime;
             flagStatusLabel.Location = new Point(519, 0);
             flagStatusLabel.Name = "flagStatusLabel";
-            flagStatusLabel.Size = new Size(176, 32);
+            flagStatusLabel.Size = new Size(174, 30);
             flagStatusLabel.TabIndex = 3;
             flagStatusLabel.Text = "FLAG STATUS";
             flagStatusLabel.Click += flagStatusLabel_Click;
@@ -367,13 +382,15 @@
             // 
             // manualSubmitButton
             // 
+            manualSubmitButton.BackColor = SystemColors.WindowText;
             manualSubmitButton.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            manualSubmitButton.ForeColor = Color.Lime;
             manualSubmitButton.Location = new Point(3, 64);
             manualSubmitButton.Name = "manualSubmitButton";
             manualSubmitButton.Size = new Size(307, 47);
             manualSubmitButton.TabIndex = 8;
             manualSubmitButton.Text = "SUBMIT";
-            manualSubmitButton.UseVisualStyleBackColor = true;
+            manualSubmitButton.UseVisualStyleBackColor = false;
             manualSubmitButton.Click += manualSubmitButton_Click;
             // 
             // manualSubmitTextBox
@@ -387,11 +404,11 @@
             // manualFlagSubmitPanelLabel
             // 
             manualFlagSubmitPanelLabel.AutoSize = true;
-            manualFlagSubmitPanelLabel.BorderStyle = BorderStyle.Fixed3D;
             manualFlagSubmitPanelLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            manualFlagSubmitPanelLabel.ForeColor = Color.Lime;
             manualFlagSubmitPanelLabel.Location = new Point(-1, 0);
             manualFlagSubmitPanelLabel.Name = "manualFlagSubmitPanelLabel";
-            manualFlagSubmitPanelLabel.Size = new Size(215, 32);
+            manualFlagSubmitPanelLabel.Size = new Size(213, 30);
             manualFlagSubmitPanelLabel.TabIndex = 6;
             manualFlagSubmitPanelLabel.Text = "MANUAL SUBMIT";
             manualFlagSubmitPanelLabel.Click += manualFlagSubmitPanelLabel_Click;
@@ -399,11 +416,11 @@
             // flagTotalSendedLabel
             // 
             flagTotalSendedLabel.AutoSize = true;
-            flagTotalSendedLabel.BorderStyle = BorderStyle.Fixed3D;
             flagTotalSendedLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            flagTotalSendedLabel.ForeColor = Color.Lime;
             flagTotalSendedLabel.Location = new Point(-1, 0);
             flagTotalSendedLabel.Name = "flagTotalSendedLabel";
-            flagTotalSendedLabel.Size = new Size(304, 32);
+            flagTotalSendedLabel.Size = new Size(302, 30);
             flagTotalSendedLabel.TabIndex = 5;
             flagTotalSendedLabel.Text = "TOTAL FLAGS SENDED: 0";
             flagTotalSendedLabel.Click += flagTotalSendedLabel_Click;
@@ -428,6 +445,7 @@
             // ClearFiltersInputCheckBox
             // 
             ClearFiltersInputCheckBox.AutoSize = true;
+            ClearFiltersInputCheckBox.ForeColor = Color.Lime;
             ClearFiltersInputCheckBox.Location = new Point(464, 110);
             ClearFiltersInputCheckBox.Name = "ClearFiltersInputCheckBox";
             ClearFiltersInputCheckBox.Size = new Size(227, 19);
@@ -438,13 +456,15 @@
             // 
             // applyFilterButton
             // 
+            applyFilterButton.BackColor = SystemColors.WindowText;
             applyFilterButton.Font = new Font("Arial Black", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            applyFilterButton.ForeColor = Color.Lime;
             applyFilterButton.Location = new Point(511, 61);
             applyFilterButton.Name = "applyFilterButton";
             applyFilterButton.Size = new Size(180, 43);
             applyFilterButton.TabIndex = 11;
             applyFilterButton.Text = "APPLY FILTER";
-            applyFilterButton.UseVisualStyleBackColor = true;
+            applyFilterButton.UseVisualStyleBackColor = false;
             applyFilterButton.Click += applyFilterButton_Click;
             // 
             // cheskSystemResponsFilterTextBox
@@ -495,11 +515,11 @@
             // flagShowFilterPanelLabel
             // 
             flagShowFilterPanelLabel.AutoSize = true;
-            flagShowFilterPanelLabel.BorderStyle = BorderStyle.Fixed3D;
             flagShowFilterPanelLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            flagShowFilterPanelLabel.ForeColor = Color.Lime;
             flagShowFilterPanelLabel.Location = new Point(-1, 0);
             flagShowFilterPanelLabel.Name = "flagShowFilterPanelLabel";
-            flagShowFilterPanelLabel.Size = new Size(244, 32);
+            flagShowFilterPanelLabel.Size = new Size(242, 30);
             flagShowFilterPanelLabel.TabIndex = 0;
             flagShowFilterPanelLabel.Text = "FLAG SHOW FILTER";
             flagShowFilterPanelLabel.Click += flagShowFilterPanelLabel_Click;
@@ -511,10 +531,10 @@
             teamsPlaceDataGridView.AllowUserToResizeColumns = false;
             teamsPlaceDataGridView.AllowUserToResizeRows = false;
             teamsPlaceDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            teamsPlaceDataGridView.BackgroundColor = SystemColors.Window;
+            teamsPlaceDataGridView.BackgroundColor = Color.DarkBlue;
             teamsPlaceDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.BackColor = SystemColors.HighlightText;
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle3.SelectionBackColor = SystemColors.HighlightText;
@@ -523,9 +543,9 @@
             teamsPlaceDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             teamsPlaceDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.BackColor = SystemColors.HighlightText;
             dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle4.SelectionBackColor = SystemColors.HighlightText;
             dataGridViewCellStyle4.SelectionForeColor = SystemColors.ControlText;
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
@@ -534,6 +554,14 @@
             teamsPlaceDataGridView.MultiSelect = false;
             teamsPlaceDataGridView.Name = "teamsPlaceDataGridView";
             teamsPlaceDataGridView.ReadOnly = true;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Control;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            teamsPlaceDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
             teamsPlaceDataGridView.RowTemplate.Height = 25;
             teamsPlaceDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             teamsPlaceDataGridView.ShowCellErrors = false;
@@ -564,6 +592,7 @@
             // pagesOfMaxForTeamsPanelLabel
             // 
             pagesOfMaxForTeamsPanelLabel.AutoSize = true;
+            pagesOfMaxForTeamsPanelLabel.ForeColor = Color.Lime;
             pagesOfMaxForTeamsPanelLabel.Location = new Point(413, 10);
             pagesOfMaxForTeamsPanelLabel.Name = "pagesOfMaxForTeamsPanelLabel";
             pagesOfMaxForTeamsPanelLabel.Size = new Size(75, 15);
@@ -573,7 +602,9 @@
             // 
             // curPageTeamsTableTextBox
             // 
+            curPageTeamsTableTextBox.BackColor = Color.DarkBlue;
             curPageTeamsTableTextBox.BorderStyle = BorderStyle.None;
+            curPageTeamsTableTextBox.ForeColor = Color.Lime;
             curPageTeamsTableTextBox.Location = new Point(346, 10);
             curPageTeamsTableTextBox.Name = "curPageTeamsTableTextBox";
             curPageTeamsTableTextBox.ReadOnly = true;
@@ -585,6 +616,7 @@
             // pageForTeamsPanelLabel
             // 
             pageForTeamsPanelLabel.AutoSize = true;
+            pageForTeamsPanelLabel.ForeColor = Color.Lime;
             pageForTeamsPanelLabel.Location = new Point(304, 10);
             pageForTeamsPanelLabel.Name = "pageForTeamsPanelLabel";
             pageForTeamsPanelLabel.Size = new Size(36, 15);
@@ -594,32 +626,36 @@
             // 
             // nextPageTeamsTableButton
             // 
+            nextPageTeamsTableButton.BackColor = Color.Black;
+            nextPageTeamsTableButton.ForeColor = Color.Lime;
             nextPageTeamsTableButton.Location = new Point(494, 3);
             nextPageTeamsTableButton.Name = "nextPageTeamsTableButton";
             nextPageTeamsTableButton.Size = new Size(29, 29);
             nextPageTeamsTableButton.TabIndex = 13;
             nextPageTeamsTableButton.Text = ">";
-            nextPageTeamsTableButton.UseVisualStyleBackColor = true;
+            nextPageTeamsTableButton.UseVisualStyleBackColor = false;
             nextPageTeamsTableButton.Click += nextPageTeamsTableButton_Click;
             // 
             // prevPageTeamsTableButton
             // 
+            prevPageTeamsTableButton.BackColor = Color.Black;
+            prevPageTeamsTableButton.ForeColor = Color.Lime;
             prevPageTeamsTableButton.Location = new Point(269, 3);
             prevPageTeamsTableButton.Name = "prevPageTeamsTableButton";
             prevPageTeamsTableButton.Size = new Size(29, 29);
             prevPageTeamsTableButton.TabIndex = 12;
             prevPageTeamsTableButton.Text = "<";
-            prevPageTeamsTableButton.UseVisualStyleBackColor = true;
+            prevPageTeamsTableButton.UseVisualStyleBackColor = false;
             prevPageTeamsTableButton.Click += prevPageTeamsTableButton_Click;
             // 
             // teamsListLabel
             // 
             teamsListLabel.AutoSize = true;
-            teamsListLabel.BorderStyle = BorderStyle.Fixed3D;
             teamsListLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            teamsListLabel.ForeColor = Color.Lime;
             teamsListLabel.Location = new Point(-1, 0);
             teamsListLabel.Name = "teamsListLabel";
-            teamsListLabel.Size = new Size(96, 32);
+            teamsListLabel.Size = new Size(94, 30);
             teamsListLabel.TabIndex = 6;
             teamsListLabel.Text = "TEAMS";
             teamsListLabel.Click += teamsListLabel_Click;
@@ -645,6 +681,7 @@
             // pagesOfMaxForFlagsPanelLabel
             // 
             pagesOfMaxForFlagsPanelLabel.AutoSize = true;
+            pagesOfMaxForFlagsPanelLabel.ForeColor = Color.Lime;
             pagesOfMaxForFlagsPanelLabel.Location = new Point(1115, 416);
             pagesOfMaxForFlagsPanelLabel.Name = "pagesOfMaxForFlagsPanelLabel";
             pagesOfMaxForFlagsPanelLabel.Size = new Size(75, 15);
@@ -654,7 +691,9 @@
             // 
             // curPageFlagsTableTextBox
             // 
+            curPageFlagsTableTextBox.BackColor = Color.DarkBlue;
             curPageFlagsTableTextBox.BorderStyle = BorderStyle.None;
+            curPageFlagsTableTextBox.ForeColor = Color.Lime;
             curPageFlagsTableTextBox.Location = new Point(1048, 416);
             curPageFlagsTableTextBox.Name = "curPageFlagsTableTextBox";
             curPageFlagsTableTextBox.ReadOnly = true;
@@ -666,6 +705,7 @@
             // pageForFlagsPanelLabel
             // 
             pageForFlagsPanelLabel.AutoSize = true;
+            pageForFlagsPanelLabel.ForeColor = Color.Lime;
             pageForFlagsPanelLabel.Location = new Point(1006, 416);
             pageForFlagsPanelLabel.Name = "pageForFlagsPanelLabel";
             pageForFlagsPanelLabel.Size = new Size(36, 15);
@@ -675,48 +715,45 @@
             // 
             // nextPageFlagsTableButton
             // 
+            nextPageFlagsTableButton.BackColor = Color.Black;
+            nextPageFlagsTableButton.ForeColor = Color.Lime;
             nextPageFlagsTableButton.Location = new Point(1196, 409);
             nextPageFlagsTableButton.Name = "nextPageFlagsTableButton";
             nextPageFlagsTableButton.Size = new Size(29, 29);
             nextPageFlagsTableButton.TabIndex = 14;
             nextPageFlagsTableButton.Text = ">";
-            nextPageFlagsTableButton.UseVisualStyleBackColor = true;
+            nextPageFlagsTableButton.UseVisualStyleBackColor = false;
             nextPageFlagsTableButton.Click += nextPageFlagsTableButton_Click;
             // 
             // prevPageFlagsTableButton
             // 
+            prevPageFlagsTableButton.BackColor = Color.Black;
+            prevPageFlagsTableButton.ForeColor = Color.Lime;
             prevPageFlagsTableButton.Location = new Point(971, 409);
             prevPageFlagsTableButton.Name = "prevPageFlagsTableButton";
             prevPageFlagsTableButton.Size = new Size(29, 29);
             prevPageFlagsTableButton.TabIndex = 13;
             prevPageFlagsTableButton.Text = "<";
-            prevPageFlagsTableButton.UseVisualStyleBackColor = true;
+            prevPageFlagsTableButton.UseVisualStyleBackColor = false;
             prevPageFlagsTableButton.Click += prevPageFlagsTableButton_Click;
             // 
             // flagTotalAceptedLabel
             // 
             flagTotalAceptedLabel.AutoSize = true;
-            flagTotalAceptedLabel.BorderStyle = BorderStyle.Fixed3D;
             flagTotalAceptedLabel.Font = new Font("Arial Black", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
+            flagTotalAceptedLabel.ForeColor = Color.Lime;
             flagTotalAceptedLabel.Location = new Point(821, 0);
             flagTotalAceptedLabel.Name = "flagTotalAceptedLabel";
-            flagTotalAceptedLabel.Size = new Size(333, 32);
+            flagTotalAceptedLabel.Size = new Size(331, 30);
             flagTotalAceptedLabel.TabIndex = 6;
             flagTotalAceptedLabel.Text = "TOTAL FLAGS ACCEPTED: 0";
             flagTotalAceptedLabel.Click += flagTotalAceptedLabel_Click;
-            // 
-            // autoTeamsGenerationToolStripMenuItem
-            // 
-            autoTeamsGenerationToolStripMenuItem.Name = "autoTeamsGenerationToolStripMenuItem";
-            autoTeamsGenerationToolStripMenuItem.Size = new Size(214, 22);
-            autoTeamsGenerationToolStripMenuItem.Text = "Auto teams generation";
-            autoTeamsGenerationToolStripMenuItem.Click += autoTeamsGenerationToolStripMenuItem_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.Control;
+            BackColor = Color.DarkBlue;
             ClientSize = new Size(1256, 881);
             Controls.Add(flagStatusPanel);
             Controls.Add(teamsListPanel);
