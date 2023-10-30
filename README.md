@@ -90,12 +90,12 @@ print(flags) #as you wish
 # First look
 1. Preset Farm Settings
 
-![Preset Farm Settings](https://github.com/Vampiraut/VQTFarm/assets/99714655/e8a58b7e-b85a-45d2-b93d-212cb540c284)
+![Preset Farm Settings](https://github.com/Vampiraut/VQTFarm/assets/99714655/2b47c59f-b87a-4122-a02e-8e142723f7ce)
 
 
 2. Main Window
 
-![Main Window](https://github.com/Vampiraut/VQTFarm/assets/99714655/7ee33035-2a65-45b4-967e-83d2ea2efaf0)
+![Main Window](https://github.com/Vampiraut/VQTFarm/assets/99714655/5fdce812-7815-4332-91d8-c516bfb84b88)
 
 
 # Feedback
