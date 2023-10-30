@@ -5,8 +5,8 @@ import requests
 import sqlite3
 
 STATUS = {
-    "ACCEPTED": ["Flag accepted!"],
-    "DENIED": ["Flag is invalid or too old."]
+    "ACCEPTED": ["Flag accepted!", "Accepted", "flag points"],
+    "DENIED": ["Flag is invalid or too old.", "Denied", "you already submitted", "too old"]
 }
 
 url = sys.argv[1]
