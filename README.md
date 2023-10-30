@@ -118,5 +118,3 @@ print(flags) #as you wish
 
 # Feedback
 If you have any problems - contact telegram: `@Grime_Reaper`
-
-# The sequel will be coming soon
