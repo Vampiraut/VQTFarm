@@ -372,7 +372,7 @@ namespace VQTFarm
                     }
                 }
                 flagSendProc.Kill();
-                if(!informationToolStripMenuItem.Checked)
+                if (!informationToolStripMenuItem.Checked)
                 {
                     MessageBox.Show("The \"PythonFlagSendRequest\" process is killed", "TimeOut Exception");
                 }
@@ -450,7 +450,7 @@ namespace VQTFarm
                         {
                             answ = reader.ReadToEnd();
                             process.Kill();
-                            if(!informationToolStripMenuItem.Checked)
+                            if (!informationToolStripMenuItem.Checked)
                             {
                                 MessageBox.Show("The \"Sploit\" process is killed", "TimeOut Exception");
                             }
@@ -478,7 +478,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem with script running\n{exp}", "WARNING");
                 }
@@ -500,7 +500,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!errorsToolStripMenuItem.Checked)
+                if (!errorsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Error!\nSome problem in stopping threadings.\nPlease, close threadings by using Task Manager and restart Farm\n{exp}", "ERROR");
                 }
@@ -560,7 +560,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!errorsToolStripMenuItem.Checked)
+                if (!errorsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Error!\nSome problem in restart multiprocessing.\nPlease, restart farm for correct work!\n{exp}", "ERROR");
                 }
@@ -572,7 +572,7 @@ namespace VQTFarm
             {
                 while (isFlagsSendTHRMustRun)
                 {
-                    if(onOffConectionCheckToolStripMenuItem.Checked && flagsQueue.Count > 0)
+                    if (onOffConectionCheckToolStripMenuItem.Checked && flagsQueue.Count > 0)
                     {
                         if (!PythonConnectionCheck())
                         {
@@ -584,7 +584,7 @@ namespace VQTFarm
                             continue;
                         }
                     }
-                    
+
                     var isQueueContainsFlags = flagsQueue.TryDequeue(out KeyValuePair<ThreadInfoClass, DateTime> thrInfo);
                     if (isQueueContainsFlags)
                     {
@@ -684,7 +684,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem while updating teams info\n{exp}", "WARNING");
                 }
@@ -1080,11 +1080,10 @@ namespace VQTFarm
                 if (!(openFileDialog.ShowDialog() == DialogResult.Cancel))
                 {
                     pathToConnectionCheckScript = openFileDialog.FileName;
+                    onOffConectionCheckToolStripMenuItem.Checked = true;
+                    onOffConectionCheckToolStripMenuItem.Text = "Off Conection check (ON)";
+                    onOffConectionCheckToolStripMenuItem.ForeColor = Color.Green;
                 }
-
-                onOffConectionCheckToolStripMenuItem.Checked = true;
-                onOffConectionCheckToolStripMenuItem.Text = "Off Conection check (ON)";
-                onOffConectionCheckToolStripMenuItem.ForeColor = Color.Green;
             }
         }
         #endregion
@@ -1096,7 +1095,7 @@ namespace VQTFarm
         }
         private void informationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(informationToolStripMenuItem.Checked == true)
+            if (informationToolStripMenuItem.Checked == true)
             {
                 informationToolStripMenuItem.Checked = false;
             }
@@ -1245,6 +1244,61 @@ namespace VQTFarm
         }
         #endregion
 
+        #region Auto teams generation Menu
+        private void autoTeamsGenerationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AutoTeamsGenerationForm teamGenerationForm = new AutoTeamsGenerationForm();
+            teamGenerationForm.FormClosed += new FormClosedEventHandler(teamGenerationForm_Closed);
+            teamGenerationForm.ShowDialog();
+        }
+        private void teamGenerationForm_Closed(object? sender, FormClosedEventArgs e)
+        {
+            try
+            {
+                List<object>? ctfTeams = DBWorkForm.ReadClassFromDB_AllClass(new CTFTeam());
+                if (ctfTeams != null)
+                {
+                    if (ctfTeams.Count % 11 == 0)
+                    {
+                        pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32(ctfTeams.Count - (ctfTeams.Count % 11)) / 11);
+                    }
+                    else
+                    {
+                        pagesOfMaxForTeamsPanelLabel.Text = "of " + Convert.ToString(Convert.ToInt32((ctfTeams.Count - (ctfTeams.Count % 11)) / 11) + 1);
+                    }
+                    teamsList.Clear();
+                    teamChooseComboBox.Items.Clear();
+                    teamChooseComboBox.Items.Add("-Select Team for test-");
+                    teamChooseComboBox.Items.Add("All teams");
+                    teamChooseComboBox.SelectedItem = "-Select Team for test-";
+                    foreach (var teams in ctfTeams) //создаёт постоянную с IP команд и их именем
+                    {
+                        CTFTeam team = teams as CTFTeam;
+                        if (team.teamIP != fs.teamOwnerIP)
+                        {
+                            teamsList.Add(new KeyValuePair<string, string>(team.teamIP, team.teamName));
+                            teamChooseComboBox.Items.Add(team.teamName);
+                        }
+                    }
+                }
+                else
+                {
+                    teamsList.Clear();
+                    teamChooseComboBox.Items.Clear();
+                    teamChooseComboBox.Items.Add("-Select Team for test-");
+                    teamChooseComboBox.SelectedItem = "-Select Team for test-";
+                }
+            }
+            catch (Exception exp)
+            {
+                if (!warningsToolStripMenuItem.Checked)
+                {
+                    MessageBox.Show($"Warning!\nSome problem while updating teams after auto generated teams add\n{exp}", "WARNING");
+                }
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Help Menu
@@ -1375,7 +1429,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem while swithing flags pages\n{exp}", "WARNING");
                 }
@@ -1481,7 +1535,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem while swithing flags pages\n{exp}", "WARNING");
                 }
@@ -1599,7 +1653,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem while swithing teams pages\n{exp}", "WARNING");
                 }
@@ -1685,7 +1739,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem while swithing teams pages\n{exp}", "WARNING");
                 }
@@ -2082,7 +2136,7 @@ namespace VQTFarm
             }
             catch (Exception exp)
             {
-                if(!warningsToolStripMenuItem.Checked)
+                if (!warningsToolStripMenuItem.Checked)
                 {
                     MessageBox.Show($"Warning!\nSome problem while applying filters\n{exp}", "WARNING");
                 }
