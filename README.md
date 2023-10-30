@@ -15,6 +15,24 @@ nuget pakages:
 3. Enter the first settings in the window that opens
 4. Click the "Deploy farm" button.
 
+# Help
+In the main window of the program, you can manage and configure the necessary work parameters:
+1. Settings - farm settings:
+   1. Add team manual - manually adding a team to the list of attacked teams with specifying their IP and name.
+   2. Auto teams generation - automatic generation of commands in a given range of IP addresses to the list of attacked commands with the assignment of their IP and default name.
+   3. Start/Stop Farm - enabling/disabling program threads. Stops the farm by disabling sending flags and updating tables.
+   4. On Auto team parse (OFF) - enabling the function of automatic team parsing from scoreboards, subject to the availability of a working script. Updates team data once a round: their position, name, IP and flagpoints.(the working script should be selected on the initial window, being added to the folder with the corresponding scripts)
+   5. On Conection check (OFF) - enables the function of checking the availability of the check system. After clicking, you need to select the python script to check.
+   6. Show - enables/disables elements of the working window. In addition to visually disabling them, it stops the work thread associated with this element.
+   7. Disable pop-up messages - enables/disables the display of notification messages, warnings and errors.
+   8. Fix Tables - fix a bug with tables when they stop displaying information.
+3. Help - shows information from this block.
+4. Manual Submit - panel for manually sending flags.
+5. Sploit test - testing the operability of the sploits before they are added to the main process, with the choice of the attacked team.
+6. Teams - a table showing the teams (their position, name, IP, flag points). Pagination is available.
+7. Flag status - a table showing the sent flags (by which unit it was received, from which command, which flag, the time of sending, the status and the response from the check system). Also shows the total number of sent flags and accepted flags. Pagination is available.
+8. Flag show filter - a panel with filter settings for displaying information on flags in the table from the previous paragraph.
+   
 # Writing your get/flagSend protocols
 The protocols is written in the Python programming language. After writing the protocol, this file should be added to the appropriate folder.
 Example:
