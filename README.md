@@ -1,5 +1,5 @@
 # VQTFarm (Work in Progress so may contains bugs!!!)
-[Russian version.](https://github.com/Vampiraut/VQTFarm/blob/master/READMERus.md)
+[Russian version.](https://github.com/Vampiraut/VQTFarm/blob/VQTFarmWebAPI/READMERus.md)
 
 This is Vampiraut's QarabagTeam Farm for Attack-Defense CTF competitions. You can read more about the competitions [here](https://ctftime.org/ctf-wtf).
 
