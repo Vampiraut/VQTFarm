@@ -1,5 +1,3 @@
-#define DebagTestFunction
-
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -615,21 +613,7 @@ namespace VQTFarm
                     {
                         if (thrInfo.Value.AddMilliseconds(fs.roundTime * fs.flagLifeTime) >= DateTime.Now)
                         {
-#if DebagTestFunction                                                                                       //////////////////////////////////////////////////////////
-                            string path = "";
-                            try
-                            {
-                                path = Path.GetFileName(thrInfo.Key.scriptPath);
-                            }
-                            catch
-                            {
-                                path = thrInfo.Key.scriptPath;
-                            }
-
-                            PythonFlagSendRequest(thrInfo.Key.flags, thrInfo.Key.team_name, path);
-#else
                             PythonFlagSendRequest(thrInfo.Key.flags, thrInfo.Key.team_name, Path.GetFileName(thrInfo.Key.scriptPath));
-#endif
                         }
                         else
                         {
@@ -657,7 +641,15 @@ namespace VQTFarm
                 {
                     if (onOffAutoTeamParseToolStripMenuItem.Checked)
                     {
-                        PythonGetRequest(true);
+                        List<object>? ctfteamss = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
+                        if (ctfteamss == null)
+                        {
+                            PythonGetRequest(false);
+                        }
+                        else
+                        {
+                            PythonGetRequest(true);
+                        }
                     }
                     List<object>? ctfteams = DBWorkFormTeam.ReadClassFromDB_AllClass(new CTFTeam());
                     nextPageTeamsTableButton.Enabled = false;
@@ -1837,13 +1829,7 @@ namespace VQTFarm
                 {
                     if (Regex.IsMatch(manualSubmitTextBox.Text, fs.flagFormat))
                     {
-#if DebagTestFunction                                                                                   ////////////////////////////////////////////////////////////////
-                        var thrInfo = new ThreadInfoClass("Manual Test", "some_ip", "Manual Test");
-                        thrInfo.flags = new string[] { manualSubmitTextBox.Text };
-                        flagsQueue.Enqueue(new KeyValuePair<ThreadInfoClass, DateTime>(thrInfo, DateTime.Now));
-#else
                         PythonFlagSendRequest(new string[1] { manualSubmitTextBox.Text }, "Manual Test", "Manual Test");
-#endif
                     }
                 }
             }
